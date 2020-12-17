@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>JCS.Neon.Glow</RootNamespace>
+    <AssemblyName>JCS.Neon.Glow</AssemblyName>
+    <Nullable>annotations</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>JCS.Neon.Glow</PackageId>
+    <Title>JCS Neon Glow</Title>
+    <Authors>JCS Software Ltd</Authors>
+    <Description>Neon Glow framework library</Description>
+    <Copyright>JCS Software Ltd</Copyright>
+    <Company>JCS Software Ltd</Company>
+    <Product>JCS Neon Glow</Product>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NodaTime" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Repository" />
+  </ItemGroup>
+
+</Project>
