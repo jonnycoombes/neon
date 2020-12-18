@@ -68,7 +68,9 @@ namespace JCS.Neon.Glow.Data.Repository
             var entityType = Model.FindEntityType(typeof(V).FullName);
             if (entityType == null)
             {
-                throw new RepositoryAwareDbContextException($"Context doesn't appear to include type ({typeof(V).Name}) within model");
+                var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
+                _log.Error(msg);
+                throw new RepositoryAwareDbContextException(msg);
             }
             return new AsyncRepository<K, V>(this);
         }
