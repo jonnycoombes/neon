@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -37,12 +38,16 @@ namespace JCS.Neon.Glow.Data.Repository
     public abstract class RepositoryAwareDbContext : DbContext
     {
         /// <summary>
+        /// <see cref="ILogger"/> instance
+        /// </summary>
+        private ILogger _log => Log.ForContext(typeof(RepositoryAwareDbContext));
+        
+        /// <summary>
         /// Default protected constructor which just
         /// </summary>
         /// <param name="options"></param>
         protected RepositoryAwareDbContext(DbContextOptions options) : base(options)
         {
-            
         }
 
         /// <summary>
@@ -59,6 +64,7 @@ namespace JCS.Neon.Glow.Data.Repository
             where K : IComparable<K>, IEquatable<K>
             where V : KeyedEntity<K>
         {
+            _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V).ToString()}");
             var entityType = Model.FindEntityType(typeof(V).FullName);
             if (entityType == null)
             {

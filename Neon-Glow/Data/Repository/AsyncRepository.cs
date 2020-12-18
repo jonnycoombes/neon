@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -24,6 +26,11 @@ namespace JCS.Neon.Glow.Data.Repository
         /// The undelrying context instace
         /// </summary>
         private RepositoryAwareDbContext _context;
+
+        /// <summary>
+        /// <see cref="ILogger"/> instance
+        /// </summary>
+        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K,V>));
         
         /// <summary>
         /// Constructor which takes a supporting <see cref="RepositoryAwareDbContext"/> instance
@@ -31,6 +38,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="context"></param>
         public AsyncRepository(RepositoryAwareDbContext context)
         {
+            _log.Debug("Creating new instance");
             _context = context;
         }
 
