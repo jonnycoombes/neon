@@ -10,7 +10,8 @@ namespace JCS.Neon.Glow.Data.Entity
     /// EF Core framework.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class KeyedEntity<T> where T : IComparable<T>, IEquatable<T>
+    public abstract class KeyedEntity<T> 
+        where T : IComparable<T>, IEquatable<T>
     {
         /// <summary>
         /// Timestamp field used as a concurrency token

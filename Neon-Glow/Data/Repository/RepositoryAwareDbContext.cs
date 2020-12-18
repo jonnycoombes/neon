@@ -51,6 +51,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// model elements from <see cref="KeyedEntity{T}"/> in order to ensure uniformity and consistency
         /// in repository behaviour.
         /// </summary>
+        /// <typeparam name="R">The type of the repository to instantiate</typeparam>
         /// <typeparam name="K">The key type of the underlying model entity type</typeparam>
         /// <typeparam name="V">The actual type of the underlying model entity type, derived from <see cref="KeyedEntity{T}"/></typeparam>
         /// <returns></returns>
