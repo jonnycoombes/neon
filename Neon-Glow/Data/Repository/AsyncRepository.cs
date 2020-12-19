@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using static JCS.Neon.Glow.Helpers.ExceptionHelpers;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -122,7 +123,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
             catch(Exception ex)
             {
-                throw new AsyncRepositoryException($"Exception caught whilst attempting to add new entries: {ex.Message}", ex);
+                throw LoggedException<AsyncRepositoryException>(_log, $"Exception caught whilst attempting to add new entries: {ex.Message}",ex);
             }
         }
 
@@ -141,7 +142,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
             catch(Exception ex)
             {
-                throw new AsyncRepositoryException($"Exception caught whilst attempting to add new entries: {ex.Message}", ex);
+                throw LoggedException<AsyncRepositoryException>(_log, $"Exception caught whilst attempting to add new entries: {ex.Message}",ex);
             }
         }
 
