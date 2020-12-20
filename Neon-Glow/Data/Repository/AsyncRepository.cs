@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.ExceptionHelpers;
 
@@ -123,7 +124,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
             catch(Exception ex)
             {
-                throw LoggedException<AsyncRepositoryException>(_log, $"Exception caught whilst attempting to add new entries: {ex.Message}",ex);
+                throw DbSpecificException(ex);
             }
         }
 
@@ -142,7 +143,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
             catch(Exception ex)
             {
-                throw LoggedException<AsyncRepositoryException>(_log, $"Exception caught whilst attempting to add new entries: {ex.Message}",ex);
+                throw DbSpecificException(ex);
             }
         }
 
@@ -156,31 +157,77 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOneAsync"/>
         public async Task<V> UpsertOneAsync(V item, CancellationToken cancellationToken = default)
         {
-            _context.Update(item);
-            await _context.SaveChangesAsync(cancellationToken);
-            return item;
+            try
+            {
+                _context.Update(item);
+                await _context.SaveChangesAsync(cancellationToken);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertManyAsync"/>
         public async Task<IEnumerable<V>> UpsertManyAsync(V[] items, CancellationToken cancellationToken = default)
         {
-            _context.UpdateRange(items);
-            await _context.SaveChangesAsync();
-            return items;
+            try
+            {
+                _context.UpdateRange(items);
+                await _context.SaveChangesAsync();
+                return items;
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOneAsync"/>
         public async Task DeleteOneAsync(V item, CancellationToken cancellationToken = default)
         {
-            _context.Set<V>().Remove(item);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Set<V>().Remove(item);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteManyAsync"/>
         public async Task DeleteManyAsync(V[] items, CancellationToken cancellationToken = default)
         {
-            _context.Set<V>().RemoveRange(items);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Set<V>().RemoveRange(items);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Method that will inspect a general exception and see if it can determine any detailed information from
+        /// the exception, dependent on the database provider
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <exception cref="AsyncRepositoryException"></exception>
+        protected Exception DbSpecificException(Exception ex)
+        {
+            switch (ex.InnerException)
+            {
+                case PostgresException pex:
+                    var message = $"{pex.MessageText}";
+                    return LoggedException<AsyncRepositoryException>(_log, message, pex);
+                default:
+                    return LoggedException<AsyncRepositoryException>(_log, $"Exception caught whilst attempting to add new entries: {ex.Message}",ex);
+            }
         }
     }
 }
