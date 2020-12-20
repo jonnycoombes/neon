@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
@@ -60,36 +61,36 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey"/> 
         public async Task<bool> HasItemWithKey(K key, CancellationToken cancellationToken = default)
         {
-            return (await SelectOneAsync(v => v.Id.Equals(key)) != null);
+            return !(await SelectOneAsync(v => v.Id.Equals(key))).IsNone;
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
-        public async Task<V?> SelectOneAsync(K key, CancellationToken cancellationToken= default)
+        public async Task<Option<V>> SelectOneAsync(K key, CancellationToken cancellationToken= default)
         {
             try
             {
-                return await _context.Set<V>()
+                return Option<V>.Some(await _context.Set<V>()
                     .Where(v => v.Id.Equals(key))
-                    .FirstAsync(cancellationToken);
+                    .FirstAsync(cancellationToken));
             }
             catch
             {
-                return null;
+                return Option<V>.None;
             }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
-        public async Task<V?> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default)
+        public async Task<Option<V>> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default)
         {
             try
             {
-                return await _context.Set<V>()
+                return Option<V>.Some(await _context.Set<V>()
                     .Where(expression)
-                    .FirstAsync(cancellationToken);
+                    .FirstAsync(cancellationToken));
             }
             catch
             {
-                return null;
+                return Option<V>.None;
             } 
         }
 

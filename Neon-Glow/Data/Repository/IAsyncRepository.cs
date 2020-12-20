@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace JCS.Neon.Glow.Data.Repository
@@ -73,7 +74,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="key">The key value</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>A nullable V</returns>
-        public Task<V?> SelectOneAsync(K key, CancellationToken cancellationToken= default);
+        public Task<Option<V>> SelectOneAsync(K key, CancellationToken cancellationToken= default);
 
         /// <summary>
         /// Read one item from the repository based on a given predicate expression
@@ -81,7 +82,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">A predicate function which selects the item</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Either a single item of type V or null</returns>
-        public Task<V?> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default);
+        public Task<Option<V>> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default);
 
         /// <summary>
         /// Reads zero of more items from the repository given a collection of

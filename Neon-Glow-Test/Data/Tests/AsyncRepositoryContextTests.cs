@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Cryptography;
 using JCS.Neon.Glow.Data.Repository;
 using JCS.Neon.Glow.Test.Data.Entity;
+using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Frameworks;
 using Xunit;
@@ -79,7 +80,7 @@ namespace JCS.Neon.Glow.Data.Tests
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOneAsync(v => v.StringProperty.Equals("Invalid property value"));
-            Assert.Null(item);
+            Assert.True(item.IsNone);
         }
 
         [Fact(DisplayName = "Can enumerate all items asynchronously")]
@@ -175,7 +176,9 @@ namespace JCS.Neon.Glow.Data.Tests
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             await repository.UpsertOneAsync(_testEntries[1]);
-            Assert.Equal("Test update", (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[1].Id))).StringProperty);
+            var o = (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[1].Id)));
+            var t = o.Fold(x => x.StringProperty, () => "Failed");
+            Assert.Equal("Test update", t);
         }
 
         [Fact(DisplayName = "Can update multiple existing items")]
@@ -186,8 +189,12 @@ namespace JCS.Neon.Glow.Data.Tests
             _testEntries[1].StringProperty = "Test update";
             _testEntries[2].StringProperty = "Test update";
             await repository.UpsertManyAsync(new ModelGuidKeyedTestEntity[] {_testEntries[1], _testEntries[2]});
-            Assert.Equal("Test update", (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[1].Id))).StringProperty);
-            Assert.Equal("Test update", (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[2].Id))).StringProperty);
+            ModelGuidKeyedTestEntity r1;
+            ModelGuidKeyedTestEntity r2;
+            (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[1].Id))).IsSome(out r1);
+            (await repository.SelectOneAsync(v => v.Id.Equals(_testEntries[2].Id))).IsSome(out r2);
+            Assert.Equal("Test update", r1.StringProperty);
+            Assert.Equal("Test update", r2.StringProperty);
         }
     }
 }
