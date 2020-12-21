@@ -21,6 +21,55 @@ namespace JCS.Neon.Glow.Helpers
             var fileName= Path.GetFileName(filePath);
             LogAtLevel(log, $"[Method invocation: {memberName} - {fileName}]", LogEventLevel.Verbose);
         }
+
+        /// <summary>
+        /// Convenience method for logging at a debug level
+        /// </summary>
+        /// <param name="log">The target <see cref="ILogger" instance/></param>
+        /// <param name="message">The message to log</param>
+        public static void LogDebug(ILogger log, string message)
+        {
+            LogAtLevel(log, message, LogEventLevel.Debug);
+        }
+        
+        /// <summary>
+        /// Convenience method for logging at a information level
+        /// </summary>
+        /// <param name="log">The target <see cref="ILogger" instance/></param>
+        /// <param name="message">The message to log</param>
+        public static void LogInformation(ILogger log, string message)
+        {
+            LogAtLevel(log, message, LogEventLevel.Information);
+        }
+        
+        /// <summary>
+        /// Convenience method for logging at a verbose level
+        /// </summary>
+        /// <param name="log">The target <see cref="ILogger" instance/></param>
+        /// <param name="message">The message to log</param>
+        public static void LogVerbose(ILogger log, string message)
+        {
+            LogAtLevel(log, message, LogEventLevel.Verbose);
+        }
+        
+        /// <summary>
+        /// Convenience method for logging at a warning level
+        /// </summary>
+        /// <param name="log">The target <see cref="ILogger" instance/></param>
+        /// <param name="message">The message to log</param>
+        public static void LogWarning(ILogger log, string message)
+        {
+            LogAtLevel(log, message, LogEventLevel.Warning);
+        }
+        /// <summary>
+        /// Convenience method for logging at a error level
+        /// </summary>
+        /// <param name="log">The target <see cref="ILogger" instance/></param>
+        /// <param name="message">The message to log</param>
+        public static void LogError(ILogger log, string message)
+        {
+            LogAtLevel(log, message, LogEventLevel.Error);
+        }
         
         /// <summary>
         /// Utility method that will log at a specific level

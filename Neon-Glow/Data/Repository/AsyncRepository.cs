@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.ExceptionHelpers;
+using static JCS.Neon.Glow.Helpers.LogHelpers;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -41,7 +42,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="context"></param>
         public AsyncRepository(RepositoryAwareDbContext context)
         {
-            _log.Debug("Creating new instance");
+            LogMethodCall(_log);
             _context = context;
         }
 
@@ -49,24 +50,49 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.CountAsync()"/> 
         public async Task<int> CountAsync(CancellationToken cancellationToken= default)
         {
-            return await _context.Set<V>().CountAsync(cancellationToken);
+            LogMethodCall(_log);
+            try
+            {
+                return await _context.Set<V>().CountAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.CountAsyncWhere"/> 
         public async Task<long> CountAsyncWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default)
         {
-            return await _context.Set<V>().Where(expression).CountAsync(cancellationToken);
+            LogMethodCall(_log);
+            try
+            {
+                return await _context.Set<V>().Where(expression).CountAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey"/> 
         public async Task<bool> HasItemWithKey(K key, CancellationToken cancellationToken = default)
         {
-            return !(await SelectOneAsync(v => v.Id.Equals(key))).IsNone;
+            LogMethodCall(_log);
+            try
+            {
+                return !(await SelectOneAsync(v => v.Id.Equals(key))).IsNone;
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
         public async Task<Option<V>> SelectOneAsync(K key, CancellationToken cancellationToken= default)
         {
+            LogMethodCall(_log);
             try
             {
                 return Option<V>.Some(await _context.Set<V>()
@@ -82,6 +108,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
         public async Task<Option<V>> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default)
         {
+            LogMethodCall(_log);
             try
             {
                 return Option<V>.Some(await _context.Set<V>()
@@ -94,29 +121,72 @@ namespace JCS.Neon.Glow.Data.Repository
             } 
         }
 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectOneAsync"/> 
+        public async Task<Option<W>> SelectAndProjectOneAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f, CancellationToken cancellationToken = default)
+        {
+            LogMethodCall(_log);
+            var selection = await SelectOneAsync(expression, cancellationToken);
+            return selection.Fold(
+            v => Option<W>.Some(f(v)),
+            () => Option<W>.None);
+        }
+
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyAsync"/> 
         public async Task<IEnumerable<V>> SelectManyAsync(K[] keys, CancellationToken cancellationToken= default)
         {
-            return await _context.Set<V>()
-                .Where(v => keys.Contains(v.Id)).ToArrayAsync(cancellationToken);
+            LogMethodCall(_log);
+            try
+            {
+                return await _context.Set<V>()
+                    .Where(v => keys.Contains(v.Id)).ToArrayAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadManyAsync()"/> 
         public async Task<IEnumerable<V>> SelectManyAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default)
         {
-            return await _context.Set<V>()
-                .Where(expression).ToArrayAsync();
+            LogMethodCall(_log);
+            try
+            {
+                return await _context.Set<V>()
+                    .Where(expression).ToArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
+        }
+
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectManyAsync()"/> 
+        public async Task<IEnumerable<W>> SelectAndProjectManyAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f, CancellationToken cancellationToken = default)
+        {
+            LogMethodCall(_log);
+            var selection = await SelectManyAsync(expression, cancellationToken);
+            return selection.Select(v => f(v));
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.GetAsyncEnumerator"/> 
         public IAsyncEnumerator<V> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator();
+            LogMethodCall(_log);
+            try
+            {
+                return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator();
+            }
+            catch (Exception ex)
+            {
+                throw DbSpecificException(ex);
+            }
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.CreateOneAsync"/>
         public async Task<V> CreateOneAsync(V newItem, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 var entityEntry= await _context.AddAsync(newItem, cancellationToken);
@@ -132,6 +202,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.CreateManyAsync"/>
         public async Task<IEnumerable<V>> CreateManyAsync(V[] newItems, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 for (var i = 0; i < newItems.Length; i++)
@@ -151,13 +222,14 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyKeysAsync"/>
         public async Task<IEnumerable<K>> SelectManyKeysAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return (await _context.Set<V>()
-                .Where(expression).ToArrayAsync()).Select(v => v.Id);
+            LogMethodCall(_log);
+            return await SelectAndProjectManyAsync<K>(expression, v => v.Id, cancellationToken);
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOneAsync"/>
         public async Task<V> UpsertOneAsync(V item, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 _context.Update(item);
@@ -173,6 +245,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertManyAsync"/>
         public async Task<IEnumerable<V>> UpsertManyAsync(V[] items, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 _context.UpdateRange(items);
@@ -188,6 +261,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOneAsync"/>
         public async Task DeleteOneAsync(V item, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 _context.Set<V>().Remove(item);
@@ -202,6 +276,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteManyAsync"/>
         public async Task DeleteManyAsync(V[] items, CancellationToken cancellationToken = default)
         {
+            LogMethodCall(_log);
             try
             {
                 _context.Set<V>().RemoveRange(items);
@@ -221,6 +296,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <exception cref="AsyncRepositoryException"></exception>
         protected Exception DbSpecificException(Exception ex)
         {
+            LogMethodCall(_log);
             switch (ex.InnerException)
             {
                 case PostgresException pex:

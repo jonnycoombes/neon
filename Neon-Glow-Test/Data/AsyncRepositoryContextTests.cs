@@ -196,5 +196,14 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal("Test update", r1.StringProperty);
             Assert.Equal("Test update", r2.StringProperty);
         }
+
+        [Fact(DisplayName = "Can select and transform existing items to type W")]
+        public async void SelectAndProjectItems()
+        {
+            var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
+            AddTestEntries();
+            var selected = await repository.SelectAndProjectManyAsync<string>(v => v.StringProperty.StartsWith("Sample"), v => v.StringProperty);
+            Assert.Equal(10, selected.Count());
+        }
     }
 }

@@ -85,6 +85,18 @@ namespace JCS.Neon.Glow.Data.Repository
         public Task<Option<V>> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default);
 
         /// <summary>
+        /// Attempts to select a single item given an expression and if an element is found, applies function f
+        /// in order to map into type W
+        /// </summary>
+        /// <param name="expression">The expression to select on</param>
+        /// <param name="f">The projection/map function</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <typeparam name="W">The projection/map type</typeparam>
+        /// <returns></returns>
+        public Task<Option<W>> SelectAndProjectOneAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
+            CancellationToken cancellationToken = default);
+        
+        /// <summary>
         /// Reads zero of more items from the repository given a collection of
         /// key values
         /// </summary>
@@ -108,6 +120,18 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
         public Task<IEnumerable<V>> SelectManyAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken= default);
+
+        /// <summary>
+        /// Reads zero or more items from the repository based on a predicate, and then applies a projection function to
+        /// transform each entry into type W
+        /// </summary>
+        /// <param name="expression">The expression to drive the selection</param>
+        /// <param name="f">A projection/map function which takes a V, produces a W</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <typeparam name="W">The projection/map type</typeparam>
+        /// <returns></returns>
+        public Task<IEnumerable<W>> SelectAndProjectManyAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads all items from the repository as an enumeration

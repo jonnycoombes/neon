@@ -13,7 +13,7 @@ namespace JCS.Neon.Glow.Test.Helpers
     {
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to OffsetDateTime instances")]
         [InlineData("")]
-        public async void CheckOffsetDateTimeParsing(string rep)
+        public  void CheckOffsetDateTimeParsing(string rep)
         {
             var parsed = ParseGeneralIsoOffsetDateTime(rep);
             Assert.True(!parsed.IsNone);
@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Test.Helpers
         
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to LocalDateTime instances")]
         [InlineData("")]
-        public async void CheckLocalDatetimeParsing(string rep)
+        public  void CheckLocalDatetimeParsing(string rep)
         {
             var parsed = ParseGeneralIsoOffsetDateTime(rep);
             Assert.True(!parsed.IsNone);
@@ -31,7 +31,7 @@ namespace JCS.Neon.Glow.Test.Helpers
         /// Test OffsetDateTime transfer between object and string
         /// </summary>
         [Fact(DisplayName = "Can move between string and internal Instant representation through OffsetDateTime")]
-        public async void OffsetDateTimeStringSerialisation()
+        public  void OffsetDateTimeStringSerialisation()
         {
             var instant = Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
             var offsetDateTime = instant.InUtc().ToOffsetDateTime();
@@ -48,7 +48,7 @@ namespace JCS.Neon.Glow.Test.Helpers
         /// Test OffsetDateTime transfer between object and string
         /// </summary>
         [Fact(DisplayName = "Can move between string and internal Instant representation through LocalDateTime")]
-        public async void LocalDateTimeStringSerialisation()
+        public  void LocalDateTimeStringSerialisation()
         {
             var instant = Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
             var localDateTime = instant.ToDateTimeUtc().ToLocalDateTime();
