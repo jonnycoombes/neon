@@ -1,3 +1,4 @@
+using System.IO;
 using Serilog;
 using Serilog.Events;
 
@@ -8,6 +9,19 @@ namespace JCS.Neon.Glow.Helpers
     /// </summary>
     public static class LogHelpers
     {
+
+        /// <summary>
+        /// Will log at a verbose level a method invocation
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="memberName"></param>
+        public static void LogMethodCall(ILogger log, [System.Runtime.CompilerServices.CallerMemberName]
+            string memberName= "", [System.Runtime.CompilerServices.CallerFilePath] string filePath= "")
+        {
+            var fileName= Path.GetFileName(filePath);
+            LogAtLevel(log, $"[Method invocation: {memberName} - {fileName}]", LogEventLevel.Verbose);
+        }
+        
         /// <summary>
         /// Utility method that will log at a specific level
         /// </summary>
@@ -32,7 +46,7 @@ namespace JCS.Neon.Glow.Helpers
                         log.Information(message);
                         break;
                     case LogEventLevel.Verbose:
-                        log.Information(message);
+                        log.Verbose(message);
                         break;
                     case LogEventLevel.Warning:
                         log.Warning(message);

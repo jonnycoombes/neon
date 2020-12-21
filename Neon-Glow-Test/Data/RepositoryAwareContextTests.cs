@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit.Abstractions;
 
-namespace JCS.Neon.Glow.Data.Tests
+namespace JCS.Neon.Glow.Test.Data
 {
-    public abstract class RepositoryAwareContextTest : IDisposable
+    public abstract class RepositoryAwareContextTests : IDisposable
     {
         /// <summary>
         /// The actual test context
@@ -29,7 +29,7 @@ namespace JCS.Neon.Glow.Data.Tests
 
         protected List<ModelGuidKeyedTestEntity> _testEntries = new();
 
-        public RepositoryAwareContextTest(ITestOutputHelper outputHelperHelper)
+        public RepositoryAwareContextTests(ITestOutputHelper outputHelperHelper)
         {
             _outputHelper = outputHelperHelper;
             CreateContextOptions();

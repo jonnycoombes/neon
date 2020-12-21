@@ -11,12 +11,12 @@ using NuGet.Frameworks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace JCS.Neon.Glow.Data.Tests
+namespace JCS.Neon.Glow.Test.Data
 {
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository"/>
     /// </summary>
-    public class AsyncRepositoryContextTests : RepositoryAwareContextTest
+    public class AsyncRepositoryContextTests : RepositoryAwareContextTests
     {
         public AsyncRepositoryContextTests(ITestOutputHelper outputHelperHelper) : base(outputHelperHelper)
         {
@@ -71,7 +71,7 @@ namespace JCS.Neon.Glow.Data.Tests
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOneAsync(v => v.StringProperty.Equals("Sample value 3"));
-            Assert.NotNull(item);
+            Assert.False(item.IsNone);
         }
 
         [Fact(DisplayName = "Can't select an unknown value based on an expression")]
@@ -102,7 +102,7 @@ namespace JCS.Neon.Glow.Data.Tests
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOneAsync(_testEntries[0].Id);
-            Assert.NotNull(item);
+            Assert.False(item.IsNone);
         }
 
         [Fact(DisplayName = "Can select multiple known entries based on key values")]
