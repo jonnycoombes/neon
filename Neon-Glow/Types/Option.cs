@@ -115,13 +115,14 @@ namespace JCS.Neon.Glow.Types
 
         /// <summary>
         /// Emulates the Cats/Scalaz GetOrElse method on an option.  Basically, unpacks the value
-        /// or allows for a default value to be synthesised through a lambda
+        /// or allows for a default value to be synthesised through a lambda.  The default value is
+        /// marked as being nullable
         /// </summary>
         /// <param name="option">The source option wrapping type T</param>
         /// <param name="f">A lambda which can provide a default value</param>
         /// <typeparam name="T">The wrapped type</typeparam>
         /// <returns></returns>
-        public static T GetOrElse<T>(this Option<T> option, Func<T> f)
+        public static T GetOrElse<T>(this Option<T> option, Func<T?> f)
         {
             if (option.IsSome(out var value)) 
                 return value;
