@@ -1,32 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>JCS.Neon.Glow</RootNamespace>
-    <AssemblyName>JCS.Neon.Glow</AssemblyName>
-    <Nullable>annotations</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>JCS.Neon.Glow</PackageId>
-    <Title>JCS Neon Glow</Title>
-    <Authors>JCS Software Ltd</Authors>
-    <Description>Neon Glow framework library</Description>
-    <Copyright>JCS Software Ltd</Copyright>
-    <Company>JCS Software Ltd</Company>
-    <Product>JCS Neon Glow</Product>
-    <AssemblyVersion>0.1.4.0</AssemblyVersion>
-    <FileVersion>0.1.4.0</FileVersion>
-    <PackageVersion>0.1.4.0</PackageVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>JCS.Neon.Glow</RootNamespace>
+        <AssemblyName>JCS.Neon.Glow</AssemblyName>
+        <Nullable>annotations</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>JCS.Neon.Glow</PackageId>
+        <Title>JCS Neon Glow</Title>
+        <Authors>JCS Software Ltd</Authors>
+        <Description>Neon Glow framework library</Description>
+        <Copyright>JCS Software Ltd</Copyright>
+        <Company>JCS Software Ltd</Company>
+        <Product>JCS Neon Glow</Product>
+        <AssemblyVersion>0.1.6.0</AssemblyVersion>
+        <FileVersion>0.1.6.0</FileVersion>
+        <PackageVersion>0.1.6.0</PackageVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NodaTime" Version="3.0.3" />
-    <PackageReference Include="Npgsql" Version="5.0.1.1" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NodaTime" Version="3.0.3" />
+        <PackageReference Include="Npgsql" Version="5.0.1.1" />
+        <PackageReference Include="Serilog" Version="2.10.0" />
+    </ItemGroup>
 
 </Project>

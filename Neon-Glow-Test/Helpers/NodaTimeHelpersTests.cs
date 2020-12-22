@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using JCS.Neon.Glow.Helpers;
 using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Extensions;
@@ -9,27 +10,42 @@ using static JCS.Neon.Glow.Helpers.NodaTimeHelpers;
 
 namespace JCS.Neon.Glow.Test.Helpers
 {
+    /// <summary>
+    /// Test suite for <see cref="JCS.Neon.Glow.Helpers.NodaTimeHelpers"/>
+    /// </summary>
     public class NodaTimeHelpersTests : IDisposable
     {
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to OffsetDateTime instances")]
-        [InlineData("")]
-        public  void CheckOffsetDateTimeParsing(string rep)
+        [InlineData("2020-12-31T12:12:00Z")]
+        [InlineData("2020-09-13T09:45:12-03")]
+        [InlineData("2020-01-03T07:23:07Z")]
+        [InlineData("2020-12-31T04:56:22+02")]
+        public  void CheckOffsetDateTimeParsing(string src)
         {
-            var parsed = ParseGeneralIsoOffsetDateTime(rep);
-            Assert.True(!parsed.IsNone);
+            Assert.True(!ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
         }
         
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to LocalDateTime instances")]
-        [InlineData("")]
-        public  void CheckLocalDatetimeParsing(string rep)
+        [InlineData("2020-12-31T12:12:00")]
+        [InlineData("2020-09-13T09:45:12")]
+        [InlineData("2020-01-03T07:23:07")]
+        [InlineData("2020-12-31T04:56:22")]
+        public  void CheckLocalDatetimeParsing(string src)
         {
-            var parsed = ParseGeneralIsoOffsetDateTime(rep);
-            Assert.True(!parsed.IsNone);
+            Assert.True(!ParseHelpers.ParseGeneralIsoLocalDateTime(src).IsNone);
+        }
+
+        [Theory(DisplayName = "Can correctly identify ISO representations of invalid date values")]
+        [InlineData("2020-13-31T12:12:00Z")]
+        [InlineData("2020-09-43T09:45:12-04")]
+        [InlineData("2020-00-03T07:23:07+02")]
+        [InlineData("2020-12-31T54:56:22Z")]
+        public void CheckInvalidDates(string src)
+        {
+            Assert.True(ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
+            Assert.True(ParseHelpers.ParseGeneralIsoLocalDateTime(src).IsNone);
         }
         
-        /// <summary>
-        /// Test OffsetDateTime transfer between object and string
-        /// </summary>
         [Fact(DisplayName = "Can move between string and internal Instant representation through OffsetDateTime")]
         public  void OffsetDateTimeStringSerialisation()
         {
@@ -38,15 +54,12 @@ namespace JCS.Neon.Glow.Test.Helpers
             var stringOption = ToGeneralIsoString(offsetDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
-            var parsed= ParseGeneralIsoOffsetDateTime(rep).Fold(
+            var parsed= ParseHelpers.ParseGeneralIsoOffsetDateTime(rep).Fold(
                 time => time,
                 () => new OffsetDateTime());
             Assert.True(parsed.Date.Equals(offsetDateTime.Date)); 
         }
         
-        /// <summary>
-        /// Test OffsetDateTime transfer between object and string
-        /// </summary>
         [Fact(DisplayName = "Can move between string and internal Instant representation through LocalDateTime")]
         public  void LocalDateTimeStringSerialisation()
         {
@@ -55,7 +68,7 @@ namespace JCS.Neon.Glow.Test.Helpers
             var stringOption = ToGeneralIsoString(localDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
-            var parsed= ParseGeneralIsoLocalDateTime(rep).Fold(
+            var parsed= ParseHelpers.ParseGeneralIsoLocalDateTime(rep).Fold(
                 time => time,
                 () => new LocalDateTime());
             Assert.True(parsed.Date.Equals(localDateTime.Date)); 

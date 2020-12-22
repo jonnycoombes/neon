@@ -2,16 +2,14 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace JCS.Neon.Glow.Types
-{
+namespace JCS.Neon.Glow.Types{
     /// <summary>
     /// Simple option value type which just wraps a type which may have a value,
     /// or may not have a value. Very loosely based on similar functional types
     /// such as F# Option, Scala Option or Haskell Maybe 
     /// </summary>
     public struct Option<T>
-        where T : notnull
-    {
+        where T : notnull{
         /// <summary>
         /// Construct a None value
         /// </summary>
@@ -24,13 +22,13 @@ namespace JCS.Neon.Glow.Types
         /// <returns></returns>
         public static Option<T> Some(T value) => new(value);
 
-        private readonly bool _some; 
-        
+        private readonly bool _some;
+
         /// <summary>
         /// The underlying value
         /// </summary>
         private readonly T _value;
-        
+
         /// <summary>
         /// Whether this option doesn't have a value
         /// </summary>
@@ -55,20 +53,18 @@ namespace JCS.Neon.Glow.Types
         /// </summary>
         /// <param name="value">An out parameter which might contain a value.</param>
         /// <returns></returns>
-        public bool IsSome([MaybeNullWhen(false)]out T value)
+        public bool IsSome([MaybeNullWhen(false)] out T value)
         {
             value = _value;
             return _some;
         }
-        
     }
 
     /// <summary>
     /// Extension methods for the <see cref="Option{T}"/> struct which define some of
     /// basic monadic operations you'd expect for an option
     /// </summary>
-    public static class OptionOps
-    {
+    public static class OptionOps{
         /// <summary>
         /// Standard functor for mapping the contents of an option
         /// </summary>
@@ -80,7 +76,7 @@ namespace JCS.Neon.Glow.Types
         {
             return option.Bind(value => Option<V>.Some(f(value)));
         }
-        
+
         /// <summary>
         /// Fold function that will convert an option to a different type based on
         /// whether or not the option holds a value or not 
@@ -124,7 +120,7 @@ namespace JCS.Neon.Glow.Types
         /// <returns></returns>
         public static T GetOrElse<T>(this Option<T> option, Func<T?> f)
         {
-            if (option.IsSome(out var value)) 
+            if (option.IsSome(out var value))
                 return value;
             else
             {

@@ -2,19 +2,16 @@ using System;
 using JCS.Neon.Glow.Types;
 using Serilog;
 
-namespace JCS.Neon.Glow.Helpers
-{
+namespace JCS.Neon.Glow.Helpers{
     /// <summary>
     /// Static class containing useful reflection methods and helpers
     /// </summary>
-    public static class ReflectionHelpers
-    {
-
+    public static class ReflectionHelpers{
         /// <summary>
         /// The logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelpers));
-        
+
         /// <summary>
         /// Static class 
         /// </summary>
@@ -25,7 +22,7 @@ namespace JCS.Neon.Glow.Helpers
         {
             try
             {
-                return new Option<T>((T)Activator.CreateInstance(typeof(T), args));
+                return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
             }
             catch
             {
@@ -33,7 +30,7 @@ namespace JCS.Neon.Glow.Helpers
                 return Option<T>.None;
             }
         }
-        
+
         /// <summary>
         /// Static helper for the dynamic creation of Exception-derived instances
         /// </summary>
@@ -41,11 +38,11 @@ namespace JCS.Neon.Glow.Helpers
         /// <typeparam name="E">A type parameter, derived from <see cref="Exception"/></typeparam>
         /// <returns></returns>
         public static Exception CreateException<E>(params object?[] args)
-            where E: Exception
+            where E : Exception
         {
             var instance = CreateInstance<E>(args);
             E exception;
-            if (instance.IsSome(out exception)) 
+            if (instance.IsSome(out exception))
                 return exception;
             else
             {
