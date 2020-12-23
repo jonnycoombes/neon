@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace JCS.Neon.Glow.Types{
     /// <summary>
@@ -39,7 +38,7 @@ namespace JCS.Neon.Glow.Types{
         /// sets the internal isSome flag
         /// </summary>
         /// <param name="value">The value to wrap</param>
-        public Option(T value)
+        public Option(T? value)
         {
             _value = value;
             _some = _value is { };
@@ -53,9 +52,19 @@ namespace JCS.Neon.Glow.Types{
         /// </summary>
         /// <param name="value">An out parameter which might contain a value.</param>
         /// <returns></returns>
-        public bool IsSome([MaybeNullWhen(false)] out T value)
+        public bool IsSome(out T value)
         {
             value = _value;
+            return _some;
+        }
+
+        /// <summary>
+        /// Checks whether the option has a value, but doesn't allow it to
+        /// be unpacked from within the wrapping Option.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSome()
+        {
             return _some;
         }
     }
