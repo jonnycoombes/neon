@@ -11,10 +11,11 @@ using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.ExceptionHelpers;
-using static JCS.Neon.Glow.Helpers.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ExceptionHelpers;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
-namespace JCS.Neon.Glow.Data.Repository{
+namespace JCS.Neon.Glow.Data.Repository
+{
     /// <summary>
     /// Default implementation of <see cref="IAsyncRepository{K,V}"/>.  This implementation essentially
     /// translates operations to an underlying <see cref="RepositoryAwareDbContext"/> instance.
@@ -23,8 +24,8 @@ namespace JCS.Neon.Glow.Data.Repository{
     /// <typeparam name="V"></typeparam>
     public class AsyncRepository<K, V> : IAsyncRepository<K, V>
         where K : IComparable<K>, IEquatable<K>
-        where V : KeyedEntity<K>{
-        
+        where V : KeyedEntity<K>
+    {
         /// <summary>
         /// The undelrying context instace
         /// </summary>

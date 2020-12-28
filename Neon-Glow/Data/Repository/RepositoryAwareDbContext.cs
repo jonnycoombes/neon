@@ -3,16 +3,18 @@ using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.ExceptionHelpers;
+using static JCS.Neon.Glow.Helpers.General.ExceptionHelpers;
 
-namespace JCS.Neon.Glow.Data.Repository{
+namespace JCS.Neon.Glow.Data.Repository
+{
     /// <summary>
     /// Exception type specific to <see cref="IAsyncRepository{K,V}"/> aware contexts
     /// </summary>
 
     #region Exceptions
 
-    public class RepositoryAwareDbContextException : Exception{
+    public class RepositoryAwareDbContextException : Exception
+    {
         public RepositoryAwareDbContextException()
         {
         }
@@ -36,7 +38,8 @@ namespace JCS.Neon.Glow.Data.Repository{
     /// A <see cref="DbContext"/> that understands how to create instances of <see cref="IAsyncRepository{K,V}"/>
     /// based on its model elements
     /// </summary>
-    public abstract class RepositoryAwareDbContext : DbContext{
+    public abstract class RepositoryAwareDbContext : DbContext
+    {
         /// <summary>
         /// Default protected constructor which just
         /// </summary>

@@ -1,8 +1,8 @@
 ﻿using System;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.ParseHelpers;
+using static JCS.Neon.Glow.Helpers.General.ParseHelpers;
 
-namespace JCS.Neon.Glow.Test.Helpers
+namespace JCS.Neon.Glow.Test.Helpers.General
 {
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Helpers.ParseHelpers"/>

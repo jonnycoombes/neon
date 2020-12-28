@@ -3,14 +3,16 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NodaTime;
 
-namespace JCS.Neon.Glow.Data.Entity{
+namespace JCS.Neon.Glow.Data.Entity
+{
     /// <summary>
     /// An abstract base class for keyed entities which may be stored via the
     /// EF Core framework.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class KeyedEntity<T>
-        where T : IComparable<T>, IEquatable<T>{
+        where T : IComparable<T>, IEquatable<T>
+    {
         /// <summary>
         /// Timestamp field used as a concurrency token
         /// </summary>

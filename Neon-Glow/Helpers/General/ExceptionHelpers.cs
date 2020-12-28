@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using Serilog;
 using Serilog.Events;
-using static JCS.Neon.Glow.Helpers.LogHelpers;
-using static JCS.Neon.Glow.Helpers.ReflectionHelpers;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Helpers.General.ReflectionHelpers;
 
-namespace JCS.Neon.Glow.Helpers{
+namespace JCS.Neon.Glow.Helpers.General
+{
     /// <summary>
     /// Class containing a bunch of static methods relating to throwing/processing
     /// exceptions
     /// </summary>
-    public static class ExceptionHelpers{
+    public static class ExceptionHelpers
+    {
         /// <summary>
         /// Cache to store constructor information for raising new exceptionss
         /// </summary>

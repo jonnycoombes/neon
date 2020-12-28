@@ -3,11 +3,13 @@ using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Text;
 
-namespace JCS.Neon.Glow.Helpers{
+namespace JCS.Neon.Glow.Helpers.General
+{
     /// <summary>
     /// Class containing various methods for parsing out values from strings
     /// </summary>
-    public static class ParseHelpers{
+    public static class ParseHelpers
+    {
         /// <summary>
         /// Attempts to parse out a guid from a given string
         /// </summary>

@@ -10,10 +10,12 @@ using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 
-namespace JCS.Neon.Glow.Data.Repository{
+namespace JCS.Neon.Glow.Data.Repository
+{
     #region Exceptions
 
-    public class AsyncRepositoryException : Exception{
+    public class AsyncRepositoryException : Exception
+    {
         public AsyncRepositoryException()
         {
         }
@@ -41,7 +43,8 @@ namespace JCS.Neon.Glow.Data.Repository{
     /// <typeparam name="V">Value type</typeparam>
     public interface IAsyncRepository<K, V>
         where K : IComparable<K>, IEquatable<K>
-        where V : KeyedEntity<K>{
+        where V : KeyedEntity<K>
+    {
         /// <summary>
         /// Get the total number of items within the repository
         /// </summary>

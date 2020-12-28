@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using JCS.Neon.Glow.Helpers;
+using JCS.Neon.Glow.Helpers.General;
 using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Extensions;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.NodaTimeHelpers;
+using static JCS.Neon.Glow.Helpers.General.NodaTimeHelpers;
 
-namespace JCS.Neon.Glow.Test.Helpers
+namespace JCS.Neon.Glow.Test.Helpers.General
 {
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Helpers.NodaTimeHelpers"/>

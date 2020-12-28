@@ -2,11 +2,13 @@ using System.IO;
 using Serilog;
 using Serilog.Events;
 
-namespace JCS.Neon.Glow.Helpers{
+namespace JCS.Neon.Glow.Helpers.General
+{
     /// <summary>
     /// Static class containing methods for tidying up logging
     /// </summary>
-    public static class LogHelpers{
+    public static class LogHelpers
+    {
         /// <summary>
         /// Will log at a verbose level a method invocation
         /// </summary>
