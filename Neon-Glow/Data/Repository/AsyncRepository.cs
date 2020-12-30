@@ -309,7 +309,7 @@ namespace JCS.Neon.Glow.Data.Repository
                     return LoggedException<AsyncRepositoryException>(_log, message, pex);
                 default:
                     return LoggedException<AsyncRepositoryException>(_log,
-                        $"Exception caught whilst attempting to add new entries: {ex.Message}", ex);
+                        $"DB Exception caught: \"{ex.Message}\"", ex);
             }
         }
     }

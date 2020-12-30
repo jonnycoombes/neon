@@ -16,6 +16,7 @@ namespace JCS.Neon.Glow.Test.Data
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository"/>
     /// </summary>
+    [Trait("Category", "Unit")]
     public class AsyncRepositoryContextTests : RepositoryAwareContextTests
     {
         public AsyncRepositoryContextTests(ITestOutputHelper outputHelperHelper) : base(outputHelperHelper)
@@ -26,12 +27,14 @@ namespace JCS.Neon.Glow.Test.Data
         /// Can we create a valid repository?
         /// </summary>
         [Fact(DisplayName = "Can create a model entity repository")]
+        [Trait("Category", "Data")]
         public void CheckCreateValidRepository()
         {
             Assert.NotNull(_context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>());
         }
 
         [Fact(DisplayName = "Can't create a non-model entity repository")]
+        [Trait("Category", "Data")]
         public void CheckCreateInvalidRepository()
         {
             Assert.Throws<RepositoryAwareDbContextException>(() =>
@@ -41,6 +44,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Count items in the repository")]
+        [Trait("Category", "Data")]
         public async void CountRepositoryItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -50,6 +54,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Count items matching a predicate")]
+        [Trait("Category", "Data")]
         public async void CountMatchingRepositoryItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -58,6 +63,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can check for the existence of know item")]
+        [Trait("Category", "Data")]
         public async void CheckForItemWithKey()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -66,6 +72,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select known values based on an expression")]
+        [Trait("Category", "Data")]
         public async void SelectKnownValues()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -75,6 +82,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can't select an unknown value based on an expression")]
+        [Trait("Category", "Data")]
         public async void SelectUnknownValues()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -84,6 +92,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can enumerate all items asynchronously")]
+        [Trait("Category", "Data")]
         public async void CheckAsyncEnumeration()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -97,6 +106,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select a known entity based on key value")]
+        [Trait("Category", "Data")]
         public async void SelectOneByKnownKey()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -106,6 +116,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select multiple known entries based on key values")]
+        [Trait("Category", "Data")]
         public async void SelectManyByKnownKeys()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -115,6 +126,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select multiple entries based on an expression")]
+        [Trait("Category", "Data")]
         public async void SelectManyByExpression()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -124,6 +136,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can create a single new item")]
+        [Trait("Category", "Data")]
         public async void CreateSingleItem()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -135,6 +148,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can create multiple new items")]
+        [Trait("Category", "Data")]
         public async void CreateMultipleItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -143,6 +157,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select multiple keys")]
+        [Trait("Category", "Data")]
         public async void SelectMultipleKeyValues()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -152,6 +167,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can delete existing item")]
+        [Trait("Category", "Data")]
         public async void DeleteSingleItem()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -161,6 +177,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can delete multiple items")]
+        [Trait("Category", "Data")]
         public async void DeleteMultipleItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -170,6 +187,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can update an existing item")]
+        [Trait("Category", "Data")]
         public async void UpdateExistingItem()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -182,6 +200,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can update multiple existing items")]
+        [Trait("Category", "Data")]
         public async void UpdateExistingItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -198,6 +217,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can select and transform existing items to type W")]
+        [Trait("Category", "Data")]
         public async void SelectAndProjectItems()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();

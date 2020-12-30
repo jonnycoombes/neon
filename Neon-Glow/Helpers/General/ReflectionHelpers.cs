@@ -48,5 +48,23 @@ namespace JCS.Neon.Glow.Helpers.General
                 return exception;
             return new InvalidOperationException($"Unable to raise the requested exception of type {typeof(E)}");
         }
+
+        /// <summary>
+        /// Returns a string containing the version of the currently executing assembly
+        /// </summary>
+        /// <returns></returns>
+        public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
+        {
+            var assembly = System.Reflection.Assembly.GetEntryAssembly();
+            if (includeAssemblyName)
+            {
+                return $"{assembly?.FullName} - {assembly?.GetName().Version}";
+            }
+            else
+            {
+                return $"{assembly?.GetName().Version}";
+            }
+            
+        }
     }
 }

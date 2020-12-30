@@ -19,7 +19,7 @@ namespace JCS.Neon.Glow.Helpers.General
             string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);
-            LogAtLevel(log, $"[Method invocation: {memberName} - {fileName}]", LogEventLevel.Verbose);
+            LogAtLevel(log, $"[Method invocation: {fileName}, {memberName}]", LogEventLevel.Verbose);
         }
 
         /// <summary>
