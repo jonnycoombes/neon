@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
 
@@ -55,7 +56,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <returns></returns>
         public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
         {
-            var assembly = System.Reflection.Assembly.GetEntryAssembly();
+            var assembly = Assembly.GetEntryAssembly();
             if (includeAssemblyName)
             {
                 return $"{assembly?.FullName} - {assembly?.GetName().Version}";

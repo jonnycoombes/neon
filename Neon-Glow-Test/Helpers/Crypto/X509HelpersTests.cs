@@ -19,7 +19,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [Trait("Category", "Crypto")]
         public void LoadPfxFromFile()
         {
-            var sshOption = GetCurrentHomePath(new string[]{".ssh", "neon", "test.pfx"});
+            var sshOption = GetHomeSubdirectoryPath(new string[]{".ssh", "neon", "test.pfx"});
             var result = sshOption.Fold(path =>
             {
                 var cert = CertificatefromPfxFile(path, () => "test");
@@ -34,7 +34,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [Trait("Category", "Crypto")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            var sshOption = GetCurrentHomePath(new string[]{".ssh", "neon", "test.pfx"});
+            var sshOption = GetHomeSubdirectoryPath(new string[]{".ssh", "neon", "test.pfx"});
             var result = sshOption.Fold(path =>
             {
                 X509Certificate2 cert = null;

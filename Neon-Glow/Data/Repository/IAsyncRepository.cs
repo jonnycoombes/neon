@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Types;
-using Microsoft.EntityFrameworkCore;
 
 namespace JCS.Neon.Glow.Data.Repository
 {

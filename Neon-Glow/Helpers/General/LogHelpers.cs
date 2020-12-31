@@ -1,4 +1,5 @@
 using System.IO;
+using System.Runtime.CompilerServices;
 using Serilog;
 using Serilog.Events;
 
@@ -14,8 +15,8 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="log"></param>
         /// <param name="memberName"></param>
-        public static void LogMethodCall(ILogger log, [System.Runtime.CompilerServices.CallerMemberName]
-            string memberName = "", [System.Runtime.CompilerServices.CallerFilePath]
+        public static void LogMethodCall(ILogger log, [CallerMemberName]
+            string memberName = "", [CallerFilePath]
             string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);

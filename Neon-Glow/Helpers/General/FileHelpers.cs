@@ -17,12 +17,12 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <returns></returns>
         public static Option<string> GetCurrentHomePath()
         {
-            var home = System.Environment.GetEnvironmentVariable("HOME");
+            var home = Environment.GetEnvironmentVariable("HOME");
             if (home == null)
             {
                 try
                 {
-                    return Option<string>.Some(System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+                    return Option<string>.Some(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
                 }
                 catch
                 {
@@ -41,7 +41,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="suffix">A set of components that will be appended to the current home path using Path.Combine</param>
         /// <returns>A string option which is None if the home directory can't be located</returns>
-        public static Option<string> GetCurrentHomePath(params string[] suffix)
+        public static Option<string> GetHomeSubdirectoryPath(params string[] suffix)
         {
             var homeOption = GetCurrentHomePath();
             string home;
