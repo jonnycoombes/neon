@@ -7,7 +7,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Helpers.ParseHelpers"/>
     /// </summary>
-    [Trait("Category", "Unit")]
+    [Trait("Test Type", "Unit")]
+    [Trait("Target Class", "ParseHelpers")]
     public class ParseHelpersTests : IDisposable
     {
         [Theory(DisplayName = "Can parse a series of well-formed guids correctly")]
@@ -17,7 +18,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [InlineData("697628a5ffda496b810ece922218b291")]
         [InlineData("18a58d2d58d6449d96b1b272fae89e09")]
         [InlineData("7bcdcb92f55c4d2387f831e9571a122f")]
-        [Trait("Category", "Parsing")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "ParseHelpers")]
         public void ParseValidGuids(string src)
         {
             Assert.False(ParseGuid(src).IsNone);
@@ -30,7 +32,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [InlineData("697628a5ffda496b810ece922218b29134342343")]
         [InlineData("18a58-d6449d96b1b272fae89e09")]
         [InlineData("7bcdcb!&&&&92f55c4d2387f831e9571a122f")]
-        [Trait("Category", "Parsing")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "ParseHelpers")]
         public void ParseInvalidGuids(string src)
         {
             Assert.True(ParseGuid(src).IsNone);
