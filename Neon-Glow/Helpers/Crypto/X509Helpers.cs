@@ -17,7 +17,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <returns>A valid <see cref="X509Certificate2"/></returns>
         /// <exception cref="X509HelperException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
-        public static X509Certificate2 CertificatefromPfxFile(string source, Func<string> pf)
+        public static X509Certificate2 CertificatefromPfxFile(string source, Func<string> pf, bool exportable= true)
         {
             if (!File.Exists(source))
             {
@@ -26,8 +26,16 @@ namespace JCS.Neon.Glow.Helpers.Crypto
 
             try
             {
-                var cert = new X509Certificate2(source, pf());
-                return cert;
+                if (exportable)
+                {
+                    var cert = new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable);
+                    return cert;
+                }
+                else
+                {
+                    var cert = new X509Certificate2(source, pf());
+                    return cert;
+                }
             }
             catch (Exception ex)
             {
