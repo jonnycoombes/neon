@@ -13,7 +13,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Helpers.NodaTimeHelpers"/>
     /// </summary>
-    [Trait("Category", "Unit")]
+    [Trait("Test Type", "Unit")]
+    [Trait("Target Class", "NodeTimeHelpers")]
     public class NodaTimeHelpersTests : IDisposable
     {
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to OffsetDateTime instances")]
@@ -21,7 +22,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [InlineData("2020-09-13T09:45:12-03")]
         [InlineData("2020-01-03T07:23:07Z")]
         [InlineData("2020-12-31T04:56:22+02")]
-        [Trait("Category", "Dates And Times")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "NodeTimeHelpers")]
         public  void CheckOffsetDateTimeParsing(string src)
         {
             Assert.True(!ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
@@ -32,7 +34,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [InlineData("2020-09-13T09:45:12")]
         [InlineData("2020-01-03T07:23:07")]
         [InlineData("2020-12-31T04:56:22")]
-        [Trait("Category", "Dates And Times")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "NodeTimeHelpers")]
         public  void CheckLocalDatetimeParsing(string src)
         {
             Assert.True(!ParseHelpers.ParseGeneralIsoLocalDateTime(src).IsNone);
@@ -43,7 +46,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [InlineData("2020-09-43T09:45:12-04")]
         [InlineData("2020-00-03T07:23:07+02")]
         [InlineData("2020-12-31T54:56:22Z")]
-        [Trait("Category", "Dates And Times")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "NodeTimeHelpers")]
         public void CheckInvalidDates(string src)
         {
             Assert.True(ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
@@ -51,7 +55,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         }
         
         [Fact(DisplayName = "Can move between string and internal Instant representation through OffsetDateTime")]
-        [Trait("Category", "Dates And Times")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "NodeTimeHelpers")]
         public  void OffsetDateTimeStringSerialisation()
         {
             var instant = Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
@@ -66,7 +71,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         }
         
         [Fact(DisplayName = "Can move between string and internal Instant representation through LocalDateTime")]
-        [Trait("Category", "Dates And Times")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "NodeTimeHelpers")]
         public  void LocalDateTimeStringSerialisation()
         {
             var instant = Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());

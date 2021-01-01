@@ -11,27 +11,31 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     /// <summary>
     /// Test suite for <see cref="JCS.Neon.Glow.Helpers.Crypto.X509Helpers"/>
     /// </summary>
-    [Trait("Category", "Unit")]
+    [Trait("Test Type", "Unit")]
+    [Trait("Target Class", "X509CertificateHelper")]
     public class X509HelpersTests : IDisposable
     {
 
         [Fact(DisplayName = "Can load a valid pfx file with a valid passphrase")]
-        [Trait("Category", "Crypto")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "X509CertificateHelper")]
         public void LoadPfxFromFile()
         {
-            var sshOption = GetHomeSubdirectoryPath(new string[]{".ssh", "neon", "test.pfx"});
+            var sshOption = GetHomeSubdirectoryPath(new string[]{".config", "neon", "glow", "test.pfx"});
             var result = sshOption.Fold(path =>
             {
                 var cert = CertificatefromPfxFile(path, () => "test");
                 return cert;
 
             }, () => new X509Certificate2());
+            Assert.Equal("neon-glow-test.jcs-software.co.uk",result.GetNameInfo(X509NameType.SimpleName, false));
             Assert.NotNull(result.PublicKey);
             Assert.NotNull(result.PrivateKey);
         }
 
         [Fact(DisplayName = "Will throw an exception if an invalid passphrase is specified")]
-        [Trait("Category", "Crypto")]
+        [Trait("Test Type", "Unit")]
+        [Trait("Target Class", "X509CertificateHelper")]
         public void LoadPfxWithInvalidPassphrase()
         {
             var sshOption = GetHomeSubdirectoryPath(new string[]{".ssh", "neon", "test.pfx"});

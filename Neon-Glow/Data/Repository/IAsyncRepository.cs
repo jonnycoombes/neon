@@ -47,7 +47,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// </summary>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<int> CountAsync(CancellationToken cancellationToken = default);
+        public Task<int> Count(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// The total number of items matching a given predicate expression
@@ -55,7 +55,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">An expression which evaluates to either <c>true</c> or <c>false</c> for each item of type V</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<long> CountAsyncWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
+        public Task<long> CountWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks to see whether an item with a given key exists within the repository
@@ -71,7 +71,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="key">The key value</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>A nullable V</returns>
-        public Task<Option<V>> SelectOneAsync(K key, CancellationToken cancellationToken = default);
+        public Task<Option<V>> SelectOne(K key, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Read one item from the repository based on a given predicate expression
@@ -79,7 +79,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">A predicate function which selects the item</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Either a single item of type V or null</returns>
-        public Task<Option<V>> SelectOneAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
+        public Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Attempts to select a single item given an expression and if an element is found, applies function f
@@ -90,7 +90,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <typeparam name="W">The projection/map type</typeparam>
         /// <returns></returns>
-        public Task<Option<W>> SelectAndProjectOneAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
+        public Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="keys">An array of key values</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>A potentially empty enumeration of values</returns>
-        public Task<IEnumerable<V>> SelectManyAsync(K[] keys, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads back the key values only for a subset of the repository matching the given predicate expression
@@ -108,7 +108,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">A predicate expression</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<IEnumerable<K>> SelectManyKeysAsync(Expression<Func<V, bool>> expression,
+        public Task<IEnumerable<K>> SelectManyKeys(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">An expression which evaluates to either <c>true</c> or <c>false</c> for each item of type V</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<IEnumerable<V>> SelectManyAsync(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads zero or more items from the repository based on a predicate, and then applies a projection function to
@@ -128,7 +128,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <typeparam name="W">The projection/map type</typeparam>
         /// <returns></returns>
-        public Task<IEnumerable<W>> SelectAndProjectManyAsync<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
+        public Task<IEnumerable<W>> SelectAndProjectMany<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// </summary>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public IAsyncEnumerator<V> GetAsyncEnumerator(CancellationToken cancellationToken = default);
+        public IAsyncEnumerator<V> GetEnumerator(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds a new item to the repository.  If the key value is set, and duplicates an existing key value then an
@@ -145,7 +145,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="newItem">The new item. Key generation will depend on the makeup of the underlying model entity</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<V> CreateOneAsync(V newItem, CancellationToken cancellationToken = default);
+        public Task<V> CreateOne(V newItem, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds a sequence of new elements to the repository.
@@ -153,7 +153,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="newItems"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<IEnumerable<V>> CreateManyAsync(V[] newItems, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<V>> CreateMany(V[] newItems, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Upserts a single item of type V.  
@@ -161,7 +161,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="item">The item to update</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<V> UpsertOneAsync(V item, CancellationToken cancellationToken = default);
+        public Task<V> UpsertOne(V item, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates a group of items of type V.  
@@ -169,7 +169,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="items">An array of items to update</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task<IEnumerable<V>> UpsertManyAsync(V[] items, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<V>> UpsertMany(V[] items, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a single item from the repository
@@ -177,7 +177,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="item">The item to delete</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task DeleteOneAsync(V item, CancellationToken cancellationToken = default);
+        public Task DeleteOne(V item, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes an entire array of items from the repository
@@ -185,6 +185,6 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="items">An array of items to delete</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
-        public Task DeleteManyAsync(V[] items, CancellationToken cancellationToken = default);
+        public Task DeleteMany(V[] items, CancellationToken cancellationToken = default);
     }
 }
