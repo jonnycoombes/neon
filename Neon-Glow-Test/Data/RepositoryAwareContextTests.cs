@@ -44,7 +44,7 @@ namespace JCS.Neon.Glow.Test.Data
                 .EnableSensitiveDataLogging()
                 .Options;
         }
-        
+
         protected void CreateContext()
         {
             _context = new SqlLiteRepositoryAwareDbContext(_contextOptions);
@@ -67,7 +67,7 @@ namespace JCS.Neon.Glow.Test.Data
         protected async void AddTestEntries()
         {
             await _context.GuidEntries.AddRangeAsync(_testEntries);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
         }
 
         protected async void RemoveTestEntries()
@@ -83,7 +83,7 @@ namespace JCS.Neon.Glow.Test.Data
                 _testEntries.Add(new ModelGuidKeyedTestEntity()
                 {
                     StringProperty = $"Sample value {i}"
-                });    
+                });
             }
         }
     }

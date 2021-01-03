@@ -42,7 +42,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             Assert.Throws<RepositoryAwareDbContextException>(() =>
             {
-                var repository = _context.CreateAsyncRepository<Guid, NonModelGuidKeyedEntity>();    
+                var repository = _context.CreateAsyncRepository<Guid, NonModelGuidKeyedEntity>();
             });
         }
 
@@ -200,7 +200,7 @@ namespace JCS.Neon.Glow.Test.Data
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
             await repository.DeleteMany(_testEntries.ToArray());
-            Assert.Equal(0, await repository.Count());            
+            Assert.Equal(0, await repository.Count());
         }
 
         [Fact(DisplayName = "Can update an existing item")]

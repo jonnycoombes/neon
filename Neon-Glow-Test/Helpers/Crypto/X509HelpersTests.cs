@@ -15,20 +15,28 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     [Trait("Target Class", "X509CertificateHelper")]
     public class X509HelpersTests : IDisposable
     {
+        /// <summary>
+        /// Just loads a test certificate for use during tests
+        /// </summary>
+        /// <returns></returns>
+        private X509Certificate2 LoadCertificate(string passphrase = "test")
+        {
+            var sshOption = GetHomeSubdirectoryPath(new string[] {".config", "neon", "glow", "test.pfx"});
+            var result = sshOption.Fold(path =>
+            {
+                var cert = CertificatefromPfxFile(path, () => passphrase);
+                return cert;
+            }, () => new X509Certificate2());
+            return result;
+        }
 
         [Fact(DisplayName = "Can load a valid pfx file with a valid passphrase")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "X509CertificateHelper")]
         public void LoadPfxFromFile()
         {
-            var sshOption = GetHomeSubdirectoryPath(new string[]{".config", "neon", "glow", "test.pfx"});
-            var result = sshOption.Fold(path =>
-            {
-                var cert = CertificatefromPfxFile(path, () => "test");
-                return cert;
-
-            }, () => new X509Certificate2());
-            Assert.Equal("neon-glow-test.jcs-software.co.uk",result.GetNameInfo(X509NameType.SimpleName, false));
+            var result = LoadCertificate();
+            Assert.Equal("neon-glow-test.jcs-software.co.uk", result.GetNameInfo(X509NameType.SimpleName, false));
             Assert.NotNull(result.PublicKey);
             Assert.NotNull(result.PrivateKey);
         }
@@ -38,18 +46,10 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [Trait("Target Class", "X509CertificateHelper")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            var sshOption = GetHomeSubdirectoryPath(new string[]{".ssh", "neon", "test.pfx"});
-            var result = sshOption.Fold(path =>
-            {
-                X509Certificate2 cert = null;
-                Assert.Throws<X509HelperException>(() =>
-                {
-                    cert= CertificatefromPfxFile(path, () => "testssdfsdf");
-                });
-                return cert;
-            }, () => new X509Certificate2());
+            X509Certificate2 cert = null;
+            Assert.Throws<X509HelperException>(() => { cert = LoadCertificate("bollocks"); });
         }
-        
+
         public void Dispose()
         {
         }

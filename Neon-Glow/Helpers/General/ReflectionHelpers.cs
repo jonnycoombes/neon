@@ -65,7 +65,6 @@ namespace JCS.Neon.Glow.Helpers.General
             {
                 return $"{assembly?.GetName().Version}";
             }
-            
         }
     }
 }

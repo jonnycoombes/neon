@@ -15,9 +15,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="log"></param>
         /// <param name="memberName"></param>
-        public static void LogMethodCall(ILogger log, [CallerMemberName]
-            string memberName = "", [CallerFilePath]
-            string filePath = "")
+        public static void LogMethodCall(ILogger log, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);
             LogAtLevel(log, $"[Method invocation: {fileName}, {memberName}]", LogEventLevel.Verbose);

@@ -3,7 +3,6 @@ using System.Text;
 
 namespace JCS.Neon.Glow.Helpers.Crypto
 {
-    
     #region Exceptions
 
     public class EncodingHelperException : Exception
@@ -16,6 +15,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         {
         }
     }
+
     #endregion
 
     /// <summary>
@@ -37,17 +37,17 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// UTF-32 encoding
         /// </summary>
         Utf32,
-        
+
         /// <summary>
         /// Unicode encoding
         /// </summary>
         Unicode,
-        
+
         /// <summary>
         /// Big-endian unicode encoding
         /// </summary>
         BigEndianUnicode,
-        
+
         /// <summary>
         /// Latin1 encoding
         /// </summary>
@@ -60,7 +60,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     public class EncodingHelpers
     {
         public const char Base64Padding = '=';
-        
+
         /// <summary>
         /// Encodes a string using a given encoding
         /// </summary>
@@ -122,7 +122,6 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                         return Encoding.Latin1.GetString(source);
                     default:
                         return Encoding.UTF8.GetString(source);
-
                 }
             }
             catch (Exception ex)
@@ -130,7 +129,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 throw new EncodingHelperException("Unable to convert a string to byte array using the specified encoding", ex);
             }
         }
-        
+
         /// <summary>
         /// Encode in tweaked Base64 URL format
         /// </summary>
@@ -140,7 +139,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         public static string EncodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
             var bytes = StringToBytes(source, encoding);
-            return Convert.ToBase64String(bytes).TrimEnd(Base64Padding).Replace('+','-').Replace('/','_');
+            return Convert.ToBase64String(bytes).TrimEnd(Base64Padding).Replace('+', '-').Replace('/', '_');
         }
 
         /// <summary>
@@ -154,7 +153,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             source = source.Replace('-', '+').Replace('_', '/');
             switch (source.Length % 4)
             {
-                case 2: 
+                case 2:
                     source += "==";
                     break;
                 case 3:
@@ -165,7 +164,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             var bytes = Convert.FromBase64String(source);
             return BytesToString(bytes, encoding);
         }
-        
+
         /// <summary>
         /// Encode a string as Base64 with a given character encoding
         /// </summary>
@@ -189,6 +188,5 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             var bytes = Convert.FromBase64String(source);
             return BytesToString(bytes, encoding);
         }
-        
     }
 }

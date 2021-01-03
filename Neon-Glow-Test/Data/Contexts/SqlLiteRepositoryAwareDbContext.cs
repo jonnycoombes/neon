@@ -12,9 +12,8 @@ namespace JCS.Neon.Glow.Test.Data.Contexts
         public DbSet<ModelGuidKeyedTestEntity> GuidEntries { get; set; }
 
         public SqlLiteRepositoryAwareDbContext(DbContextOptions<SqlLiteRepositoryAwareDbContext> options)
-        : base(options)
+            : base(options)
         {
-            
         }
 
         /// <summary>
@@ -25,18 +24,18 @@ namespace JCS.Neon.Glow.Test.Data.Contexts
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var instantConverter = 
-                new ValueConverter<Instant, DateTime>(v =>  
-                        v.ToDateTimeUtc(), 
+            var instantConverter =
+                new ValueConverter<Instant, DateTime>(v =>
+                        v.ToDateTimeUtc(),
                     v => Instant.FromDateTimeUtc(v));
-            
+
             modelBuilder.Entity<ModelGuidKeyedTestEntity>()
                 .Property(g => g.Id)
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<ModelGuidKeyedTestEntity>()
                 .Property(g => g.CreationTime)
                 .HasConversion(instantConverter);
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

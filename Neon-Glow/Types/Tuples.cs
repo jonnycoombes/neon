@@ -14,12 +14,12 @@ namespace JCS.Neon.Glow.Types
         /// First element in the pair, or leftmost
         /// </summary>
         public S Left { get; set; }
-        
+
         /// <summary>
         /// Second element in the pair, or rightmost
         /// </summary>
         public T Right { get; set; }
-        
+
         /// <summary>
         /// Constructor taking a left and right value
         /// </summary>
@@ -63,7 +63,7 @@ namespace JCS.Neon.Glow.Types
         /// <returns>Pair(f(Left), g(Right))</returns>
         public Pair<V, W> Map<V, W>(Func<S, V> f, Func<T, W> g)
         {
-            return new (f(Left), g(Right));
+            return new(f(Left), g(Right));
         }
 
         /// <summary>
@@ -76,8 +76,5 @@ namespace JCS.Neon.Glow.Types
         {
             return f(Left, Right);
         }
-        
     }
-    
-    
 }

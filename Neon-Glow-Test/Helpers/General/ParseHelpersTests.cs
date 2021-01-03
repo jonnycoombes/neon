@@ -44,4 +44,3 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         }
     }
 }
-

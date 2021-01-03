@@ -48,7 +48,7 @@ namespace JCS.Neon.Glow.Helpers.General
             if (homeOption.IsSome(out home))
             {
                 var components = new string[] {home};
-                components= components.Concat(suffix).ToArray();
+                components = components.Concat(suffix).ToArray();
                 return Option<string>.Some(Path.Combine(components));
             }
             else

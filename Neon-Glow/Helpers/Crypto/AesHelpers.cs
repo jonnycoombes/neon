@@ -12,13 +12,13 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// </summary>
     public class AesHelpers
     {
-
         /// <summary>
         /// Static logger for this class
         /// </summary>
         private static ILogger _log = Log.ForContext(typeof(AesHelpers));
-        
+
         #region Exceptions
+
         public class AesHelperException : Exception
         {
             public AesHelperException(string? message) : base(message)
@@ -29,6 +29,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             {
             }
         }
+
         #endregion
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             Base64,
             Base64Url
         }
-        
+
         /// <summary>
         /// Options enum used within certain AES-based encryption methods
         /// </summary>
@@ -60,17 +61,17 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             /// Wrap keys using an asymmetric public key
             /// </summary>
             WrapWithPublicKey,
-            
+
             /// <summary>
             /// Unwrap using an asymmetric public key
             /// </summary>
             UnwrapWithPublicKey,
-            
+
             /// <summary>
             /// Wrap keys using an asymmetric private key
             /// </summary>
             WrapWithPrivateKey,
-            
+
             /// <summary>
             /// Unwrap using an asymmetric private key
             /// </summary>
@@ -106,7 +107,6 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             /// The input encoding to use
             /// </summary>
             public AesInputEncoding InputEncoding { get; set; } = AesInputEncoding.Base64Url;
-
         }
 
         /// <summary>
@@ -123,6 +123,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 if (size.Equals(size))
                     return true;
             }
+
             return false;
         }
 
@@ -145,7 +146,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             aes.GenerateIV();
             return aes;
         }
-        
+
         /// <summary>
         /// Encrypts the source byte array using a new AES key, and then uses the supplied certificate key material to wrap the
         /// key, IV and salt
@@ -156,21 +157,20 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns>A <see cref="Pair"/>, where the left value is a byte array containing a wrapped key, salt and IV, and the
         /// right value contains the encrypted source</returns>
         /// <exception cref="AesHelperException"></exception>
-        public static Pair<byte[], byte[]> EncryptAndWrapKey(byte[] source, X509Certificate2 certificate, 
+        public static Pair<byte[], byte[]> EncryptAndWrapKey(byte[] source, X509Certificate2 certificate,
             AesEncryptionOptions options)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOptions}\"");
             if (options.KeyWrappingOptions == AesKeyWrappingOptions.WrapWithPrivateKey && !certificate.HasPrivateKey)
             {
-                LogWarning(_log, "Invalid asymmetric key specified");
-                throw new AesHelperException("Private key specified for key wrapping operations, but no prviate key present");
+                LogWarning(_log, "No private asymmetric key available for key wrapping");
+                throw new AesHelperException("Private key specified for key wrapping operations, but no private key present");
             }
+
             var cipher = InitialiseAesCipher(options);
-            
+
             return new Pair<byte[], byte[]>(null, null);
         }
-        
-        
     }
 }
