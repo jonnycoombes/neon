@@ -36,7 +36,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         [Fact(DisplayName = "Can't create a non-model entity repository")]
-        [Trait("Test Type", "Data")]
+        [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public void CheckCreateInvalidRepository()
         {
