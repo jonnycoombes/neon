@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Neon.Glow.Helpers.Crypto
 {
@@ -9,6 +11,11 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// </summary>
     public static class X509Helpers
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext(typeof(X509Helpers));
+        
         /// <summary>
         ///     Given a path to a (PKCS12) .pfx file will attempt to import both public and private key
         ///     material in the form of an X509 certificate.
@@ -19,8 +26,11 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <exception cref="X509HelperException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
         public static X509Certificate2 CertificatefromPfxFile(string source, Func<string> pf, bool exportable = true)
         {
+            LogMethodCall(_log);
+            LogVerbose(_log, $"Attempting x509 certificate load from \"{source}\"");
             if (!File.Exists(source))
             {
+                LogWarning(_log, $"Specified source for x509 certificate doesn't exist, or can't be accessed");
                 throw new X509HelperException($"Specified source PKCS12 file doesn't exist, or isn't accessible: {source}");
             }
 
