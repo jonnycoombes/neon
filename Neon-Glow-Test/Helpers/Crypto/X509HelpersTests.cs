@@ -46,8 +46,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [Trait("Target Class", "X509CertificateHelper")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            X509Certificate2 cert = null;
-            Assert.Throws<X509HelperException>(() => { cert = LoadCertificate("bollocks"); });
+            Assert.Throws<X509HelperException>(() => { LoadCertificate("bollocks"); });
         }
 
         public void Dispose()

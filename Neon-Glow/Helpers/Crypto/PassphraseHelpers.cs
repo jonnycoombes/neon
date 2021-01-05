@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Transactions;
+using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 using static JCS.Neon.Glow.Helpers.Crypto.EncodingHelpers;
@@ -142,10 +143,9 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 var randoms = new byte[2];
                 for (var i = 0; i < options.RequiredLength; i++)
                 {
-                    rng.GetNonZeroBytes(randoms);
+                    randoms= randoms.Randomise(); 
                     var charResidue = 0;
-                    var setResidue = randoms[0] % 4;
-                    switch (setResidue)
+                    switch (randoms[0] % 4)
                     {
                         case 0:
                             charResidue = randoms[1] % UpperCaseCharacters.Length;
@@ -182,6 +182,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <exception cref="NotImplementedException"></exception>
         public static bool ValidatePassphrase(string passphrase, PassphraseValidationOptions options)
         {
+            //TODO 
             throw new NotImplementedException();
         }
         

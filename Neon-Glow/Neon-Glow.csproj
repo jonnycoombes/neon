@@ -9,13 +9,13 @@
         <PackageId>JCS.Neon.Glow</PackageId>
         <Title>JCS Neon Glow</Title>
         <Authors>JCS Software Ltd</Authors>
-        <Description>Neon Glow framework library</Description>
+        <Description>Neon Glow Support Library</Description>
         <Copyright>JCS Software Ltd</Copyright>
         <Company>JCS Software Ltd</Company>
         <Product>JCS Neon Glow</Product>
-        <AssemblyVersion>0.1.20.0</AssemblyVersion>
-        <FileVersion>0.1.20.0</FileVersion>
-        <PackageVersion>0.1.20.0</PackageVersion>
+        <AssemblyVersion>0.2.0.0</AssemblyVersion>
+        <FileVersion>0.2.0.0</FileVersion>
+        <PackageVersion>0.2.0.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>

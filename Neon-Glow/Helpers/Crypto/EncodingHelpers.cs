@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Neon.Glow.Helpers.Crypto
 {
@@ -57,8 +59,16 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// <summary>
     /// Static class containing helper functions for various encodings
     /// </summary>
-    public class EncodingHelpers
+    public static class EncodingHelpers
     {
+        /// <summary>
+        /// Static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext(typeof(EncodingHelpers)); 
+
+        /// <summary>
+        /// Padding character for use in Base64 encodings
+        /// </summary>
         public const char Base64Padding = '=';
 
         /// <summary>
@@ -70,6 +80,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <exception cref="EncodingHelperException"></exception>
         public static byte[] StringToBytes(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             try
             {
                 switch (encoding)
@@ -104,6 +115,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns></returns>
         public static string BytesToString(byte[] source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             try
             {
                 switch (encoding)
@@ -138,6 +150,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns></returns>
         public static string EncodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes).TrimEnd(Base64Padding).Replace('+', '-').Replace('/', '_');
         }
@@ -150,6 +163,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns></returns>
         public static string DecodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             source = source.Replace('-', '+').Replace('_', '/');
             switch (source.Length % 4)
             {
@@ -173,6 +187,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns></returns>
         public static string EncodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes);
         }
@@ -185,6 +200,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <returns></returns>
         public static string DecodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
+            LogMethodCall(_log);
             var bytes = Convert.FromBase64String(source);
             return BytesToString(bytes, encoding);
         }

@@ -12,7 +12,6 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     [Trait("Target Class", "PasswordHelpers")]
     public class PasswordHelpersTests
     {
-
         [Theory(DisplayName = "Must be able to create a random password of a random length")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "PassphraseHelpers")]
@@ -41,8 +40,14 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [Theory(DisplayName = "Passwords must be unique across multiple calls")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "PassphraseHelpers")]
-        [InlineData(100000,10)]
-        [InlineData(25000,256)]
+        [InlineData(10000, 10)]
+        [InlineData(10000, 11)]
+        [InlineData(10000, 256)]
+        [InlineData(10000, 267)]
+        [InlineData(10000, 1032)]
+        [InlineData(10000, 16)]
+        [InlineData(10000, 64)]
+        [InlineData(10000, 128)]
         public void CheckUniqueness(int sampleCount, int passphraseLength)
         {
             var cache = new Dictionary<string, string>();
@@ -50,9 +55,8 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
             {
                 var passphrase = GenerateRandomPassphrase(new PassphraseGenerationOptions() {RequiredLength = passphraseLength});
                 Assert.DoesNotContain(cache.Keys, k => k.Equals(passphrase));
-                cache.Add(passphrase, passphrase);
+                cache.Add(passphrase, null);
             }
         }
-        
     }
 }

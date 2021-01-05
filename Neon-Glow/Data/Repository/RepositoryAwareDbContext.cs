@@ -68,7 +68,7 @@ namespace JCS.Neon.Glow.Data.Repository
             where V : KeyedEntity<K>
         {
             _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V).ToString()}");
-            var entityType = Model.FindEntityType(typeof(V).FullName);
+            var entityType = Model.FindEntityType(typeof(V).FullName!);
             if (entityType == null)
             {
                 var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
