@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Transactions;
+using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
 using static JCS.Neon.Glow.Helpers.General.LogHelpers;
@@ -92,6 +93,32 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// </summary>
         public bool MustContainNumericCharacters { get; set; } = true;
     }
+
+    /// <summary>
+    /// Builder for configuration options
+    /// </summary>
+    public class PassphraseGenerationOptionsBuilder
+    {
+        public PassphraseGenerationOptions Options= new PassphraseGenerationOptions();
+
+        public PassphraseGenerationOptionsBuilder()
+        {
+            
+        }
+
+        public PassphraseGenerationOptionsBuilder SetRequiredLength(int length)
+        {
+            Options.RequiredLength = length;
+            return this;
+        }
+
+        public PassphraseGenerationOptionsBuilder SetBase64Encoding(bool b)
+        {
+            Options.EncodeBase64 = b;
+            return this;
+        }
+        
+    }
     
     /// <summary>
     /// Contains static helper methods for the generation and validation of passwords
@@ -126,12 +153,16 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <summary>
         /// Generates a random passphrase using the supplied options
         /// </summary>
-        /// <param name="options">The <see cref="PassphraseGenerationOptions"/> to use</param>
+        /// <param name="configureAction">The <see cref="PassphraseGenerationOptions"/></param>
         /// <returns>A randomly generated password, optionally base 64 encoded</returns>
         /// <exception cref="PassphraseHelperException">Thrown if the supplied options are invalid</exception>
-        public static string GenerateRandomPassphrase(PassphraseGenerationOptions options)
+        public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder> configureAction)
         {
             LogMethodCall(_log);
+            var builder = new PassphraseGenerationOptionsBuilder();
+            configureAction(builder);
+            var options = builder.Options;
+            
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
                 throw new PassphraseHelperException("The specified passphrase length doesn't meet minimum length requirements");

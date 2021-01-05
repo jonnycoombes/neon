@@ -41,22 +41,28 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [InlineData(256, "t")]
         public void EncryptAndDecryptWithWrappingSingleBlock(int keySize, string source)
         {
-            var encryptOptions = new AesEncryptionOptions()
-            {
-                Mode = CipherMode.CBC, KeySize = keySize,
-                KeyWrappingOption = AesKeyWrappingOption.WrapWithPublicKey
-            };
             var cert = LoadCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert, encryptOptions);
-            var decryptOptions = new AesEncryptionOptions()
-            {
-                Mode = CipherMode.CBC, KeySize = keySize,
-                KeyUnwrappingOption = AesKeyUnwrappingOption.UnwrapWithPrivateKey
-            };
-
-            var decryptionResult = UnwrapAndDecrypt(encryptionResult, cert, decryptOptions);
+            var encryptionResult = EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
+                builder =>
+                {
+                    builder.SetCipherMode(CipherMode.CBC);
+                    builder.SetKeySize(keySize);
+                    builder.SetKeyWrappingOption(AesKeyWrappingOption.WrapWithPublicKey);
+                });
+            
+            // things shouldn't get smaller when encrypting
+            Assert.True(encryptionResult.Right.Length >= source.Length);
+            
+            var decryptionResult = UnwrapAndDecrypt(encryptionResult, cert,
+                builder =>
+                {
+                    builder.SetCipherMode(CipherMode.CBC);
+                    builder.SetKeySize(keySize);
+                    builder.SetKeyUnwrappingOption(AesKeyUnwrappingOption.UnwrapWithPrivateKey);
+                });
+            
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
             Assert.Equal(decodedResult, source);
         }
@@ -70,23 +76,33 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
         [InlineData(256, 19024)]
         public void EncryptAndDecryptWithWrappingStream(int keySize, int size)
         {
-            var source = GenerateRandomPassphrase(new PassphraseGenerationOptions() {RequiredLength = size});
-            var encryptOptions = new AesEncryptionOptions()
+            var source = GenerateRandomPassphrase(
+                builder =>
             {
-                Mode = CipherMode.CBC, KeySize = keySize,
-                KeyWrappingOption = AesKeyWrappingOption.WrapWithPublicKey
-            };
+                builder.SetRequiredLength(size);
+            });
             var cert = LoadCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert, encryptOptions);
-            var decryptOptions = new AesEncryptionOptions()
-            {
-                Mode = CipherMode.CBC, KeySize = keySize,
-                KeyUnwrappingOption = AesKeyUnwrappingOption.UnwrapWithPrivateKey
-            };
+            var encryptionResult = EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert, 
+                builder =>
+                {
+                    builder.SetCipherMode(CipherMode.CBC);
+                    builder.SetKeySize(keySize);
+                    builder.SetKeyWrappingOption(AesKeyWrappingOption.WrapWithPublicKey);
+                });
 
-            var decryptionResult = UnwrapAndDecrypt(encryptionResult, cert, decryptOptions);
+            // things shouldn't get smaller when encrypting
+            Assert.True(encryptionResult.Right.Length >= source.Length);
+            
+            var decryptionResult = UnwrapAndDecrypt(encryptionResult, cert, 
+                builder =>
+                {
+                    builder.SetCipherMode(CipherMode.CBC);
+                    builder.SetKeySize(keySize);
+                    builder.SetKeyUnwrappingOption(AesKeyUnwrappingOption.UnwrapWithPrivateKey);
+                });
+            
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
             Assert.Equal(decodedResult, source);
             

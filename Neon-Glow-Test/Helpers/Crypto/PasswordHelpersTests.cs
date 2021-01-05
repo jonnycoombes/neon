@@ -28,12 +28,16 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
             var options = new PassphraseGenerationOptions() {RequiredLength = length};
             if (length >= PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                var passphrase = GenerateRandomPassphrase(options);
+                var passphrase = GenerateRandomPassphrase(builder =>
+                {
+                    builder.SetRequiredLength(length);
+                });
                 Assert.Equal(length, passphrase.Length);
             }
             else
             {
-                Assert.Throws<PassphraseHelperException>(() => GenerateRandomPassphrase(options));
+                Assert.Throws<PassphraseHelperException>(() => GenerateRandomPassphrase(
+                    builder => { builder.SetRequiredLength(length); }));
             }
         }
 
@@ -53,7 +57,11 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
             var cache = new Dictionary<string, string>();
             for (var i = 0; i < sampleCount; i++)
             {
-                var passphrase = GenerateRandomPassphrase(new PassphraseGenerationOptions() {RequiredLength = passphraseLength});
+                var passphrase = GenerateRandomPassphrase(
+                    builder =>
+                    {
+                        builder.SetRequiredLength(passphraseLength);
+                    });
                 Assert.DoesNotContain(cache.Keys, k => k.Equals(passphrase));
                 cache.Add(passphrase, null);
             }

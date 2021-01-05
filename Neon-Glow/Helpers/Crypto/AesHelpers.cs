@@ -134,12 +134,97 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             /// <summary>
             /// The output encoding to use
             /// </summary>
-            public AesOutputEncoding OutputEncoding { get; set; } = AesOutputEncoding.Base64Url;
+            public AesOutputEncoding OutputEncoding { get; set; } = AesOutputEncoding.None;
 
             /// <summary>
             /// The input encoding to use
             /// </summary>
-            public AesInputEncoding InputEncoding { get; set; } = AesInputEncoding.Base64Url;
+            public AesInputEncoding InputEncoding { get; set; } = AesInputEncoding.None;
+        }
+
+        /// <summary>
+        /// Builder for encryption options
+        /// </summary>
+        public class AesEncryptionOptionsBuilder
+        {
+            /// <summary>
+            /// The actual options
+            /// </summary>
+            public AesEncryptionOptions Options = new ();
+
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            public AesEncryptionOptionsBuilder()
+            {
+            }
+
+            /// <summary>
+            /// Set the <see cref="AesKeyWrappingOption"/>
+            /// </summary>
+            /// <param name="option"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetKeyWrappingOption(AesKeyWrappingOption option)
+            {
+                Options.KeyWrappingOption = option;
+                return this;
+            }
+            
+            /// <summary>
+            /// Set the <see cref="AesKeyUnwrappingOption"/>
+            /// </summary>
+            /// <param name="option"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetKeyUnwrappingOption(AesKeyUnwrappingOption option)
+            {
+                Options.KeyUnwrappingOption = option;
+                return this;
+            }
+
+            /// <summary>
+            /// Set the keysize
+            /// </summary>
+            /// <param name="keySize"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetKeySize(int keySize)
+            {
+                Options.KeySize = keySize;
+                return this;
+            }
+
+            /// <summary>
+            /// Set the cipher mode
+            /// </summary>
+            /// <param name="mode"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetCipherMode(CipherMode mode)
+            {
+                Options.Mode = mode;
+                return this;
+            }
+
+            /// <summary>
+            /// Set the outbound encoding
+            /// </summary>
+            /// <param name="encoding"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetOutputEncoding(AesOutputEncoding encoding)
+            {
+                Options.OutputEncoding = encoding;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets in the inbound encoding
+            /// </summary>
+            /// <param name="encoding"></param>
+            /// <returns></returns>
+            public AesEncryptionOptionsBuilder SetInputEncoding(AesInputEncoding encoding)
+            {
+                Options.InputEncoding = encoding;
+                return this;
+            }
+            
         }
 
         /// <summary>
@@ -230,14 +315,20 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// </summary>
         /// <param name="input">The source byte array to encrypt</param>
         /// <param name="certificate">A valid <see cref="X509Certificate2"/> which containing a public and private key pair</param>
-        /// <param name="options">Sets the encryption and wrapping options</param>
+        /// <param name="configureAction">Sets the encryption and wrapping options</param>
         /// <returns>A <see cref="Pair"/>, where the left value is a byte array containing a wrapped key, salt and IV, and the
         /// right value contains the encrypted source</returns>
         /// <exception cref="AesHelperException"></exception>
         public static Pair<byte[], byte[]> EncryptAndWrap(byte[] input, X509Certificate2 certificate,
-            AesEncryptionOptions options)
+            Action<AesEncryptionOptionsBuilder> configureAction)
         {
             LogMethodCall(_log);
+            
+            // perform option configuration
+            var builder = new AesEncryptionOptionsBuilder();
+            configureAction(builder);
+            var options = builder.Options;
+            
             LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOption}\"");
 
             // check we have a private key if required
@@ -287,14 +378,19 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// </summary>
         /// <param name="input">A pair where the leftmost is a wrapped, packed key and IV.  The rightmost is the encrypted payload</param>
         /// <param name="certificate">The x509 certificate to use for obtaining key unwrapping material from</param>
-        /// <param name="options">The <see cref="AesEncryptionOptions"/> to use</param>
+        /// <param name="configureAction">The <see cref="AesEncryptionOptions"/> to use</param>
         /// <returns></returns>
         public static byte[] UnwrapAndDecrypt(Pair<byte[], byte[]> input, X509Certificate2 certificate,
-            AesEncryptionOptions options)
+            Action<AesEncryptionOptionsBuilder> configureAction)
         {
             LogMethodCall(_log);
-            LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOption}\"");
 
+            // perform option configuration
+            var builder = new AesEncryptionOptionsBuilder();
+            configureAction(builder);
+            var options = builder.Options;
+            
+            LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOption}\"");
             // check we have a private key if required
             if (options.KeyUnwrappingOption == AesKeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
             {
