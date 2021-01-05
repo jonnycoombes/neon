@@ -46,9 +46,9 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogVerbose(ILogger log, string message)
+        public static void LogVerbose(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
-            LogAtLevel(log, message, LogEventLevel.Verbose);
+            LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Verbose);
         }
 
         /// <summary>
