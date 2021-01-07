@@ -19,10 +19,10 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         private static Dictionary<Type, ConstructorInfo> _ctorCache = new();
 
-        public static E LoggedException<E>(ILogger log, string message, Exception inner = null, LogEventLevel level = LogEventLevel.Error)
+        public static E LoggedException<E>(ILogger log, string message, Exception inner = null )
             where E : Exception
         {
-            LogAtLevel(log, message, level);
+            LogError(log, message);
             return (E) CreateException<E>(message, inner);
         }
     }

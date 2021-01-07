@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Serilog;
@@ -56,9 +57,37 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogWarning(ILogger log, string message)
+        public static void LogWarning(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
+            LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Warning);
+        }
+
+        /// <summary>
+        /// Convenience method for logging an exception at a warning log level
+        /// </summary>
+        /// <param name="log">Target <see cref="ILogger"/> instance</param>
+        /// <param name="ex">The exception to log</param>
+        /// <param name="memberName">Injected by runtime</param>
+        /// <param name="lineNumber">Injected by runtime</param>
+        public static void LogExceptionWarning(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
+            [CallerLineNumber] int lineNumber= 0)
+        {
+            var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
             LogAtLevel(log, message, LogEventLevel.Warning);
+        }
+
+        /// <summary>
+        /// Convenience method for logging an exception at an error log level
+        /// </summary>
+        /// <param name="log">Target <see cref="ILogger"/> instance</param>
+        /// <param name="ex">The exception to log</param>
+        /// <param name="memberName">Injected by runtime</param>
+        /// <param name="lineNumber">Injected by runtime</param>
+        public static void LogExceptionError(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
+            [CallerLineNumber] int lineNumber= 0)
+        {
+            var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
+            LogAtLevel(log, message, LogEventLevel.Error);
         }
 
         /// <summary>
@@ -66,9 +95,9 @@ namespace JCS.Neon.Glow.Helpers.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogError(ILogger log, string message)
+        public static void LogError(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
-            LogAtLevel(log, message, LogEventLevel.Error);
+            LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Error);
         }
 
         /// <summary>
