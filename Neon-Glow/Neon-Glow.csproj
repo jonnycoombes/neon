@@ -13,14 +13,14 @@
         <Copyright>JCS Software Ltd</Copyright>
         <Company>JCS Software Ltd</Company>
         <Product>JCS Neon Glow</Product>
-        <AssemblyVersion>0.2.5.0</AssemblyVersion>
-        <FileVersion>0.2.5.0</FileVersion>
-        <PackageVersion>0.2.5.0</PackageVersion>
+        <AssemblyVersion>0.2.6.0</AssemblyVersion>
+        <FileVersion>0.2.6.0</FileVersion>
+        <PackageVersion>0.2.6.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
