@@ -16,7 +16,7 @@ namespace JCS.Neon.Glow.Helpers.General
         private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelpers));
 
         /// <summary>
-        ///     Static class
+        /// Static class
         /// </summary>
         /// <param name="args"></param>
         /// <typeparam name="T"></typeparam>
