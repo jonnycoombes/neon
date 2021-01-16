@@ -15,7 +15,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "NodeTimeHelpers")]
-    public class NodaTimeHelpersTests : IDisposable
+    public class NodaTimeHelpersTests : TestBase, IDisposable
     {
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to OffsetDateTime instances")]
         [InlineData("2020-12-31T12:12:00Z")]

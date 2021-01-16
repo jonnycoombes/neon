@@ -13,7 +13,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "X509CertificateHelper")]
-    public class X509HelpersTests : IDisposable
+    public class X509HelpersTests : TestBase, IDisposable
     {
         /// <summary>
         /// Just loads a test certificate for use during tests

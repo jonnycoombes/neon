@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace JCS.Neon.Glow.Test.Data
 {
-    public abstract class RepositoryAwareContextTests : IDisposable
+    public abstract class RepositoryAwareContextTests : TestBase, IDisposable
     {
         /// <summary>
         /// The actual test context

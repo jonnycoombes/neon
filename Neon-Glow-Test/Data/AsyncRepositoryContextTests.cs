@@ -67,7 +67,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(1, await repository.CountWhere(p => p.StringProperty == "Sample value 1", default));
         }
 
-        [Fact(DisplayName = "Can check for the existence of know item")]
+        [Fact(DisplayName = "Can check for the existence of known item in repository")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void CheckForItemWithKey()
@@ -77,7 +77,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.True(await repository.HasItemWithKey(_testEntries[0].Id));
         }
 
-        [Fact(DisplayName = "Can select known values based on an expression")]
+        [Fact(DisplayName = "Can select known repository values based on an expression")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectKnownValues()
@@ -88,7 +88,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.False(item.IsNone);
         }
 
-        [Fact(DisplayName = "Can't select an unknown value based on an expression")]
+        [Fact(DisplayName = "Can't select an unknown repository value based on an expression")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectUnknownValues()
@@ -99,7 +99,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.True(item.IsNone);
         }
 
-        [Fact(DisplayName = "Can enumerate all items asynchronously")]
+        [Fact(DisplayName = "Can enumerate all repository items asynchronously")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void CheckAsyncEnumeration()
@@ -114,7 +114,7 @@ namespace JCS.Neon.Glow.Test.Data
             }
         }
 
-        [Fact(DisplayName = "Can select a known entity based on key value")]
+        [Fact(DisplayName = "Can select a known repository entity based on key value")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectOneByKnownKey()
@@ -125,7 +125,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.False(item.IsNone);
         }
 
-        [Fact(DisplayName = "Can select multiple known entries based on key values")]
+        [Fact(DisplayName = "Can select multiple known repository entries based on key values")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectManyByKnownKeys()
@@ -136,7 +136,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(2, items.Count());
         }
 
-        [Fact(DisplayName = "Can select multiple entries based on an expression")]
+        [Fact(DisplayName = "Can select multiple repository entries based on an expression")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectManyByExpression()
@@ -147,7 +147,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(_testEntries.Count, items.Count());
         }
 
-        [Fact(DisplayName = "Can create a single new item")]
+        [Fact(DisplayName = "Can create a single new repository item")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void CreateSingleItem()
@@ -160,7 +160,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(1, await repository.Count());
         }
 
-        [Fact(DisplayName = "Can create multiple new items")]
+        [Fact(DisplayName = "Can create multiple new repository items")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void CreateMultipleItems()
@@ -170,7 +170,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(_testEntries.Count(), await repository.Count());
         }
 
-        [Fact(DisplayName = "Can select multiple keys")]
+        [Fact(DisplayName = "Can select multiple repository keys")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectMultipleKeyValues()
@@ -181,7 +181,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(_testEntries.Count(), keys.Count());
         }
 
-        [Fact(DisplayName = "Can delete existing item")]
+        [Fact(DisplayName = "Can delete existing repository item")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void DeleteSingleItem()
@@ -192,7 +192,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(_testEntries.Count - 1, await repository.Count());
         }
 
-        [Fact(DisplayName = "Can delete multiple items")]
+        [Fact(DisplayName = "Can delete multiple repository items")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void DeleteMultipleItems()
@@ -203,7 +203,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal(0, await repository.Count());
         }
 
-        [Fact(DisplayName = "Can update an existing item")]
+        [Fact(DisplayName = "Can update an existing repository item")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void UpdateExistingItem()
@@ -217,7 +217,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal("Test update", t);
         }
 
-        [Fact(DisplayName = "Can update multiple existing items")]
+        [Fact(DisplayName = "Can update multiple existing repository items")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void UpdateExistingItems()
@@ -235,7 +235,7 @@ namespace JCS.Neon.Glow.Test.Data
             Assert.Equal("Test update", r2.StringProperty);
         }
 
-        [Fact(DisplayName = "Can select and transform existing items to type W")]
+        [Fact(DisplayName = "Can select and transform existing repository items to type W")]
         [Trait("Test Type", "Unit")]
         [Trait("Target Class", "AsyncRepository")]
         public async void SelectAndProjectItems()

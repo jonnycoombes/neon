@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
+using static JCS.Neon.Glow.Helpers.General.LogHelpers;
 
 namespace JCS.Neon.Glow.Helpers.General
 {
@@ -14,7 +17,22 @@ namespace JCS.Neon.Glow.Helpers.General
         ///     The logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelpers));
-
+        
+        /// <summary>
+        /// Searches the currently loaded assemblies for implementations of a given interface type
+        /// </summary>
+        /// <typeparam name="T">The type to be search for</typeparam>
+        /// <returns></returns>
+        public static IEnumerable<Type> LocateAllImplementors<T>()
+        {
+            LogMethodCall(_log);
+            var type = typeof(T);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p));
+            return types;
+        }
+        
         /// <summary>
         /// Static class
         /// </summary>
@@ -23,6 +41,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <returns></returns>
         public static Option<T> CreateInstance<T>(params object?[] args)
         {
+            LogMethodCall(_log);
             try
             {
                 return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
@@ -43,6 +62,7 @@ namespace JCS.Neon.Glow.Helpers.General
         public static Exception CreateException<E>(params object?[] args)
             where E : Exception
         {
+            LogMethodCall(_log);
             var instance = CreateInstance<E>(args);
             E exception;
             if (instance.IsSome(out exception))
@@ -56,6 +76,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <returns></returns>
         public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
         {
+            LogMethodCall(_log);
             var assembly = Assembly.GetEntryAssembly();
             if (includeAssemblyName)
             {

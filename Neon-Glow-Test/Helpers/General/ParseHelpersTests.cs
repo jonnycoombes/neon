@@ -9,7 +9,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "ParseHelpers")]
-    public class ParseHelpersTests : IDisposable
+    public class ParseHelpersTests : TestBase, IDisposable
     {
         [Theory(DisplayName = "Can parse a series of well-formed guids correctly")]
         [InlineData("30dd879c-ee2f-11db-8314-0800200c9a66")]

@@ -7,7 +7,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
 {
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "EncodingHelpers")]
-    public class EncodingHelpersTests
+    public class EncodingHelpersTests : TestBase
     {
         [Theory(DisplayName = "Must be able to encode and decode in Base64 format")]
         [Trait("Test Type", "Unit")]

@@ -7,7 +7,7 @@ namespace JCS.Neon.Glow.Test.Types.Extensions
 {
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "ByteArrayExtensions")]
-    public class ByteArrayExtensionsTests
+    public class ByteArrayExtensionsTests : TestBase
     {
         [Theory(DisplayName = "Must be able to concatenate to arrays formed from strings")]
         [Trait("Test Type", "Unit")]

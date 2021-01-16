@@ -10,7 +10,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "PasswordHelpers")]
-    public class PasswordHelpersTests
+    public class PasswordHelpersTests : TestBase
     {
         [Theory(DisplayName = "Must be able to create a random password of a random length")]
         [Trait("Test Type", "Unit")]

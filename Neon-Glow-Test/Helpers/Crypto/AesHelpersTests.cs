@@ -16,7 +16,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "AesHelpers")]
-    public class AesHelpersTests
+    public class AesHelpersTests : TestBase
     {
         /// <summary>
         /// Just loads a test certificate for use during tests
