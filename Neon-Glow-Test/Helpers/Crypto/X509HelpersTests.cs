@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Test.Helpers.Crypto
             var sshOption = GetHomeSubdirectoryPath(new string[] {".config", "neon", "glow", "test.pfx"});
             var result = sshOption.Fold(path =>
             {
-                var cert = CertificatefromPfxFile(path, () => passphrase);
+                var cert = LoadCertificateFromPfxFile(path, () => passphrase);
                 return cert;
             }, () => new X509Certificate2());
             return result;

@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <returns>A valid <see cref="X509Certificate2"/></returns>
         /// <exception cref="X509HelperException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
-        public static X509Certificate2 CertificatefromPfxFile(string source, Func<string> pf, bool exportable = true)
+        public static X509Certificate2 LoadCertificateFromPfxFile(string source, Func<string> pf, bool exportable = true)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Attempting x509 certificate load from \"{source}\"");
@@ -51,6 +51,38 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             {
                 throw new X509HelperException("Import failed, see inner exception", ex);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="passphrase"></param>
+        /// <param name="exportable"></param>
+        /// <returns></returns>
+        public static X509Certificate2 LoadCertificateFromPfxFile(string source, string passphrase, bool exportable = true)
+        {
+            LogMethodCall(_log);
+            return LoadCertificateFromPfxFile(source, () => passphrase, exportable);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="pf"></param>
+        /// <param name="exportable"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
+        {
+            LogMethodCall(_log);
+            throw new NotImplementedException();
+        }
+
+        public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, string passphrase, bool exportable = true)
+        {
+            return LoadCertificateFromByteArray(source, () => passphrase, exportable);
         }
 
         #region Exceptions
