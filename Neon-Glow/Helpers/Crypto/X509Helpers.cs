@@ -15,10 +15,10 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext(typeof(X509Helpers));
-        
+
         /// <summary>
-        ///     Given a path to a (PKCS12) .pfx file will attempt to import both public and private key
-        ///     material in the form of an X509 certificate.
+        /// Given a path to a (PKCS12) .pfx file will attempt to import both public and private key
+        /// material in the form of an X509 certificate.
         /// </summary>
         /// <param name="source">The path to the source pfx file</param>
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
@@ -54,11 +54,12 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         }
 
         /// <summary>
-        /// 
+        /// Given a path to a (PKCS12) .pfx file will attempt to import both public and private key
+        /// material in the form of an X509 certificate.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="passphrase"></param>
-        /// <param name="exportable"></param>
+        /// <param name="source">The path to the file to use</param>
+        /// <param name="passphrase">A passphrase to be used in order to decrypt any private key material</param>
+        /// <param name="exportable">Whether or not the private key should be marked as exportable</param>
         /// <returns></returns>
         public static X509Certificate2 LoadCertificateFromPfxFile(string source, string passphrase, bool exportable = true)
         {
@@ -67,19 +68,43 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         }
 
         /// <summary>
-        /// 
+        /// Loads an x509 certificate from a byte array source which should contain the certificate material in PKCS12
+        /// format.  The passphrase function is used to decrypt any included private key material
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="pf"></param>
-        /// <param name="exportable"></param>
+        /// <param name="source">The byte array source containing the x509 certificate and associated key material in PKCS12 format</param>
+        /// <param name="pf">A lambda which returns a passphrase which will be used to decrypt any private key material</param>
+        /// <param name="exportable">Whether or not the private key should be exportable or not</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="X509HelperException">Thrown if the import fails</exception>
         public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
         {
             LogMethodCall(_log);
-            throw new NotImplementedException();
+            try
+            {
+                if (exportable)
+                {
+                    return new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable);
+                }
+                else
+                {
+                    return new X509Certificate2(source, pf());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new X509HelperException("Import failed, see inner exception", ex);
+            }
         }
 
+        /// <summary>
+        /// Loads an x509 certificate from a byte array source which should contain the certificate material in PKCS12
+        /// format.  The passphrase function is used to decrypt any included private key material
+        /// </summary>
+        /// <param name="source">Byte array containing the source material for the certificate in PKCS12 format</param>
+        /// <param name="passphrase">The passphrase to be used to decrypt any private key material</param>
+        /// <param name="exportable">Whether the private key should be marked as exportable</param>
+        /// <returns></returns>
+        /// <exception cref="X509HelperException">Thrown if the import fails</exception>
         public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, string passphrase, bool exportable = true)
         {
             return LoadCertificateFromByteArray(source, () => passphrase, exportable);

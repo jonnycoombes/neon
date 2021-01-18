@@ -150,7 +150,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             /// <summary>
             /// The actual options
             /// </summary>
-            public AesEncryptionOptions Options = new ();
+            public AesEncryptionOptions Options = new();
 
             /// <summary>
             /// Default constructor
@@ -169,7 +169,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 Options.KeyWrappingOption = option;
                 return this;
             }
-            
+
             /// <summary>
             /// Set the <see cref="AesKeyUnwrappingOption"/>
             /// </summary>
@@ -224,7 +224,6 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 Options.InputEncoding = encoding;
                 return this;
             }
-            
         }
 
         /// <summary>
@@ -323,12 +322,12 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             Action<AesEncryptionOptionsBuilder> configureAction)
         {
             LogMethodCall(_log);
-            
+
             // perform option configuration
             var builder = new AesEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
-            
+
             LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOption}\"");
 
             // check we have a private key if required
@@ -347,7 +346,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
 
             try
             {
-                // initialise the cipher, encrypt and then pack the key and IV
+                // initialise the cipher, encrypt, pack the key and IV and perform any output encoding
                 using (var cipher = InitialiseCipher(options))
                 {
                     var encrypted = Transform(input, cipher, AesTransformDirection.Encrypt);
@@ -389,7 +388,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             var builder = new AesEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
-            
+
             LogVerbose(_log, $"Attempting encryption and then wrapping key using \"{options.KeyWrappingOption}\"");
             // check we have a private key if required
             if (options.KeyUnwrappingOption == AesKeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
@@ -451,36 +450,45 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 LogVerbose(_log, "Encrypting larger data, using stream transform");
                 try
                 {
-                    if (direction == AesTransformDirection.Encrypt)
+                    switch (direction)
                     {
-                        byte[] encrypted;
-                        using (var bufferStream = new MemoryStream())
+                        case AesTransformDirection.Encrypt:
                         {
-                            using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Write))
+                            byte[] encrypted;
+                            using (var bufferStream = new MemoryStream())
                             {
-                                using (var writer = new BinaryWriter(cryptoStream))
+                                using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Write))
                                 {
-                                    writer.Write(source);
+                                    using (var writer = new BinaryWriter(cryptoStream))
+                                    {
+                                        writer.Write(source);
+                                    }
+                                }
+
+                                encrypted = bufferStream.ToArray();
+                            }
+
+                            return encrypted;
+                        }
+                        case AesTransformDirection.Decrypt:
+                        {
+                            byte[] decrypted;
+                            using (var bufferStream = new MemoryStream(source))
+                            {
+                                using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Read))
+                                {
+                                    using (var reader = new BinaryReader(cryptoStream))
+                                    {
+                                        decrypted = reader.ReadBytes(source.Length);
+                                    }
                                 }
                             }
-                            encrypted = bufferStream.ToArray();
+
+                            return decrypted;
                         }
-                        return encrypted;
-                    }
-                    else
-                    {
-                        byte[] decrypted;
-                        using (var bufferStream = new MemoryStream(source))
-                        {
-                            using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Read))
-                            {
-                                using (var reader = new BinaryReader(cryptoStream))
-                                {
-                                    decrypted = reader.ReadBytes(source.Length);
-                                }
-                            }
-                        }
-                        return decrypted;
+                        default:
+                            throw LoggedException<AesHelperException>(_log,
+                                "Unreachable exception - here due to non-exhaustive pattern matching");
                     }
                 }
                 catch (Exception ex)

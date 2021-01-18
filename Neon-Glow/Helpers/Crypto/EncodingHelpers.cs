@@ -69,7 +69,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <summary>
         /// Padding character for use in Base64 encodings
         /// </summary>
-        public const char Base64Padding = '=';
+        public const char Base64PaddingChar = '=';
 
         /// <summary>
         /// Encodes a string using a given encoding
@@ -152,7 +152,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         {
             LogMethodCall(_log);
             var bytes = StringToBytes(source, encoding);
-            return Convert.ToBase64String(bytes).TrimEnd(Base64Padding).Replace('+', '-').Replace('/', '_');
+            return Convert.ToBase64String(bytes).TrimEnd(Base64PaddingChar).Replace('+', '-').Replace('/', '_');
         }
 
         /// <summary>
