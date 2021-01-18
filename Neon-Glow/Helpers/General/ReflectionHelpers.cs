@@ -32,29 +32,66 @@ namespace JCS.Neon.Glow.Helpers.General
                 .Where(p => type.IsAssignableFrom(p));
             return types;
         }
-        
+
         /// <summary>
-        /// Static class
+        /// Static helper which will create *any* instance of a given type T
         /// </summary>
-        /// <param name="args"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="args">The parameters to be passed through to the constructor during activation</param>
+        /// <typeparam name="T">The type to create</typeparam>
         /// <returns></returns>
         public static Option<T> CreateInstance<T>(params object?[] args)
         {
             LogMethodCall(_log);
             try
             {
-                return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                if (typeof(T).IsInterface)
+                {
+                    LogWarning(_log, "Specified type T is an interface - cannot directly instantiate");
+                    return Option<T>.None;
+                }
+                else
+                {
+                    return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                }
             }
             catch
             {
-                _log.Warning($"Failed to create a new instance of type {typeof(T)}");
+                LogWarning(_log,$"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
 
         /// <summary>
-        ///     Static helper for the dynamic creation of Exception-derived instances
+        /// Method which will attempt to instantiate an instance of a given type, and then cast to type T
+        /// </summary>
+        /// <param name="baseType">The base type to instantiate</param>
+        /// <param name="args">The constructor arguments to pass through during activation</param>
+        /// <typeparam name="T">The type to cast into</typeparam>
+        /// <returns></returns>
+        public static Option<T> CreateAndCastInstance<T>(Type baseType, params object?[] args)
+        {
+            LogMethodCall(_log);
+            try
+            {
+                if (!baseType.IsAssignableTo(typeof(T)))
+                {
+                    LogWarning(_log, "The specified type is not assignable to required type T");
+                    return Option<T>.None;
+                }
+                else
+                {
+                    return new Option<T>((T)Activator.CreateInstance(baseType, args));
+                }
+            }
+            catch
+            {
+                LogWarning(_log,$"Failed to create a new instance of type {typeof(T)}");
+                return Option<T>.None;
+            }
+        }
+
+        /// <summary>
+        ///  Static helper for the dynamic creation of Exception-derived instances
         /// </summary>
         /// <param name="args">The arguments to be passed through to the constructor</param>
         /// <typeparam name="E">A type parameter, derived from <see cref="Exception" /></typeparam>
