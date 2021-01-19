@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 namespace JCS.Neon.Glow.Types.Extensions
 {
     /// <summary>
-    /// Useful extension methods for byte[] 
+    ///     Useful extension methods for byte[]
     /// </summary>
     public static class ByteArray
     {
         /// <summary>
-        /// Resizes an array, and concatenates a separate array onto the end of the original array
+        ///     Resizes an array, and concatenates a separate array onto the end of the original array
         /// </summary>
         /// <param name="dest">The original array</param>
         /// <param name="src">The array to appen</param>
@@ -25,7 +25,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Populates the array with a cryptographically generated sequence of random bytes
+        ///     Populates the array with a cryptographically generated sequence of random bytes
         /// </summary>
         /// <param name="dest">The source array</param>
         /// <param name="nonZero">Whether or not non-zero bytes should be used in the randomisation</param>
@@ -45,7 +45,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Returns the head of the array
+        ///     Returns the head of the array
         /// </summary>
         /// <param name="arr">The array</param>
         /// <returns>First byte or null</returns>
@@ -56,14 +56,14 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Returns the tail of the array
+        ///     Returns the tail of the array
         /// </summary>
         /// <param name="arr">The array</param>
         /// <returns>Either null or last n-1 elements</returns>
         public static byte[]? Tail(this byte[] arr)
         {
             if (arr.Length == 0) return null;
-            return arr[1..^0];
+            return arr[1..];
         }
     }
 }

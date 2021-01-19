@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
-using Serilog;
 
 namespace JCS.Neon.Glow.Utilities.General
 {
@@ -14,12 +13,12 @@ namespace JCS.Neon.Glow.Utilities.General
     public static class Reflection
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(Reflection));
 
         /// <summary>
-        /// Searches the currently loaded assemblies for implementations of a given interface type
+        ///     Searches the currently loaded assemblies for implementations of a given interface type
         /// </summary>
         /// <typeparam name="T">The type to be search for</typeparam>
         /// <returns></returns>
@@ -34,7 +33,7 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        /// Static helper which will create *any* instance of a given type T
+        ///     Static helper which will create *any* instance of a given type T
         /// </summary>
         /// <param name="args">The parameters to be passed through to the constructor during activation</param>
         /// <typeparam name="T">The type to create</typeparam>
@@ -49,10 +48,8 @@ namespace JCS.Neon.Glow.Utilities.General
                     Logs.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
                     return Option<T>.None;
                 }
-                else
-                {
-                    return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
-                }
+
+                return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
             }
             catch
             {
@@ -62,7 +59,7 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        /// Method which will attempt to instantiate an instance of a given type, and then cast to type T
+        ///     Method which will attempt to instantiate an instance of a given type, and then cast to type T
         /// </summary>
         /// <param name="baseType">The base type to instantiate</param>
         /// <param name="args">The constructor arguments to pass through during activation</param>
@@ -78,10 +75,8 @@ namespace JCS.Neon.Glow.Utilities.General
                     Logs.Warning(_log, "The specified type is not assignable to required type T");
                     return Option<T>.None;
                 }
-                else
-                {
-                    return new Option<T>((T) Activator.CreateInstance(baseType, args));
-                }
+
+                return new Option<T>((T) Activator.CreateInstance(baseType, args));
             }
             catch
             {
@@ -91,7 +86,7 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        ///  Static helper for the dynamic creation of Exception-derived instances
+        ///     Static helper for the dynamic creation of Exception-derived instances
         /// </summary>
         /// <param name="args">The arguments to be passed through to the constructor</param>
         /// <typeparam name="E">A type parameter, derived from <see cref="Exception" /></typeparam>
@@ -108,7 +103,7 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        /// Returns a string containing the version of the currently executing assembly
+        ///     Returns a string containing the version of the currently executing assembly
         /// </summary>
         /// <returns></returns>
         public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
@@ -116,13 +111,8 @@ namespace JCS.Neon.Glow.Utilities.General
             Logs.MethodCall(_log);
             var assembly = Assembly.GetEntryAssembly();
             if (includeAssemblyName)
-            {
                 return $"{assembly?.FullName} - {assembly?.GetName().Version}";
-            }
-            else
-            {
-                return $"{assembly?.GetName().Version}";
-            }
+            return $"{assembly?.GetName().Version}";
         }
     }
 }

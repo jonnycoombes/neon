@@ -2,23 +2,22 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
-
 namespace JCS.Neon.Glow.Test
 {
     public abstract class TestBase
     {
         /// <summary>
-        /// The current configuration for tests
-        /// </summary>
-        protected IConfiguration _configuration;
-
-        /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
         private static ILogger _log;
 
         /// <summary>
-        /// Default constructor
+        ///     The current configuration for tests
+        /// </summary>
+        protected IConfiguration _configuration;
+
+        /// <summary>
+        ///     Default constructor
         /// </summary>
         protected TestBase()
         {
@@ -27,7 +26,7 @@ namespace JCS.Neon.Glow.Test
         }
 
         /// <summary>
-        /// Configures the logging for tests, based on the current test configuration
+        ///     Configures the logging for tests, based on the current test configuration
         /// </summary>
         private void ConfigureLogging()
         {
@@ -39,13 +38,13 @@ namespace JCS.Neon.Glow.Test
         }
 
         /// <summary>
-        /// Stands up the <see cref="IConfiguration"/> instance to be used during testing
+        ///     Stands up the <see cref="IConfiguration" /> instance to be used during testing
         /// </summary>
         private void LoadConfiguration()
         {
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Test.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.Test.json", true, true)
                 .AddEnvironmentVariables()
                 .Build();
         }

@@ -7,17 +7,17 @@ using Serilog;
 namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
-    /// Class containing various methods for parsing out values from strings
+    ///     Class containing various methods for parsing out values from strings
     /// </summary>
     public static class Parsing
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(Parsing));
-        
+        private static readonly ILogger _log = Log.ForContext(typeof(Parsing));
+
         /// <summary>
-        /// Attempts to parse out a guid from a given string
+        ///     Attempts to parse out a guid from a given string
         /// </summary>
         /// <param name="input">The source string</param>
         /// <returns>An option which will be some if the parse is successful</returns>
@@ -36,7 +36,7 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        /// Attempts to parse a <see cref="Uri"/> from a given source string
+        ///     Attempts to parse a <see cref="Uri" /> from a given source string
         /// </summary>
         /// <param name="input">The source</param>
         /// <returns>An option which will be Some if the parse is successful</returns>
@@ -55,8 +55,8 @@ namespace JCS.Neon.Glow.Utilities.General
         }
 
         /// <summary>
-        /// Attempts the parse of an <see cref="OffsetDateTime"/> using the general ISO
-        /// pattern
+        ///     Attempts the parse of an <see cref="OffsetDateTime" /> using the general ISO
+        ///     pattern
         /// </summary>
         /// <param name="src"></param>
         /// <returns>An option value</returns>
@@ -67,12 +67,11 @@ namespace JCS.Neon.Glow.Utilities.General
             var result = OffsetDateTimePattern.GeneralIso.Parse(src);
             if (result.Success)
                 return Option<OffsetDateTime>.Some(result.Value);
-            else
-                return Option<OffsetDateTime>.None;
+            return Option<OffsetDateTime>.None;
         }
 
         /// <summary>
-        /// Attempts the parse of an <see cref="LocalDateTime"/> using the general ISO pattern
+        ///     Attempts the parse of an <see cref="LocalDateTime" /> using the general ISO pattern
         /// </summary>
         /// <param name="src"></param>
         /// <returns>An option value</returns>
@@ -83,8 +82,7 @@ namespace JCS.Neon.Glow.Utilities.General
             var result = LocalDateTimePattern.GeneralIso.Parse(src);
             if (result.Success)
                 return Option<LocalDateTime>.Some(result.Value);
-            else
-                return Option<LocalDateTime>.None;
+            return Option<LocalDateTime>.None;
         }
     }
 }

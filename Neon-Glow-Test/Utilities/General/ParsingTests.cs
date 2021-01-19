@@ -5,11 +5,15 @@ using static JCS.Neon.Glow.Utilities.General.Parsing;
 namespace JCS.Neon.Glow.Test.Utilities.General
 {
     /// <summary>
-    /// Test suite for <see cref="JCS.Neon.Glow.Helpers.ParseHelpers"/>
+    ///     Test suite for <see cref="JCS.Neon.Glow.Helpers.ParseHelpers" />
     /// </summary>
     [Trait("Category", "General")]
     public class ParsingTests : TestBase, IDisposable
     {
+        public void Dispose()
+        {
+        }
+
         [Theory(DisplayName = "Can parse a series of well-formed guids correctly")]
         [InlineData("30dd879c-ee2f-11db-8314-0800200c9a66")]
         [InlineData("(30dd879c-ee2f-11db-8314-0800200c9a66)")]
@@ -34,10 +38,6 @@ namespace JCS.Neon.Glow.Test.Utilities.General
         public void ParseInvalidGuids(string src)
         {
             Assert.True(ParseGuid(src).IsNone);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

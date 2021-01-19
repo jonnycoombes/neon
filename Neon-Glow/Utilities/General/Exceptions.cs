@@ -6,13 +6,13 @@ using Serilog;
 namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
-    /// Class containing a bunch of static methods relating to throwing/processing
-    /// exceptions
+    ///     Class containing a bunch of static methods relating to throwing/processing
+    ///     exceptions
     /// </summary>
     public static class Exceptions
     {
         /// <summary>
-        /// Cache to store constructor information for raising new exceptionss
+        ///     Cache to store constructor information for raising new exceptionss
         /// </summary>
         private static Dictionary<Type, ConstructorInfo> _ctorCache = new();
 

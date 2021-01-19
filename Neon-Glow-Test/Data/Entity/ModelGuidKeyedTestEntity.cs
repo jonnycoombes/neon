@@ -4,12 +4,12 @@ using JCS.Neon.Glow.Data.Entity;
 namespace JCS.Neon.Glow.Test.Data.Entity
 {
     /// <summary>
-    /// Simple entity used for unit testing
+    ///     Simple entity used for unit testing
     /// </summary>
     public class ModelGuidKeyedTestEntity : KeyedEntity<Guid>
     {
         /// <summary>
-        /// Sample string property
+        ///     Sample string property
         /// </summary>
         public string StringProperty { get; set; }
 

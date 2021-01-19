@@ -3,25 +3,15 @@
 namespace JCS.Neon.Glow.Types
 {
     /// <summary>
-    /// Parameterised pair type which may be used instead of the standard C#
-    /// tuple type.  Has a few useful functor-like methods in support of it
+    ///     Parameterised pair type which may be used instead of the standard C#
+    ///     tuple type.  Has a few useful functor-like methods in support of it
     /// </summary>
     /// <typeparam name="S">The type of the left element in the pair</typeparam>
     /// <typeparam name="T">The type of the right element in the pair</typeparam>
     public class Pair<S, T>
     {
         /// <summary>
-        /// First element in the pair, or leftmost
-        /// </summary>
-        public S Left { get; set; }
-
-        /// <summary>
-        /// Second element in the pair, or rightmost
-        /// </summary>
-        public T Right { get; set; }
-
-        /// <summary>
-        /// Constructor taking a left and right value
+        ///     Constructor taking a left and right value
         /// </summary>
         /// <param name="left">The left value for the pair</param>
         /// <param name="right">The right value for the pair</param>
@@ -32,7 +22,17 @@ namespace JCS.Neon.Glow.Types
         }
 
         /// <summary>
-        /// A left projection function
+        ///     First element in the pair, or leftmost
+        /// </summary>
+        public S Left { get; set; }
+
+        /// <summary>
+        ///     Second element in the pair, or rightmost
+        /// </summary>
+        public T Right { get; set; }
+
+        /// <summary>
+        ///     A left projection function
         /// </summary>
         /// <param name="f">Function which types type S to type V</param>
         /// <typeparam name="V">Projected type</typeparam>
@@ -43,7 +43,7 @@ namespace JCS.Neon.Glow.Types
         }
 
         /// <summary>
-        /// A right projection function
+        ///     A right projection function
         /// </summary>
         /// <param name="g">Function which types type T to type V</param>
         /// <typeparam name="V">Projected type</typeparam>
@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Types
         }
 
         /// <summary>
-        /// Mapping (functor) function
+        ///     Mapping (functor) function
         /// </summary>
         /// <param name="f">Function taking type S to type V</param>
         /// <param name="g">Funciton taking type T to type W</param>
@@ -67,7 +67,7 @@ namespace JCS.Neon.Glow.Types
         }
 
         /// <summary>
-        /// Reduction function (sort of like a homomorphism)
+        ///     Reduction function (sort of like a homomorphism)
         /// </summary>
         /// <param name="f">Function taking a pair (S, T) to a type V</param>
         /// <typeparam name="V">Reduced type</typeparam>

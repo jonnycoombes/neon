@@ -13,22 +13,22 @@ namespace JCS.Neon.Glow.Test.Data
     public abstract class RepositoryAwareDbContext : TestBase, IDisposable
     {
         /// <summary>
-        /// The actual test context
+        ///     The actual test context
         /// </summary>
         protected SqlLiteRepositoryAwareDbContext _context;
 
         /// <summary>
-        /// For logging purposes
-        /// </summary>
-        protected ITestOutputHelper _outputHelper;
-
-        /// <summary>
-        /// The context options
+        ///     The context options
         /// </summary>
         protected DbContextOptions<SqlLiteRepositoryAwareDbContext> _contextOptions;
 
         /// <summary>
-        /// List of test entities
+        ///     For logging purposes
+        /// </summary>
+        protected ITestOutputHelper _outputHelper;
+
+        /// <summary>
+        ///     List of test entities
         /// </summary>
         protected List<ModelGuidKeyedTestEntity> _testEntries = new();
 
@@ -38,6 +38,11 @@ namespace JCS.Neon.Glow.Test.Data
             CreateContextOptions();
             CreateContext();
             GenerateTestEntities();
+        }
+
+        public void Dispose()
+        {
+            RelationalOptionsExtension.Extract(_contextOptions).Connection.Dispose();
         }
 
         protected void CreateContextOptions()
@@ -53,11 +58,6 @@ namespace JCS.Neon.Glow.Test.Data
             _context = new SqlLiteRepositoryAwareDbContext(_contextOptions);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
-        }
-
-        public void Dispose()
-        {
-            RelationalOptionsExtension.Extract(_contextOptions).Connection.Dispose();
         }
 
         protected static DbConnection CreateInMemoryDatabase()
@@ -83,7 +83,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             for (var i = 0; i < 10; i++)
             {
-                _testEntries.Add(new ModelGuidKeyedTestEntity()
+                _testEntries.Add(new ModelGuidKeyedTestEntity
                 {
                     StringProperty = $"Sample value {i}"
                 });

@@ -1,25 +1,26 @@
 ﻿using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
-using Xunit;
-using JCS.Neon.Glow.Utilities.General;
 using JCS.Neon.Glow.Utilities.Cryptography;
+using JCS.Neon.Glow.Utilities.General;
+using Xunit;
+using Encoding = System.Text.Encoding;
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {
     /// <summary>
-    /// Test suite for <see cref="AesSymmetric"/>
+    ///     Test suite for <see cref="AesSymmetric" />
     /// </summary>
     [Trait("Category", "Crypto")]
     public class AesSymmetricTests : TestBase
     {
         /// <summary>
-        /// Just loads a test certificate for use during tests
+        ///     Just loads a test certificate for use during tests
         /// </summary>
         /// <returns></returns>
         private X509Certificate2 LoadCertificate()
         {
-            var sshOption = Files.GetHomeSubdirectoryPath(new string[] {".config", "neon", "glow", "test.pfx"});
+            var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
             var result = sshOption.Fold(path =>
             {
                 var cert = X509Certificates.LoadFromFile(path, () => "test");
@@ -38,7 +39,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             var cert = LoadCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesSymmetric.EncryptAndWrap(System.Text.Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
@@ -57,7 +58,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
                     builder.SetKeyUnwrappingOption(AesSymmetric.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
-            var decodedResult = System.Text.Encoding.UTF8.GetString(decryptionResult);
+            var decodedResult = Encoding.UTF8.GetString(decryptionResult);
             Assert.Equal(decodedResult, source);
         }
 
@@ -74,7 +75,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             var cert = LoadCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesSymmetric.EncryptAndWrap(System.Text.Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
@@ -93,7 +94,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
                     builder.SetKeyUnwrappingOption(AesSymmetric.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
-            var decodedResult = System.Text.Encoding.UTF8.GetString(decryptionResult);
+            var decodedResult = Encoding.UTF8.GetString(decryptionResult);
             Assert.Equal(decodedResult, source);
         }
     }

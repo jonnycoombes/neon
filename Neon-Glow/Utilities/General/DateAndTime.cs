@@ -10,12 +10,11 @@ namespace JCS.Neon.Glow.Utilities.General
     /// </summary>
     public static class DateAndTime
     {
-
         /// <summary>
-        /// PRivate static logger
+        ///     PRivate static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(DateAndTime));
-        
+        private static readonly ILogger _log = Log.ForContext(typeof(DateAndTime));
+
         /// <summary>
         ///     Converts a <see cref="OffsetDateTime" /> to a string
         /// </summary>

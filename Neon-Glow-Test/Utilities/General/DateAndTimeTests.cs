@@ -1,18 +1,22 @@
 using System;
 using JCS.Neon.Glow.Types;
+using JCS.Neon.Glow.Utilities.General;
 using NodaTime;
 using NodaTime.Extensions;
 using Xunit;
-using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Test.Utilities.General
 {
     /// <summary>
-    /// Test suite for <see cref="JCS.Neon.Glow.Helpers.NodaTimeHelpers"/>
+    ///     Test suite for <see cref="JCS.Neon.Glow.Helpers.NodaTimeHelpers" />
     /// </summary>
     [Trait("Category", "General")]
     public class DateAndTimeTests : TestBase, IDisposable
     {
+        public void Dispose()
+        {
+        }
+
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to OffsetDateTime instances")]
         [InlineData("2020-12-31T12:12:00Z")]
         [InlineData("2020-09-13T09:45:12-03")]
@@ -75,10 +79,6 @@ namespace JCS.Neon.Glow.Test.Utilities.General
                 time => time,
                 () => new LocalDateTime());
             Assert.True(parsed.Date.Equals(localDateTime.Date));
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

@@ -6,16 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Types;
+using JCS.Neon.Glow.Utilities.General;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
-using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
     /// <summary>
-    /// Default implementation of <see cref="IAsyncRepository{K,V}"/>.  This implementation essentially
-    /// translates operations to an underlying <see cref="RepositoryAwareDbContext"/> instance.
+    ///     Default implementation of <see cref="IAsyncRepository{K,V}" />.  This implementation essentially
+    ///     translates operations to an underlying <see cref="RepositoryAwareDbContext" /> instance.
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
@@ -24,12 +24,12 @@ namespace JCS.Neon.Glow.Data.Repository
         where V : KeyedEntity<K>
     {
         /// <summary>
-        /// The undelrying context instace
+        ///     The undelrying context instace
         /// </summary>
-        private RepositoryAwareDbContext _context;
+        private readonly RepositoryAwareDbContext _context;
 
         /// <summary>
-        /// Constructor which takes a supporting <see cref="RepositoryAwareDbContext"/> instance
+        ///     Constructor which takes a supporting <see cref="RepositoryAwareDbContext" /> instance
         /// </summary>
         /// <param name="context"></param>
         public AsyncRepository(RepositoryAwareDbContext context)
@@ -39,12 +39,12 @@ namespace JCS.Neon.Glow.Data.Repository
         }
 
         /// <summary>
-        /// <see cref="ILogger"/> instance
+        ///     <see cref="ILogger" /> instance
         /// </summary>
         private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
 
         /// <param name="cancellationToken"></param>
-        /// <inheritdoc cref="IAsyncRepository{K,V}.Count"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.Count" />
         public async Task<int> Count(CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CountWhere"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.CountWhere" />
         public async Task<long> CountWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -72,7 +72,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey" />
         public async Task<bool> HasItemWithKey(K key, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -86,7 +86,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync" />
         public async Task<Option<V>> SelectOne(K key, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -102,7 +102,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync" />
         public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -118,7 +118,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectOne{W}"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectOne{W}" />
         public async Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default)
         {
@@ -129,7 +129,7 @@ namespace JCS.Neon.Glow.Data.Repository
                 () => Option<W>.None);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyAsync"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyAsync" />
         public async Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -144,7 +144,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadManyAsync()"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadManyAsync()" />
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
@@ -160,7 +160,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectMany{W}"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectMany{W}" />
         public async Task<IEnumerable<W>> SelectAndProjectMany<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default)
         {
@@ -169,7 +169,7 @@ namespace JCS.Neon.Glow.Data.Repository
             return selection.Select(v => f(v));
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.GetEnumerator"/> 
+        /// <inheritdoc cref="IAsyncRepository{K,V}.GetEnumerator" />
         public IAsyncEnumerator<V> GetEnumerator(CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -183,7 +183,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateOne"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateOne" />
         public async Task<V> CreateOne(V newItem, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -199,7 +199,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateMany"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateMany" />
         public async Task<IEnumerable<V>> CreateMany(V[] newItems, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -220,15 +220,15 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyKeys"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyKeys" />
         public async Task<IEnumerable<K>> SelectManyKeys(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
-            return await SelectAndProjectMany<K>(expression, v => v.Id, cancellationToken);
+            return await SelectAndProjectMany(expression, v => v.Id, cancellationToken);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOne"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOne" />
         public async Task<V> UpsertOne(V item, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -244,7 +244,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertMany"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertMany" />
         public async Task<IEnumerable<V>> UpsertMany(V[] items, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -260,7 +260,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOne"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOne" />
         public async Task DeleteOne(V item, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -275,7 +275,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteMany"/>
+        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteMany" />
         public async Task DeleteMany(V[] items, CancellationToken cancellationToken = default)
         {
             Logs.MethodCall(_log);
@@ -291,8 +291,8 @@ namespace JCS.Neon.Glow.Data.Repository
         }
 
         /// <summary>
-        /// Method that will inspect a general exception and see if it can determine any detailed information from
-        /// the exception, dependent on the database provider
+        ///     Method that will inspect a general exception and see if it can determine any detailed information from
+        ///     the exception, dependent on the database provider
         /// </summary>
         /// <param name="ex"></param>
         /// <exception cref="AsyncRepositoryException"></exception>

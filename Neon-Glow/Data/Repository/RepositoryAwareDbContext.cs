@@ -1,14 +1,14 @@
 using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Utilities.General;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
     /// <summary>
-    /// Exception type specific to <see cref="IAsyncRepository{K,V}"/> aware contexts
+    ///     Exception type specific to <see cref="IAsyncRepository{K,V}" /> aware contexts
     /// </summary>
 
     #region Exceptions
@@ -35,13 +35,13 @@ namespace JCS.Neon.Glow.Data.Repository
     #endregion
 
     /// <summary>
-    /// A <see cref="DbContext"/> that understands how to create instances of <see cref="IAsyncRepository{K,V}"/>
-    /// based on its model elements
+    ///     A <see cref="DbContext" /> that understands how to create instances of <see cref="IAsyncRepository{K,V}" />
+    ///     based on its model elements
     /// </summary>
     public abstract class RepositoryAwareDbContext : DbContext
     {
         /// <summary>
-        /// Default protected constructor which just
+        ///     Default protected constructor which just
         /// </summary>
         /// <param name="options"></param>
         protected RepositoryAwareDbContext(DbContextOptions options) : base(options)
@@ -49,25 +49,25 @@ namespace JCS.Neon.Glow.Data.Repository
         }
 
         /// <summary>
-        /// <see cref="ILogger"/> instance
+        ///     <see cref="ILogger" /> instance
         /// </summary>
         private ILogger _log => Log.ForContext(typeof(RepositoryAwareDbContext));
 
         /// <summary>
-        /// Attempts to instantiate an instance of <see cref="IAsyncRepository{K,V}"/> which satifies
-        /// the type parameters.  Contexts which want to support this functionality should derive their
-        /// model elements from <see cref="KeyedEntity{T}"/> in order to ensure uniformity and consistency
-        /// in repository behaviour.
+        ///     Attempts to instantiate an instance of <see cref="IAsyncRepository{K,V}" /> which satifies
+        ///     the type parameters.  Contexts which want to support this functionality should derive their
+        ///     model elements from <see cref="KeyedEntity{T}" /> in order to ensure uniformity and consistency
+        ///     in repository behaviour.
         /// </summary>
         /// <typeparam name="R">The type of the repository to instantiate</typeparam>
         /// <typeparam name="K">The key type of the underlying model entity type</typeparam>
-        /// <typeparam name="V">The actual type of the underlying model entity type, derived from <see cref="KeyedEntity{T}"/></typeparam>
+        /// <typeparam name="V">The actual type of the underlying model entity type, derived from <see cref="KeyedEntity{T}" /></typeparam>
         /// <returns></returns>
         public IAsyncRepository<K, V> CreateAsyncRepository<K, V>()
             where K : IComparable<K>, IEquatable<K>
             where V : KeyedEntity<K>
         {
-            _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V).ToString()}");
+            _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var entityType = Model.FindEntityType(typeof(V).FullName!);
             if (entityType == null)
             {

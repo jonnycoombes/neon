@@ -1,16 +1,15 @@
-﻿using System;
-using JCS.Neon.Glow.Utilities.Cryptography;
+﻿using JCS.Neon.Glow.Utilities.Cryptography;
 using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
 
 namespace JCS.Neon.Glow.Types.Extensions
 {
     /// <summary>
-    /// Extension methods for string go into this class
+    ///     Extension methods for string go into this class
     /// </summary>
     public static class String
     {
         /// <summary>
-        /// Encodes a string to Base64
+        ///     Encodes a string to Base64
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -20,7 +19,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Decodes a string from Base64
+        ///     Decodes a string from Base64
         /// </summary>
         /// <param name="s"></param>
         /// <param name="encoding"></param>
@@ -31,7 +30,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Encodes a string to Base64
+        ///     Encodes a string to Base64
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -41,7 +40,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Decodes a string from Base64
+        ///     Decodes a string from Base64
         /// </summary>
         /// <param name="s"></param>
         /// <param name="encoding"></param>
@@ -52,7 +51,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Returns the head of a string
+        ///     Returns the head of a string
         /// </summary>
         /// <param name="s">The string</param>
         /// <returns>Either null or the first character of the string</returns>
@@ -63,14 +62,14 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
-        /// Returns the tail of a given string
+        ///     Returns the tail of a given string
         /// </summary>
         /// <param name="s">The string</param>
         /// <returns>Either null or last n-1 characters of a string</returns>
         public static string? Tail(this string s)
         {
             if (s.Length == 0) return null;
-            return s[1..^0];
+            return s[1..];
         }
     }
 }

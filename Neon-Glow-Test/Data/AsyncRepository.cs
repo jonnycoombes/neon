@@ -1,20 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
 using JCS.Neon.Glow.Data.Repository;
 using JCS.Neon.Glow.Test.Data.Entity;
 using JCS.Neon.Glow.Types;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Frameworks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace JCS.Neon.Glow.Test.Data
 {
     /// <summary>
-    /// Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository"/>
+    ///     Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository" />
     /// </summary>
     [Trait("Category", "Data")]
     public class AsyncRepository : RepositoryAwareDbContext
@@ -24,7 +19,7 @@ namespace JCS.Neon.Glow.Test.Data
         }
 
         /// <summary>
-        /// Can we create a valid repository?
+        ///     Can we create a valid repository?
         /// </summary>
         [Fact(DisplayName = "Can create a model entity repository")]
         [Trait("Category", "Data")]
@@ -59,7 +54,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
-            Assert.Equal(1, await repository.CountWhere(p => p.StringProperty == "Sample value 1", default));
+            Assert.Equal(1, await repository.CountWhere(p => p.StringProperty == "Sample value 1"));
         }
 
         [Fact(DisplayName = "Can check for the existence of known item in repository")]
@@ -97,7 +92,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
-            var enumerator = (repository.GetEnumerator());
+            var enumerator = repository.GetEnumerator();
             while (await enumerator.MoveNextAsync())
             {
                 var item = enumerator.Current;
@@ -121,7 +116,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
-            var items = await repository.SelectMany(new Guid[] {_testEntries[0].Id, _testEntries[1].Id});
+            var items = await repository.SelectMany(new[] {_testEntries[0].Id, _testEntries[1].Id});
             Assert.Equal(2, items.Count());
         }
 
@@ -140,7 +135,7 @@ namespace JCS.Neon.Glow.Test.Data
         public async void CreateSingleItem()
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
-            var item = await repository.CreateOne(new ModelGuidKeyedTestEntity()
+            var item = await repository.CreateOne(new ModelGuidKeyedTestEntity
             {
                 StringProperty = "Test value"
             });
@@ -194,7 +189,7 @@ namespace JCS.Neon.Glow.Test.Data
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             await repository.UpsertOne(_testEntries[1]);
-            var o = (await repository.SelectOne(v => v.Id.Equals(_testEntries[1].Id)));
+            var o = await repository.SelectOne(v => v.Id.Equals(_testEntries[1].Id));
             var t = o.Fold(x => x.StringProperty, () => "Failed");
             Assert.Equal("Test update", t);
         }
@@ -207,7 +202,7 @@ namespace JCS.Neon.Glow.Test.Data
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             _testEntries[2].StringProperty = "Test update";
-            await repository.UpsertMany(new ModelGuidKeyedTestEntity[] {_testEntries[1], _testEntries[2]});
+            await repository.UpsertMany(new[] {_testEntries[1], _testEntries[2]});
             ModelGuidKeyedTestEntity r1;
             ModelGuidKeyedTestEntity r2;
             (await repository.SelectOne(v => v.Id.Equals(_testEntries[1].Id))).IsSome(out r1);
@@ -222,7 +217,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
-            var selected = await repository.SelectAndProjectMany<string>(v => v.StringProperty.StartsWith("Sample"), v => v.StringProperty);
+            var selected = await repository.SelectAndProjectMany(v => v.StringProperty.StartsWith("Sample"), v => v.StringProperty);
             Assert.Equal(10, selected.Count());
         }
     }

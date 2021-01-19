@@ -2,25 +2,28 @@ using System;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Utilities.Cryptography;
-using Xunit;
-using JCS.Neon.Glow.Utilities.Cryptography;
 using JCS.Neon.Glow.Utilities.General;
+using Xunit;
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {
     /// <summary>
-    /// Test suite for <see cref="Glow.Utilities.Cryptography.X509Certificates"/>
+    ///     Test suite for <see cref="Glow.Utilities.Cryptography.X509Certificates" />
     /// </summary>
     [Trait("Category", "Crypto")]
     public class X509CertificatesTests : TestBase, IDisposable
     {
+        public void Dispose()
+        {
+        }
+
         /// <summary>
-        /// Just loads a test certificate for use during tests
+        ///     Just loads a test certificate for use during tests
         /// </summary>
         /// <returns></returns>
         private X509Certificate2 LoadKnownTestCertificate(string passphrase = "test")
         {
-            var sshOption = Files.GetHomeSubdirectoryPath(new string[] {".config", "neon", "glow", "test.pfx"});
+            var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
             var result = sshOption.Fold(path =>
             {
                 var cert = X509Certificates.LoadFromFile(path, () => passphrase);
@@ -64,11 +67,6 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             {
                 X509Certificates.LoadFromByteArray(new byte[] { }, () => "whatever");
             });
-        }
-
-
-        public void Dispose()
-        {
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
-using JCS.Neon.Glow.Utilities.Cryptography;
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {
     /// <summary>
-    /// Test suite for <see cref="Glow.Utilities.Cryptography.Passphrases"/>
+    ///     Test suite for <see cref="Glow.Utilities.Cryptography.Passphrases" />
     /// </summary>
     [Trait("Category", "Crypto")]
     public class PassphrasesTests : TestBase
@@ -23,7 +22,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         [InlineData(-2)]
         public void CreateRandomPassphrase(int length)
         {
-            var options = new PassphraseGenerationOptions() {RequiredLength = length};
+            var options = new PassphraseGenerationOptions {RequiredLength = length};
             if (length >= PassphraseGenerationOptions.MinimumPasswordLength)
             {
                 var passphrase = Passphrases.GenerateRandomPassphrase(builder => { builder.SetRequiredLength(length); });
