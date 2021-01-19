@@ -2,19 +2,27 @@ using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Utilities.General.Logs;
 
-namespace JCS.Neon.Glow.Helpers.Crypto
+namespace JCS.Neon.Glow.Utilities.Cryptography
 {
     /// <summary>
     ///     Static class containing methods for dealing with X509 certificates
     /// </summary>
-    public static class X509Helpers
+    public static class X509Certificates
     {
         /// <summary>
         /// Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(X509Helpers));
+        private static ILogger _log = Log.ForContext(typeof(X509Certificates));
+
+        /// <summary>
+        /// Class used to specify options for certificate generation
+        /// </summary>
+        public class X509CertificateGenerationOptions
+        {
+            
+        }
 
         /// <summary>
         /// Given a path to a (PKCS12) .pfx file will attempt to import both public and private key

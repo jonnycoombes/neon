@@ -1,6 +1,6 @@
 ﻿using System;
-using JCS.Neon.Glow.Helpers.Crypto;
-using static JCS.Neon.Glow.Helpers.Crypto.EncodingHelpers;
+using JCS.Neon.Glow.Utilities.Cryptography;
+using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
 
 namespace JCS.Neon.Glow.Types.Extensions
 {

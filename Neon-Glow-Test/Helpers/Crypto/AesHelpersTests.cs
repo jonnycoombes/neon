@@ -1,18 +1,19 @@
 ﻿using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using JCS.Neon.Glow.Helpers.Crypto;
 using JCS.Neon.Glow.Types;
+using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.Crypto.AesHelpers;
-using static JCS.Neon.Glow.Helpers.Crypto.X509Helpers;
-using static JCS.Neon.Glow.Helpers.General.FileHelpers;
-using static JCS.Neon.Glow.Helpers.Crypto.PassphraseHelpers;
+using static JCS.Neon.Glow.Utilities.Cryptography.Aes;
+using static JCS.Neon.Glow.Utilities.Cryptography.X509Certificates;
+using static JCS.Neon.Glow.Utilities.General.Files;
+using static JCS.Neon.Glow.Utilities.Cryptography.Passphrases;
+using Encoding = System.Text.Encoding;
 
 namespace JCS.Neon.Glow.Test.Helpers.Crypto
 {
     /// <summary>
-    /// Test suite for <see cref="AesHelpers"/>
+    /// Test suite for <see cref="Utilities.Cryptography.Aes"/>
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "AesHelpers")]

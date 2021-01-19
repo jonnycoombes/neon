@@ -1,7 +1,7 @@
-﻿using JCS.Neon.Glow.Helpers.Crypto;
-using JCS.Neon.Glow.Types.Extensions;
+﻿using JCS.Neon.Glow.Types.Extensions;
+using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.Crypto.EncodingHelpers;
+using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
 
 namespace JCS.Neon.Glow.Test.Helpers.Crypto
 {

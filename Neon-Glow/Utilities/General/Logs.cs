@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 using Serilog;
 using Serilog.Events;
 
-namespace JCS.Neon.Glow.Helpers.General
+namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
     /// Static class containing methods for tidying up logging
     /// </summary>
-    public static class LogHelpers
+    public static class Logs
     {
         /// <summary>
         /// Will log at a verbose level a method invocation
@@ -70,7 +70,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
         public static void LogExceptionWarning(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int lineNumber= 0)
+            [CallerLineNumber] int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
             LogAtLevel(log, message, LogEventLevel.Warning);
@@ -84,7 +84,7 @@ namespace JCS.Neon.Glow.Helpers.General
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
         public static void LogExceptionError(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int lineNumber= 0)
+            [CallerLineNumber] int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
             LogAtLevel(log, message, LogEventLevel.Error);

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.ExceptionHelpers;
+using static JCS.Neon.Glow.Utilities.General.Exceptions;
 
 namespace JCS.Neon.Glow.Data.Repository
 {

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Transactions;
-using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using static JCS.Neon.Glow.Helpers.Crypto.EncodingHelpers;
+using static JCS.Neon.Glow.Utilities.General.Logs;
+using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
 
-namespace JCS.Neon.Glow.Helpers.Crypto
+namespace JCS.Neon.Glow.Utilities.Cryptography
 {
-
     #region Exceptions
+
     /// <summary>
     /// Thrown be various passphrase helper methods 
     /// </summary>
@@ -25,8 +23,9 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         {
         }
     }
+
     #endregion
-    
+
     /// <summary>
     /// Class containing various password generation parameters 
     /// </summary>
@@ -41,7 +40,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// The minimum allowable password length
         /// </summary>
         public const int MinimumPasswordLength = 8;
-        
+
         /// <summary>
         /// The required length for the password
         /// </summary>
@@ -51,7 +50,6 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// Whether or not the password should be encoded Base64 after generation
         /// </summary>
         public bool EncodeBase64 { get; set; } = false;
-
     }
 
     /// <summary>
@@ -59,15 +57,13 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// </summary>
     public class PassphraseValidationOptions
     {
-
         /// <summary>
         /// Default constructor
         /// </summary>
         public PassphraseValidationOptions()
         {
-            
         }
-        
+
         /// <summary>
         /// The default minimum length for passwords
         /// </summary>
@@ -99,11 +95,10 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// </summary>
     public class PassphraseGenerationOptionsBuilder
     {
-        public PassphraseGenerationOptions Options= new PassphraseGenerationOptions();
+        public PassphraseGenerationOptions Options = new PassphraseGenerationOptions();
 
         public PassphraseGenerationOptionsBuilder()
         {
-            
         }
 
         public PassphraseGenerationOptionsBuilder SetRequiredLength(int length)
@@ -117,19 +112,18 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             Options.EncodeBase64 = b;
             return this;
         }
-        
     }
-    
+
     /// <summary>
     /// Contains static helper methods for the generation and validation of passwords
     /// </summary>
-    public static class PassphraseHelpers
+    public static class Passphrases
     {
         /// <summary>
         /// Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(PassphraseHelpers));
-        
+        private static ILogger _log = Log.ForContext(typeof(Passphrases));
+
         /// <summary>
         /// String containing valid upper case characters
         /// </summary>
@@ -162,19 +156,19 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             var builder = new PassphraseGenerationOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
-            
+
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
                 throw new PassphraseHelperException("The specified passphrase length doesn't meet minimum length requirements");
             }
-            
+
             using (var rng = new RNGCryptoServiceProvider())
             {
                 var sb = new StringBuilder();
                 var randoms = new byte[2];
                 for (var i = 0; i < options.RequiredLength; i++)
                 {
-                    randoms= randoms.Randomise(); 
+                    randoms = randoms.Randomise();
                     var charResidue = 0;
                     switch (randoms[0] % 4)
                     {
@@ -216,6 +210,5 @@ namespace JCS.Neon.Glow.Helpers.Crypto
             //TODO 
             throw new NotImplementedException();
         }
-        
     }
 }

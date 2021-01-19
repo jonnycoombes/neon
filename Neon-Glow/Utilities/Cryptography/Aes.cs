@@ -3,25 +3,23 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
-using static JCS.Neon.Glow.Helpers.Crypto.PassphraseHelpers;
-using static JCS.Neon.Glow.Helpers.General.ExceptionHelpers;
+using static JCS.Neon.Glow.Utilities.General.Logs;
+using static JCS.Neon.Glow.Utilities.General.Exceptions;
 
-namespace JCS.Neon.Glow.Helpers.Crypto
+namespace JCS.Neon.Glow.Utilities.Cryptography
 {
     /// <summary>
     /// Static class containing a bunch of methods for dealing with AES-based symmetric encryption
     /// </summary>
-    public static class AesHelpers
+    public static class Aes
     {
         /// <summary>
         /// Static logger for this class
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(AesHelpers));
+        private static ILogger _log = Log.ForContext(typeof(Aes));
 
         #region Exceptions
 
@@ -229,10 +227,10 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <summary>
         /// Validates that a given key size is valid
         /// </summary>
-        /// <param name="aes">An instance of <see cref="Aes"/></param>
+        /// <param name="aes">An instance of <see cref="System.Security.Cryptography.Aes"/></param>
         /// <param name="size">The required key size</param>
         /// <returns></returns>
-        private static bool ValidateKeySize(Aes aes, int size)
+        private static bool ValidateKeySize(System.Security.Cryptography.Aes aes, int size)
         {
             LogMethodCall(_log);
             foreach (var keySize in aes.LegalKeySizes)
@@ -245,27 +243,27 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         }
 
         /// <summary>
-        /// Creates and initialises a new instance of <see cref="Aes"/>
+        /// Creates and initialises a new instance of <see cref="System.Security.Cryptography.Aes"/>
         /// </summary>
         /// <param name="options">A set of options for the cipher instance</param>
         /// <returns></returns>
         /// <exception cref="AesHelperException">If the specified options are invalid</exception>
-        private static Aes InitialiseCipher(AesEncryptionOptions options)
+        private static System.Security.Cryptography.Aes InitialiseCipher(AesEncryptionOptions options)
         {
             return InitialiseCipher(options, null, null);
         }
 
         /// <summary>
-        /// Creates and initialises a new instance of <see cref="Aes"/>
+        /// Creates and initialises a new instance of <see cref="System.Security.Cryptography.Aes"/>
         /// </summary>
         /// <param name="options">A set of options for the cipher instance</param>
         /// <returns></returns>
         /// <exception cref="AesHelperException">If the specified options are invalid</exception>
-        private static Aes InitialiseCipher(AesEncryptionOptions options, byte[]? key, byte[]? IV)
+        private static System.Security.Cryptography.Aes InitialiseCipher(AesEncryptionOptions options, byte[]? key, byte[]? IV)
         {
             LogMethodCall(_log);
             LogVerbose(_log, $"Initialising AES with a suggested config of ({options.KeySize}, {options.Mode})");
-            var aes = Aes.Create();
+            var aes = System.Security.Cryptography.Aes.Create();
             if (!ValidateKeySize(aes, options.KeySize))
                 throw new AesHelperException($"An invalid symmetric key size was specified - {options.KeySize} bits");
             aes.KeySize = options.KeySize;
@@ -286,7 +284,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// </summary>
         /// <param name="cipher">The current cipher instance</param>
         /// <returns>An array containing the key and then the IV in sequence</returns>
-        private static byte[] PackKeyAndIV(Aes cipher)
+        private static byte[] PackKeyAndIV(System.Security.Cryptography.Aes cipher)
         {
             LogMethodCall(_log);
             var packed = BitConverter.GetBytes(cipher.KeySize);
@@ -441,7 +439,7 @@ namespace JCS.Neon.Glow.Helpers.Crypto
         /// <param name="cipher">The (already initialised) cipher instance</param>
         /// <param name="direction">Specifies the direction of the transform</param>
         /// <returns></returns>
-        private static byte[] Transform(byte[] source, Aes cipher, AesTransformDirection direction)
+        private static byte[] Transform(byte[] source, System.Security.Cryptography.Aes cipher, AesTransformDirection direction)
         {
             LogMethodCall(_log);
             using (var cryptor =

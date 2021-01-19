@@ -1,6 +1,6 @@
 ﻿using System;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.General.ParseHelpers;
+using static JCS.Neon.Glow.Utilities.General.Parsing;
 
 namespace JCS.Neon.Glow.Test.Helpers.General
 {

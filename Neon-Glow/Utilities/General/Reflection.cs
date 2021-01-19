@@ -4,20 +4,20 @@ using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Utilities.General.Logs;
 
-namespace JCS.Neon.Glow.Helpers.General
+namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
     ///     Static class containing useful reflection methods and helpers
     /// </summary>
-    public static class ReflectionHelpers
+    public static class Reflection
     {
         /// <summary>
         ///     The logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelpers));
-        
+        private static readonly ILogger _log = Log.ForContext(typeof(Reflection));
+
         /// <summary>
         /// Searches the currently loaded assemblies for implementations of a given interface type
         /// </summary>
@@ -56,7 +56,7 @@ namespace JCS.Neon.Glow.Helpers.General
             }
             catch
             {
-                LogWarning(_log,$"Failed to create a new instance of type {typeof(T)}");
+                LogWarning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
@@ -80,12 +80,12 @@ namespace JCS.Neon.Glow.Helpers.General
                 }
                 else
                 {
-                    return new Option<T>((T)Activator.CreateInstance(baseType, args));
+                    return new Option<T>((T) Activator.CreateInstance(baseType, args));
                 }
             }
             catch
             {
-                LogWarning(_log,$"Failed to create a new instance of type {typeof(T)}");
+                LogWarning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }

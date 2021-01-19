@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using JCS.Neon.Glow.Types;
 
-namespace JCS.Neon.Glow.Helpers.General
+namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
     /// Class which contains a bunch of useful file I/O related helper methods/functions
     /// </summary>
-    public static class FileHelpers
+    public static class Files
     {
         /// <summary>
         /// Tries to determine the current home path based on calls through to System.Environment

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using JCS.Neon.Glow.Helpers.General;
 using JCS.Neon.Glow.Types;
+using JCS.Neon.Glow.Utilities.General;
 using NodaTime;
 using NodaTime.Extensions;
 using Xunit;
-using static JCS.Neon.Glow.Helpers.General.NodaTimeHelpers;
+using static JCS.Neon.Glow.Utilities.General.NodaTime;
 
 namespace JCS.Neon.Glow.Test.Helpers.General
 {
@@ -26,7 +26,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [Trait("Target Class", "NodeTimeHelpers")]
         public void CheckOffsetDateTimeParsing(string src)
         {
-            Assert.True(!ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
+            Assert.True(!Parsing.ParseGeneralIsoOffsetDateTime(src).IsNone);
         }
 
         [Theory(DisplayName = "Can parse a series of standard ISO date representations to LocalDateTime instances")]
@@ -38,7 +38,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [Trait("Target Class", "NodeTimeHelpers")]
         public void CheckLocalDatetimeParsing(string src)
         {
-            Assert.True(!ParseHelpers.ParseGeneralIsoLocalDateTime(src).IsNone);
+            Assert.True(!Parsing.ParseGeneralIsoLocalDateTime(src).IsNone);
         }
 
         [Theory(DisplayName = "Can correctly identify ISO representations of invalid date values")]
@@ -50,8 +50,8 @@ namespace JCS.Neon.Glow.Test.Helpers.General
         [Trait("Target Class", "NodeTimeHelpers")]
         public void CheckInvalidDates(string src)
         {
-            Assert.True(ParseHelpers.ParseGeneralIsoOffsetDateTime(src).IsNone);
-            Assert.True(ParseHelpers.ParseGeneralIsoLocalDateTime(src).IsNone);
+            Assert.True(Parsing.ParseGeneralIsoOffsetDateTime(src).IsNone);
+            Assert.True(Parsing.ParseGeneralIsoLocalDateTime(src).IsNone);
         }
 
         [Fact(DisplayName = "Can move between string and internal Instant representation through OffsetDateTime")]
@@ -64,7 +64,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
             var stringOption = ToGeneralIsoString(offsetDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
-            var parsed = ParseHelpers.ParseGeneralIsoOffsetDateTime(rep).Fold(
+            var parsed = Parsing.ParseGeneralIsoOffsetDateTime(rep).Fold(
                 time => time,
                 () => new OffsetDateTime());
             Assert.True(parsed.Date.Equals(offsetDateTime.Date));
@@ -80,7 +80,7 @@ namespace JCS.Neon.Glow.Test.Helpers.General
             var stringOption = ToGeneralIsoString(localDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
-            var parsed = ParseHelpers.ParseGeneralIsoLocalDateTime(rep).Fold(
+            var parsed = Parsing.ParseGeneralIsoLocalDateTime(rep).Fold(
                 time => time,
                 () => new LocalDateTime());
             Assert.True(parsed.Date.Equals(localDateTime.Date));

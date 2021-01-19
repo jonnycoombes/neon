@@ -9,8 +9,8 @@ using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.ExceptionHelpers;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Utilities.General.Exceptions;
+using static JCS.Neon.Glow.Utilities.General.Logs;
 
 namespace JCS.Neon.Glow.Data.Repository
 {

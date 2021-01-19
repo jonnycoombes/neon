@@ -1,15 +1,16 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
+using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
 using Xunit.Sdk;
-using static JCS.Neon.Glow.Helpers.Crypto.X509Helpers;
-using static JCS.Neon.Glow.Helpers.General.FileHelpers;
+using static JCS.Neon.Glow.Utilities.Cryptography.X509Certificates;
+using static JCS.Neon.Glow.Utilities.General.Files;
 
 namespace JCS.Neon.Glow.Test.Helpers.Crypto
 {
     /// <summary>
-    /// Test suite for <see cref="JCS.Neon.Glow.Helpers.Crypto.X509Helpers"/>
+    /// Test suite for <see cref="X509Certificates"/>
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "X509CertificateHelper")]

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 using Serilog;
-using static JCS.Neon.Glow.Helpers.General.LogHelpers;
+using static JCS.Neon.Glow.Utilities.General.Logs;
 
-namespace JCS.Neon.Glow.Helpers.Crypto
+namespace JCS.Neon.Glow.Utilities.Cryptography
 {
     #region Exceptions
 
@@ -59,12 +59,12 @@ namespace JCS.Neon.Glow.Helpers.Crypto
     /// <summary>
     /// Static class containing helper functions for various encodings
     /// </summary>
-    public static class EncodingHelpers
+    public static class Encoding
     {
         /// <summary>
         /// Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(EncodingHelpers)); 
+        private static ILogger _log = Log.ForContext(typeof(Encoding));
 
         /// <summary>
         /// Padding character for use in Base64 encodings
@@ -86,19 +86,19 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 switch (encoding)
                 {
                     case ByteEncoding.Ascii:
-                        return Encoding.ASCII.GetBytes(source);
+                        return System.Text.Encoding.ASCII.GetBytes(source);
                     case ByteEncoding.Utf8:
-                        return Encoding.UTF8.GetBytes(source);
+                        return System.Text.Encoding.UTF8.GetBytes(source);
                     case ByteEncoding.Utf32:
-                        return Encoding.UTF32.GetBytes(source);
+                        return System.Text.Encoding.UTF32.GetBytes(source);
                     case ByteEncoding.Unicode:
-                        return Encoding.Unicode.GetBytes(source);
+                        return System.Text.Encoding.Unicode.GetBytes(source);
                     case ByteEncoding.BigEndianUnicode:
-                        return Encoding.BigEndianUnicode.GetBytes(source);
+                        return System.Text.Encoding.BigEndianUnicode.GetBytes(source);
                     case ByteEncoding.Latin1:
-                        return Encoding.Latin1.GetBytes(source);
+                        return System.Text.Encoding.Latin1.GetBytes(source);
                     default:
-                        return Encoding.UTF8.GetBytes(source);
+                        return System.Text.Encoding.UTF8.GetBytes(source);
                 }
             }
             catch (Exception ex)
@@ -121,19 +121,19 @@ namespace JCS.Neon.Glow.Helpers.Crypto
                 switch (encoding)
                 {
                     case ByteEncoding.Ascii:
-                        return Encoding.ASCII.GetString(source);
+                        return System.Text.Encoding.ASCII.GetString(source);
                     case ByteEncoding.Utf8:
-                        return Encoding.UTF8.GetString(source);
+                        return System.Text.Encoding.UTF8.GetString(source);
                     case ByteEncoding.Utf32:
-                        return Encoding.UTF32.GetString(source);
+                        return System.Text.Encoding.UTF32.GetString(source);
                     case ByteEncoding.Unicode:
-                        return Encoding.Unicode.GetString(source);
+                        return System.Text.Encoding.Unicode.GetString(source);
                     case ByteEncoding.BigEndianUnicode:
-                        return Encoding.BigEndianUnicode.GetString(source);
+                        return System.Text.Encoding.BigEndianUnicode.GetString(source);
                     case ByteEncoding.Latin1:
-                        return Encoding.Latin1.GetString(source);
+                        return System.Text.Encoding.Latin1.GetString(source);
                     default:
-                        return Encoding.UTF8.GetString(source);
+                        return System.Text.Encoding.UTF8.GetString(source);
                 }
             }
             catch (Exception ex)

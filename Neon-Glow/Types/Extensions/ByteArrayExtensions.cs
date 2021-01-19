@@ -40,6 +40,7 @@ namespace JCS.Neon.Glow.Types.Extensions
                 else
                     rng.GetBytes(dest);
             }
+
             return dest;
         }
 

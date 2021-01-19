@@ -2,12 +2,12 @@ using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Text;
 
-namespace JCS.Neon.Glow.Helpers.General
+namespace JCS.Neon.Glow.Utilities.General
 {
     /// <summary>
     ///     Class for holding general helper functions related to NodaTime
     /// </summary>
-    public static class NodaTimeHelpers
+    public static class NodaTime
     {
         /// <summary>
         ///     Converts a <see cref="OffsetDateTime" /> to a string

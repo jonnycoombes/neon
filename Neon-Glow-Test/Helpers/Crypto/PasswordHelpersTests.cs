@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using JCS.Neon.Glow.Helpers.Crypto;
-using static JCS.Neon.Glow.Helpers.Crypto.PassphraseHelpers;
+using JCS.Neon.Glow.Utilities.Cryptography;
+using static JCS.Neon.Glow.Utilities.Cryptography.Passphrases;
 using Xunit;
 
 namespace JCS.Neon.Glow.Test.Helpers.Crypto
 {
     /// <summary>
-    /// Test suite for <see cref="PassphraseHelpers"/>
+    /// Test suite for <see cref="Passphrases"/>
     /// </summary>
     [Trait("Test Type", "Unit")]
     [Trait("Target Class", "PasswordHelpers")]
