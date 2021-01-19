@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Logs;
-using static JCS.Neon.Glow.Utilities.General.Reflection;
 
 namespace JCS.Neon.Glow.Utilities.General
 {
@@ -21,8 +19,8 @@ namespace JCS.Neon.Glow.Utilities.General
         public static E LoggedException<E>(ILogger log, string message, Exception inner = null)
             where E : Exception
         {
-            LogError(log, message);
-            return (E) CreateException<E>(message, inner);
+            Logs.Error(log, message);
+            return (E) Reflection.CreateException<E>(message, inner);
         }
     }
 }

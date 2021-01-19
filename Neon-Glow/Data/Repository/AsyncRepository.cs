@@ -9,8 +9,7 @@ using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Exceptions;
-using static JCS.Neon.Glow.Utilities.General.Logs;
+using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -35,7 +34,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="context"></param>
         public AsyncRepository(RepositoryAwareDbContext context)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             _context = context;
         }
 
@@ -48,7 +47,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.Count"/> 
         public async Task<int> Count(CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return await _context.Set<V>().CountAsync(cancellationToken);
@@ -62,7 +61,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.CountWhere"/> 
         public async Task<long> CountWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return await _context.Set<V>().Where(expression).CountAsync(cancellationToken);
@@ -76,7 +75,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey"/> 
         public async Task<bool> HasItemWithKey(K key, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return !(await SelectOne(v => v.Id.Equals(key))).IsNone;
@@ -90,7 +89,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
         public async Task<Option<V>> SelectOne(K key, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return Option<V>.Some(await _context.Set<V>()
@@ -106,7 +105,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync"/> 
         public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return Option<V>.Some(await _context.Set<V>()
@@ -123,7 +122,7 @@ namespace JCS.Neon.Glow.Data.Repository
         public async Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var selection = await SelectOne(expression, cancellationToken);
             return selection.Fold(
                 v => Option<W>.Some(f(v)),
@@ -133,7 +132,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyAsync"/> 
         public async Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return await _context.Set<V>()
@@ -149,7 +148,7 @@ namespace JCS.Neon.Glow.Data.Repository
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return await _context.Set<V>()
@@ -165,7 +164,7 @@ namespace JCS.Neon.Glow.Data.Repository
         public async Task<IEnumerable<W>> SelectAndProjectMany<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var selection = await SelectMany(expression, cancellationToken);
             return selection.Select(v => f(v));
         }
@@ -173,7 +172,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.GetEnumerator"/> 
         public IAsyncEnumerator<V> GetEnumerator(CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator();
@@ -187,7 +186,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.CreateOne"/>
         public async Task<V> CreateOne(V newItem, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 var entityEntry = await _context.AddAsync(newItem, cancellationToken);
@@ -203,7 +202,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.CreateMany"/>
         public async Task<IEnumerable<V>> CreateMany(V[] newItems, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 for (var i = 0; i < newItems.Length; i++)
@@ -225,14 +224,14 @@ namespace JCS.Neon.Glow.Data.Repository
         public async Task<IEnumerable<K>> SelectManyKeys(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             return await SelectAndProjectMany<K>(expression, v => v.Id, cancellationToken);
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOne"/>
         public async Task<V> UpsertOne(V item, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 _context.Update(item);
@@ -248,7 +247,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertMany"/>
         public async Task<IEnumerable<V>> UpsertMany(V[] items, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 _context.UpdateRange(items);
@@ -264,7 +263,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOne"/>
         public async Task DeleteOne(V item, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 _context.Set<V>().Remove(item);
@@ -279,7 +278,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteMany"/>
         public async Task DeleteMany(V[] items, CancellationToken cancellationToken = default)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 _context.Set<V>().RemoveRange(items);
@@ -299,14 +298,14 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <exception cref="AsyncRepositoryException"></exception>
         protected Exception DbSpecificException(Exception ex)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             switch (ex.InnerException)
             {
                 case PostgresException pex:
                     var message = $"{pex.MessageText}";
-                    return LoggedException<AsyncRepositoryException>(_log, message, pex);
+                    return Exceptions.LoggedException<AsyncRepositoryException>(_log, message, pex);
                 default:
-                    return LoggedException<AsyncRepositoryException>(_log,
+                    return Exceptions.LoggedException<AsyncRepositoryException>(_log,
                         $"DB Exception caught: \"{ex.Message}\"", ex);
             }
         }

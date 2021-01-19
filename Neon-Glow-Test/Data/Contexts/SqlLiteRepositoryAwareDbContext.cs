@@ -7,7 +7,7 @@ using NodaTime;
 
 namespace JCS.Neon.Glow.Test.Data.Contexts
 {
-    public class SqlLiteRepositoryAwareDbContext : RepositoryAwareDbContext
+    public class SqlLiteRepositoryAwareDbContext : Glow.Data.Repository.RepositoryAwareDbContext
     {
         public DbSet<ModelGuidKeyedTestEntity> GuidEntries { get; set; }
 

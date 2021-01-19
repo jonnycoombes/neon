@@ -53,7 +53,7 @@
         <ProjectReference Include="..\Neon-Glow\Neon-Glow.csproj" />
     </ItemGroup>
 
-    <ItemGroup >
+    <ItemGroup>
         <None Update="appsettings.Test.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 

@@ -1,8 +1,9 @@
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using JCS.Neon.Glow.Utilities.General;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Logs;
+using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Utilities.Cryptography
 {
@@ -21,7 +22,6 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// </summary>
         public class X509CertificateGenerationOptions
         {
-            
         }
 
         /// <summary>
@@ -31,15 +31,16 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="source">The path to the source pfx file</param>
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <returns>A valid <see cref="X509Certificate2"/></returns>
-        /// <exception cref="X509HelperException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
-        public static X509Certificate2 LoadCertificateFromPfxFile(string source, Func<string> pf, bool exportable = true)
+        /// <exception cref="X509CertificateException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
+        public static X509Certificate2 LoadFromFile(string source, Func<string> pf, bool exportable = true)
         {
-            LogMethodCall(_log);
-            LogVerbose(_log, $"Attempting x509 certificate load from \"{source}\"");
+            Logs.MethodCall(_log);
+            Logs.Verbose(_log, $"Attempting x509 certificate load from \"{source}\"");
             if (!File.Exists(source))
             {
-                LogWarning(_log, $"Specified source for x509 certificate doesn't exist, or can't be accessed");
-                throw new X509HelperException($"Specified source PKCS12 file doesn't exist, or isn't accessible: {source}");
+                Logs.Warning(_log, $"Specified source for x509 certificate doesn't exist, or can't be accessed");
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
+                    $"Specified source PKCS12 file doesn't exist, or isn't accessible: {source}");
             }
 
             try
@@ -57,7 +58,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             }
             catch (Exception ex)
             {
-                throw new X509HelperException("Import failed, see inner exception", ex);
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
+                    "Import failed, see inner exception", ex);
             }
         }
 
@@ -69,10 +71,10 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="passphrase">A passphrase to be used in order to decrypt any private key material</param>
         /// <param name="exportable">Whether or not the private key should be marked as exportable</param>
         /// <returns></returns>
-        public static X509Certificate2 LoadCertificateFromPfxFile(string source, string passphrase, bool exportable = true)
+        public static X509Certificate2 LoadFromFile(string source, string passphrase, bool exportable = true)
         {
-            LogMethodCall(_log);
-            return LoadCertificateFromPfxFile(source, () => passphrase, exportable);
+            Logs.MethodCall(_log);
+            return LoadFromFile(source, () => passphrase, exportable);
         }
 
         /// <summary>
@@ -83,10 +85,10 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="pf">A lambda which returns a passphrase which will be used to decrypt any private key material</param>
         /// <param name="exportable">Whether or not the private key should be exportable or not</param>
         /// <returns></returns>
-        /// <exception cref="X509HelperException">Thrown if the import fails</exception>
-        public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
+        /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
+        public static X509Certificate2 LoadFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 if (exportable)
@@ -100,7 +102,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             }
             catch (Exception ex)
             {
-                throw new X509HelperException("Import failed, see inner exception", ex);
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
+                    "Import failed, see inner exception", ex);
             }
         }
 
@@ -112,21 +115,21 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="passphrase">The passphrase to be used to decrypt any private key material</param>
         /// <param name="exportable">Whether the private key should be marked as exportable</param>
         /// <returns></returns>
-        /// <exception cref="X509HelperException">Thrown if the import fails</exception>
-        public static X509Certificate2 LoadCertificateFromByteArray(byte[] source, string passphrase, bool exportable = true)
+        /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
+        public static X509Certificate2 LoadFromByteArray(byte[] source, string passphrase, bool exportable = true)
         {
-            return LoadCertificateFromByteArray(source, () => passphrase, exportable);
+            return LoadFromByteArray(source, () => passphrase, exportable);
         }
 
         #region Exceptions
 
-        public class X509HelperException : Exception
+        public class X509CertificateException : Exception
         {
-            public X509HelperException(string? message) : base(message)
+            public X509CertificateException(string? message) : base(message)
             {
             }
 
-            public X509HelperException(string? message, Exception? innerException) : base(message, innerException)
+            public X509CertificateException(string? message, Exception? innerException) : base(message, innerException)
             {
             }
         }

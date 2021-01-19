@@ -16,7 +16,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log"></param>
         /// <param name="memberName"></param>
-        public static void LogMethodCall(ILogger log, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
+        public static void MethodCall(ILogger log, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);
             LogAtLevel(log, $"[Invoke: {memberName},{fileName}]", LogEventLevel.Verbose);
@@ -27,7 +27,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogDebug(ILogger log, string message)
+        public static void Debug(ILogger log, string message)
         {
             LogAtLevel(log, message, LogEventLevel.Debug);
         }
@@ -37,7 +37,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogInformation(ILogger log, string message)
+        public static void Information(ILogger log, string message)
         {
             LogAtLevel(log, message, LogEventLevel.Information);
         }
@@ -47,7 +47,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogVerbose(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Verbose(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Verbose);
         }
@@ -57,7 +57,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogWarning(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Warning(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Warning);
         }
@@ -69,7 +69,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <param name="ex">The exception to log</param>
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
-        public static void LogExceptionWarning(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
+        public static void ExceptionWarning(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
             [CallerLineNumber] int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
@@ -83,7 +83,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <param name="ex">The exception to log</param>
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
-        public static void LogExceptionError(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
+        public static void ExceptionError(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
             [CallerLineNumber] int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
@@ -95,7 +95,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance/></param>
         /// <param name="message">The message to log</param>
-        public static void LogError(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Error(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Error);
         }

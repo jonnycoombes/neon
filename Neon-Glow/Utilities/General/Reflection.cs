@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Logs;
+using Serilog;
 
 namespace JCS.Neon.Glow.Utilities.General
 {
@@ -14,7 +14,7 @@ namespace JCS.Neon.Glow.Utilities.General
     public static class Reflection
     {
         /// <summary>
-        ///     The logger
+        /// Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(Reflection));
 
@@ -25,7 +25,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns></returns>
         public static IEnumerable<Type> LocateAllImplementors<T>()
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var type = typeof(T);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
@@ -41,12 +41,12 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns></returns>
         public static Option<T> CreateInstance<T>(params object?[] args)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 if (typeof(T).IsInterface)
                 {
-                    LogWarning(_log, "Specified type T is an interface - cannot directly instantiate");
+                    Logs.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
                     return Option<T>.None;
                 }
                 else
@@ -56,7 +56,7 @@ namespace JCS.Neon.Glow.Utilities.General
             }
             catch
             {
-                LogWarning(_log, $"Failed to create a new instance of type {typeof(T)}");
+                Logs.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
@@ -70,12 +70,12 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns></returns>
         public static Option<T> CreateAndCastInstance<T>(Type baseType, params object?[] args)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             try
             {
                 if (!baseType.IsAssignableTo(typeof(T)))
                 {
-                    LogWarning(_log, "The specified type is not assignable to required type T");
+                    Logs.Warning(_log, "The specified type is not assignable to required type T");
                     return Option<T>.None;
                 }
                 else
@@ -85,7 +85,7 @@ namespace JCS.Neon.Glow.Utilities.General
             }
             catch
             {
-                LogWarning(_log, $"Failed to create a new instance of type {typeof(T)}");
+                Logs.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
@@ -99,7 +99,7 @@ namespace JCS.Neon.Glow.Utilities.General
         public static Exception CreateException<E>(params object?[] args)
             where E : Exception
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var instance = CreateInstance<E>(args);
             E exception;
             if (instance.IsSome(out exception))
@@ -113,7 +113,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns></returns>
         public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var assembly = Assembly.GetEntryAssembly();
             if (includeAssemblyName)
             {

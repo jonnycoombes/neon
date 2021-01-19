@@ -1,5 +1,4 @@
-﻿
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -16,8 +15,8 @@ namespace JCS.Neon.Glow.Test
         /// <summary>
         /// Static logger
         /// </summary>
-        private static ILogger _log; 
-        
+        private static ILogger _log;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -26,7 +25,7 @@ namespace JCS.Neon.Glow.Test
             LoadConfiguration();
             ConfigureLogging();
         }
-        
+
         /// <summary>
         /// Configures the logging for tests, based on the current test configuration
         /// </summary>
@@ -38,7 +37,7 @@ namespace JCS.Neon.Glow.Test
                 .CreateLogger();
             _log = Log.ForContext(typeof(TestBase));
         }
-        
+
         /// <summary>
         /// Stands up the <see cref="IConfiguration"/> instance to be used during testing
         /// </summary>

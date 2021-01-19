@@ -2,9 +2,11 @@
 using System.Security.Cryptography;
 using System.Text;
 using JCS.Neon.Glow.Types.Extensions;
+using JCS.Neon.Glow.Utilities.General;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Logs;
+using JCS.Neon.Glow.Utilities.General;
 using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
+using Log = Serilog.Log;
 
 namespace JCS.Neon.Glow.Utilities.Cryptography
 {
@@ -13,13 +15,13 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
     /// <summary>
     /// Thrown be various passphrase helper methods 
     /// </summary>
-    public class PassphraseHelperException : Exception
+    public class PassphraseException : Exception
     {
-        public PassphraseHelperException(string? message) : base(message)
+        public PassphraseException(string? message) : base(message)
         {
         }
 
-        public PassphraseHelperException(string? message, Exception? innerException) : base(message, innerException)
+        public PassphraseException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }
@@ -149,17 +151,18 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// </summary>
         /// <param name="configureAction">The <see cref="PassphraseGenerationOptions"/></param>
         /// <returns>A randomly generated password, optionally base 64 encoded</returns>
-        /// <exception cref="PassphraseHelperException">Thrown if the supplied options are invalid</exception>
+        /// <exception cref="PassphraseException">Thrown if the supplied options are invalid</exception>
         public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder> configureAction)
         {
-            LogMethodCall(_log);
+            Logs.MethodCall(_log);
             var builder = new PassphraseGenerationOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                throw new PassphraseHelperException("The specified passphrase length doesn't meet minimum length requirements");
+                throw Exceptions.LoggedException<PassphraseException>(_log,
+                    "The specified passphrase length doesn't meet minimum length requirements");
             }
 
             using (var rng = new RNGCryptoServiceProvider())

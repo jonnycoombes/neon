@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using static JCS.Neon.Glow.Utilities.General.Exceptions;
+using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Data.Repository
 {
@@ -73,7 +73,7 @@ namespace JCS.Neon.Glow.Data.Repository
             {
                 var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
                 _log.Error(msg);
-                throw LoggedException<RepositoryAwareDbContextException>(_log, msg);
+                throw Exceptions.LoggedException<RepositoryAwareDbContextException>(_log, msg);
             }
 
             return new AsyncRepository<K, V>(this);

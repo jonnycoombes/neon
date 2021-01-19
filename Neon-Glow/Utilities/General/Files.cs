@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using JCS.Neon.Glow.Types;
+using Serilog;
 
 namespace JCS.Neon.Glow.Utilities.General
 {
@@ -10,6 +11,12 @@ namespace JCS.Neon.Glow.Utilities.General
     /// </summary>
     public static class Files
     {
+
+        /// <summary>
+        /// Private static logger
+        /// </summary>
+        private static ILogger _log = Log.ForContext(typeof(Files));
+        
         /// <summary>
         /// Tries to determine the current home path based on calls through to System.Environment
         /// underlying functions
@@ -17,6 +24,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns></returns>
         public static Option<string> GetCurrentHomePath()
         {
+            Logs.MethodCall(_log);
             var home = Environment.GetEnvironmentVariable("HOME");
             if (home == null)
             {
@@ -26,6 +34,7 @@ namespace JCS.Neon.Glow.Utilities.General
                 }
                 catch
                 {
+                    Logs.Warning(_log, "Failed to locate the current HOME directory");
                     return Option<string>.None;
                 }
             }
@@ -43,6 +52,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <returns>A string option which is None if the home directory can't be located</returns>
         public static Option<string> GetHomeSubdirectoryPath(params string[] suffix)
         {
+            Logs.MethodCall(_log);
             var homeOption = GetCurrentHomePath();
             string home;
             if (homeOption.IsSome(out home))
@@ -53,6 +63,7 @@ namespace JCS.Neon.Glow.Utilities.General
             }
             else
             {
+                Logs.Warning(_log, "Failed to locate the current HOME directory");
                 return Option<string>.None;
             }
         }
