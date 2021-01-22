@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <returns>A valid <see cref="X509Certificate2" /></returns>
         /// <exception cref="X509CertificateException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
-        public static X509Certificate2 LoadFromFile(string source, Func<string> pf, bool exportable = true)
+        public static X509Certificate2 ImportFromFile(string source, Func<string> pf, bool exportable = true)
         {
             Logs.MethodCall(_log);
             Logs.Verbose(_log, $"Attempting x509 certificate load from \"{source}\"");
@@ -63,10 +63,10 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="passphrase">A passphrase to be used in order to decrypt any private key material</param>
         /// <param name="exportable">Whether or not the private key should be marked as exportable</param>
         /// <returns></returns>
-        public static X509Certificate2 LoadFromFile(string source, string passphrase, bool exportable = true)
+        public static X509Certificate2 ImportFromFile(string source, string passphrase, bool exportable = true)
         {
             Logs.MethodCall(_log);
-            return LoadFromFile(source, () => passphrase, exportable);
+            return ImportFromFile(source, () => passphrase, exportable);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="exportable">Whether or not the private key should be exportable or not</param>
         /// <returns></returns>
         /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
-        public static X509Certificate2 LoadFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
+        public static X509Certificate2 ImportFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
         {
             Logs.MethodCall(_log);
             try
@@ -103,9 +103,19 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="exportable">Whether the private key should be marked as exportable</param>
         /// <returns></returns>
         /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
-        public static X509Certificate2 LoadFromByteArray(byte[] source, string passphrase, bool exportable = true)
+        public static X509Certificate2 ImportFromByteArray(byte[] source, string passphrase, bool exportable = true)
         {
-            return LoadFromByteArray(source, () => passphrase, exportable);
+            return ImportFromByteArray(source, () => passphrase, exportable);
+        }
+
+        public static byte[] ExportToByteArray(X509Certificate2 certificate, Func<string> pf)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void ExportToFile(string path, X509Certificate2 certificate, Func<string> pf)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

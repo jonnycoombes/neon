@@ -26,7 +26,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
             var result = sshOption.Fold(path =>
             {
-                var cert = X509Certificates.LoadFromFile(path, () => passphrase);
+                var cert = X509Certificates.ImportFromFile(path, () => passphrase);
                 return cert;
             }, () => new X509Certificate2());
             return result;
@@ -38,7 +38,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         {
             Assert.Throws<X509Certificates.X509CertificateException>(() =>
             {
-                var cert = X509Certificates.LoadFromFile("non-sense path", () => "whatever");
+                var cert = X509Certificates.ImportFromFile("non-sense path", () => "whatever");
             });
         }
 
@@ -65,7 +65,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         {
             Assert.Throws<X509Certificates.X509CertificateException>(() =>
             {
-                X509Certificates.LoadFromByteArray(new byte[] { }, () => "whatever");
+                X509Certificates.ImportFromByteArray(new byte[] { }, () => "whatever");
             });
         }
     }
