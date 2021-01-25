@@ -110,7 +110,15 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
 
         public static byte[] ExportToByteArray(X509Certificate2 certificate, Func<string> pf)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return certificate.Export(X509ContentType.Pkcs12, pf());
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
+                    "Export failed, see inner exception", ex);
+            }
         }
 
         public static void ExportToFile(string path, X509Certificate2 certificate, Func<string> pf)
