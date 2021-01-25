@@ -17,21 +17,6 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         {
         }
 
-        /// <summary>
-        ///     Just loads a test certificate for use during tests
-        /// </summary>
-        /// <returns></returns>
-        private X509Certificate2 LoadKnownTestCertificate(string passphrase = "test")
-        {
-            var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
-            var result = sshOption.Fold(path =>
-            {
-                var cert = X509Certificates.ImportFromFile(path, () => passphrase);
-                return cert;
-            }, () => new X509Certificate2());
-            return result;
-        }
-
         [Fact(DisplayName = "Import from an invalid path should fail with an exception")]
         [Trait("Category", "Crypto")]
         public void LoadFromInvalidPath()
@@ -46,7 +31,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         [Trait("Category", "Crypto")]
         public void LoadPfxFromFile()
         {
-            var result = LoadKnownTestCertificate();
+            var result = LoadTestCertificate();
             Assert.Equal("neon-glow-test.jcs-software.co.uk", result.GetNameInfo(X509NameType.SimpleName, false));
             Assert.NotNull(result.PublicKey);
             Assert.NotNull(result.PrivateKey);
@@ -56,7 +41,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         [Trait("Category", "Crypto")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            Assert.Throws<X509Certificates.X509CertificateException>(() => { LoadKnownTestCertificate("bollocks"); });
+            Assert.Throws<X509Certificates.X509CertificateException>(() => { LoadTestCertificate("bollocks"); });
         }
 
         [Fact(DisplayName = "Import from an empty byte array must fail with an exception")]

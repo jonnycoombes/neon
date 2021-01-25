@@ -14,20 +14,6 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
     [Trait("Category", "Crypto")]
     public class AesSymmetricTests : TestBase
     {
-        /// <summary>
-        ///     Just loads a test certificate for use during tests
-        /// </summary>
-        /// <returns></returns>
-        private X509Certificate2 LoadCertificate()
-        {
-            var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
-            var result = sshOption.Fold(path =>
-            {
-                var cert = X509Certificates.ImportFromFile(path, () => "test");
-                return cert;
-            }, () => new X509Certificate2());
-            return result;
-        }
 
         [Theory(DisplayName = "Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Crypto")]
@@ -36,7 +22,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         [InlineData(256, "t")]
         public void EncryptAndDecryptWithWrappingSingleBlock(int keySize, string source)
         {
-            var cert = LoadCertificate();
+            var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
             var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
@@ -72,7 +58,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
         {
             var source = Passphrases.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
-            var cert = LoadCertificate();
+            var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
             var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
