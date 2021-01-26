@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Utilities.Cryptography;
@@ -52,6 +53,24 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             {
                 X509Certificates.ImportFromByteArray(new byte[] { }, () => "whatever");
             });
+        }
+
+        [Fact(DisplayName = "Must be able to export, and then reimport a certificate with a given passphrase (byte array)")]
+        [Trait("Category", "Crypto")]
+        public async void ExportAndImportPfx()
+        {
+            var original = LoadTestCertificate();
+            var exported = X509Certificates.ExportToByteArray(original, "test");
+            var recovered = X509Certificates.ImportFromByteArray(exported, "test");
+            Assert.Equal("neon-glow-test.jcs-software.co.uk", recovered.GetNameInfo(X509NameType.SimpleName, false));
+            var exportPath = Path.Combine(Directory.GetCurrentDirectory(), "testExport.pkcs12");
+            await X509Certificates.ExportToFile(exportPath, original, "test");
+            var recoveredFromFile = X509Certificates.ImportFromFile(exportPath, "test");
+            Assert.Equal("neon-glow-test.jcs-software.co.uk", recoveredFromFile.GetNameInfo(X509NameType.SimpleName, false));
+            original.Dispose();
+            recovered.Dispose();
+            recoveredFromFile.Dispose();
+            File.Delete(exportPath);
         }
     }
 }

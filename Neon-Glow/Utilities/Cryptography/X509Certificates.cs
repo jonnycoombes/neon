@@ -1,6 +1,8 @@
+
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using JCS.Neon.Glow.Utilities.General;
 using Serilog;
 
@@ -105,11 +107,20 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
         public static X509Certificate2 ImportFromByteArray(byte[] source, string passphrase, bool exportable = true)
         {
+            Logs.MethodCall(_log);
             return ImportFromByteArray(source, () => passphrase, exportable);
         }
 
+        /// <summary>
+        /// Exports a given certificate to a byte array, using a PKCS12 encoding and a supplied passphrase
+        /// </summary>
+        /// <param name="certificate">The certificate to export</param>
+        /// <param name="pf">Function that will return a passphrase to use during the export</param>
+        /// <returns></returns>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
         public static byte[] ExportToByteArray(X509Certificate2 certificate, Func<string> pf)
         {
+            Logs.MethodCall(_log);
             try
             {
                 return certificate.Export(X509ContentType.Pkcs12, pf());
@@ -121,17 +132,63 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             }
         }
 
-        public static void ExportToFile(string path, X509Certificate2 certificate, Func<string> pf)
+        /// <summary>
+        /// Convenience wrapper which just calls <see cref="ExportToByteArray(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})"/>
+        /// </summary>
+        /// <param name="certificate">The certificate to export</param>
+        /// <param name="passphrase">The passphrase to use</param>
+        /// <returns>A byte array which contains the PKCS12 encoding of the certificate and key material</returns>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
+        public static byte[] ExportToByteArray(X509Certificate2 certificate, string passphrase)
         {
-            throw new NotImplementedException();
+            Logs.MethodCall(_log);
+            return ExportToByteArray(certificate, () => passphrase);
+        }
+
+        /// <summary>
+        /// Exports a given certificate to a PKCS12 file, using a given passphrase to secure private key material
+        /// </summary>
+        /// <param name="path">The path to export to (e.g. certifcate.pkcs12, certificate.pks)</param>
+        /// <param name="certificate">The certificate to export</param>
+        /// <param name="pf">Function that returns a passphrase</param>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
+        public static async Task ExportToFile(string path, X509Certificate2 certificate, Func<string> pf)
+        {
+            Logs.MethodCall(_log);
+            try
+            {
+                using (var outFile = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    var export = ExportToByteArray(certificate, pf());
+                    await outFile.WriteAsync(export);
+                    await outFile.FlushAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
+                    "Export failed, see inner exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// Convenience wrapper which just calls <see cref="ExportToFile(string,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})"/>
+        /// </summary>
+        /// <param name="path">The path to export to</param>
+        /// <param name="certificate">The certificate to export</param>
+        /// <param name="passphrase">The passphrase to use in order to secure key material</param>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
+        public static Task ExportToFile(string path, X509Certificate2 certificate, string passphrase)
+        {
+            Logs.MethodCall(_log);
+            return ExportToFile(path, certificate, () => passphrase);
         }
 
         /// <summary>
         ///     Class used to specify options for certificate generation
         /// </summary>
         public class X509CertificateGenerationOptions
-        {
-        }
+        {}
 
         #region Exceptions
 
