@@ -16,6 +16,7 @@ namespace JCS.Neon.Glow.Test.Data
         ///     The actual test context
         /// </summary>
         protected SqlLiteRepositoryAwareDbContext _context;
+        
 
         /// <summary>
         ///     The context options
