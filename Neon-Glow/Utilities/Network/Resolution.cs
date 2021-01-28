@@ -47,7 +47,7 @@ namespace JCS.Neon.Glow.Utilities.Network
             }
             catch (Exception ex)
             {
-                Logs.Warning(_log, "Exception whilst attempting the lookup of current hostname");
+                Logs.Warning(_log, $"Exception whilst attempting the lookup of current hostname \"{ex.Message}\"");
                 return Environment.MachineName;
             }
         }
