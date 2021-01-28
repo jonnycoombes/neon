@@ -1,8 +1,12 @@
+#region
+
 using System;
 using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Text;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.General
 {

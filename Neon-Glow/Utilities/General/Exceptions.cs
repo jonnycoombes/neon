@@ -1,7 +1,11 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.General
 {
@@ -17,14 +21,14 @@ namespace JCS.Neon.Glow.Utilities.General
         private static Dictionary<Type, ConstructorInfo> _ctorCache = new();
 
         /// <summary>
-        /// Generates a new exception of a given type, and logs the supplied message as an
-        /// error first.  An optional inner exception can be supplied
+        ///     Generates a new exception of a given type, and logs the supplied message as an
+        ///     error first.  An optional inner exception can be supplied
         /// </summary>
-        /// <param name="log">The <see cref="ILogger"/> instance to use for logging</param>
+        /// <param name="log">The <see cref="ILogger" /> instance to use for logging</param>
         /// <param name="message">The message to be logged, and then set as the message for the generated exception</param>
         /// <param name="inner">An optional inner exception</param>
         /// <typeparam name="E">The type of exception to be generated</typeparam>
-        /// <returns>A new instance of type E, derived from <see cref="Exception"/></returns>
+        /// <returns>A new instance of type E, derived from <see cref="Exception" /></returns>
         public static E LoggedException<E>(ILogger log, string message, Exception inner = null)
             where E : Exception
         {

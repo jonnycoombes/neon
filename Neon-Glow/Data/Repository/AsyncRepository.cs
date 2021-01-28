@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ using JCS.Neon.Glow.Utilities.General;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Data.Repository
 {

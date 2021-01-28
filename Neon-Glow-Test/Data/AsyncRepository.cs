@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Linq;
 using JCS.Neon.Glow.Data.Repository;
@@ -5,6 +7,8 @@ using JCS.Neon.Glow.Test.Data.Entity;
 using JCS.Neon.Glow.Types;
 using Xunit;
 using Xunit.Abstractions;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Data
 {
@@ -116,7 +120,7 @@ namespace JCS.Neon.Glow.Test.Data
         {
             var repository = _context.CreateAsyncRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
-            var items = await repository.SelectMany(new[] { _testEntries[0].Id, _testEntries[1].Id });
+            var items = await repository.SelectMany(new[] {_testEntries[0].Id, _testEntries[1].Id});
             Assert.Equal(2, items.Count());
         }
 
@@ -202,7 +206,7 @@ namespace JCS.Neon.Glow.Test.Data
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             _testEntries[2].StringProperty = "Test update";
-            await repository.UpsertMany(new[] { _testEntries[1], _testEntries[2] });
+            await repository.UpsertMany(new[] {_testEntries[1], _testEntries[2]});
             ModelGuidKeyedTestEntity r1;
             ModelGuidKeyedTestEntity r2;
             (await repository.SelectOne(v => v.Id.Equals(_testEntries[1].Id))).IsSome(out r1);

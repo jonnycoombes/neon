@@ -1,8 +1,12 @@
+#region
+
 using System;
 using JCS.Neon.Glow.Test.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Data.Contexts
 {

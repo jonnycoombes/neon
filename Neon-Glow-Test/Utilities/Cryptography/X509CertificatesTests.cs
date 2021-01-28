@@ -1,10 +1,12 @@
+#region
+
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Utilities.Cryptography;
-using JCS.Neon.Glow.Utilities.General;
 using Xunit;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {

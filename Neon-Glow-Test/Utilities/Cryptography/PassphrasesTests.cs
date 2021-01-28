@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {

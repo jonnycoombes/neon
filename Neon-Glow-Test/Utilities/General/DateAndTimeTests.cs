@@ -1,9 +1,13 @@
+#region
+
 using System;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Utilities.General;
 using NodaTime;
 using NodaTime.Extensions;
 using Xunit;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.General
 {

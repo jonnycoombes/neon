@@ -1,6 +1,10 @@
-﻿using JCS.Neon.Glow.Types.Extensions;
+﻿#region
+
+using JCS.Neon.Glow.Types.Extensions;
 using JCS.Neon.Glow.Utilities.Cryptography;
 using Xunit;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {

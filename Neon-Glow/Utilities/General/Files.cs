@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.IO;
 using System.Linq;
 using JCS.Neon.Glow.Types;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.General
 {

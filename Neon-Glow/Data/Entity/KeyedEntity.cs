@@ -1,7 +1,11 @@
+#region
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NodaTime;
+
+#endregion
 
 namespace JCS.Neon.Glow.Data.Entity
 {

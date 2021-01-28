@@ -1,4 +1,5 @@
-// Copyright
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -9,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit.Abstractions;
 
+#endregion
+
 namespace JCS.Neon.Glow.Test.Data
 {
     public abstract class RepositoryAwareDbContext : TestBase, IDisposable
@@ -17,7 +20,7 @@ namespace JCS.Neon.Glow.Test.Data
         ///     The actual test context
         /// </summary>
         protected SqlLiteRepositoryAwareDbContext _context;
-        
+
 
         /// <summary>
         ///     The context options

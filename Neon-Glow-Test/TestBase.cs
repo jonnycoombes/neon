@@ -1,4 +1,5 @@
-﻿using System;
+﻿#region
+
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
@@ -6,6 +7,8 @@ using JCS.Neon.Glow.Utilities.Cryptography;
 using JCS.Neon.Glow.Utilities.General;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test
 {

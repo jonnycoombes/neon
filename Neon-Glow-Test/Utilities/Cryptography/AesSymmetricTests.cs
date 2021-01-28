@@ -1,10 +1,11 @@
-﻿using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using JCS.Neon.Glow.Types;
+﻿#region
+
+using System.Security.Cryptography;
 using JCS.Neon.Glow.Utilities.Cryptography;
-using JCS.Neon.Glow.Utilities.General;
 using Xunit;
 using Encoding = System.Text.Encoding;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.Cryptography
 {
@@ -14,7 +15,6 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
     [Trait("Category", "Crypto")]
     public class AesSymmetricTests : TestBase
     {
-
         [Theory(DisplayName = "Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Crypto")]
         [InlineData(128, "this is a test string")]

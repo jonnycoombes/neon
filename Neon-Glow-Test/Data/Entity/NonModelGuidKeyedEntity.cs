@@ -1,5 +1,9 @@
+#region
+
 using System;
 using JCS.Neon.Glow.Data.Entity;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Data.Entity
 {

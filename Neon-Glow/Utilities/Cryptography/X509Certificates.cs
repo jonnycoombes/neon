@@ -1,3 +1,4 @@
+#region
 
 using System;
 using System.IO;
@@ -5,6 +6,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Utilities.General;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.Cryptography
 {
@@ -112,7 +115,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         }
 
         /// <summary>
-        /// Exports a given certificate to a byte array, using a PKCS12 encoding and a supplied passphrase
+        ///     Exports a given certificate to a byte array, using a PKCS12 encoding and a supplied passphrase
         /// </summary>
         /// <param name="certificate">The certificate to export</param>
         /// <param name="pf">Function that will return a passphrase to use during the export</param>
@@ -133,7 +136,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         }
 
         /// <summary>
-        /// Convenience wrapper which just calls <see cref="ExportToByteArray(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})"/>
+        ///     Convenience wrapper which just calls
+        ///     <see cref="ExportToByteArray(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})" />
         /// </summary>
         /// <param name="certificate">The certificate to export</param>
         /// <param name="passphrase">The passphrase to use</param>
@@ -146,7 +150,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         }
 
         /// <summary>
-        /// Exports a given certificate to a PKCS12 file, using a given passphrase to secure private key material
+        ///     Exports a given certificate to a PKCS12 file, using a given passphrase to secure private key material
         /// </summary>
         /// <param name="path">The path to export to (e.g. certifcate.pkcs12, certificate.pks)</param>
         /// <param name="certificate">The certificate to export</param>
@@ -172,7 +176,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         }
 
         /// <summary>
-        /// Convenience wrapper which just calls <see cref="ExportToFile(string,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})"/>
+        ///     Convenience wrapper which just calls
+        ///     <see cref="ExportToFile(string,System.Security.Cryptography.X509Certificates.X509Certificate2,System.Func{string})" />
         /// </summary>
         /// <param name="path">The path to export to</param>
         /// <param name="certificate">The certificate to export</param>
@@ -188,7 +193,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         ///     Class used to specify options for certificate generation
         /// </summary>
         public class X509CertificateGenerationOptions
-        {}
+        {
+        }
 
         #region Exceptions
 

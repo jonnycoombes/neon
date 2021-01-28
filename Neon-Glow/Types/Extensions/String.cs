@@ -1,5 +1,9 @@
-﻿using JCS.Neon.Glow.Utilities.Cryptography;
+﻿#region
+
+using JCS.Neon.Glow.Utilities.Cryptography;
 using static JCS.Neon.Glow.Utilities.Cryptography.Encoding;
+
+#endregion
 
 namespace JCS.Neon.Glow.Types.Extensions
 {

@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using Xunit;
 using static JCS.Neon.Glow.Utilities.General.Parsing;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Utilities.General
 {

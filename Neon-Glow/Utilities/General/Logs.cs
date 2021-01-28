@@ -1,8 +1,12 @@
+#region
+
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Serilog;
 using Serilog.Events;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.General
 {

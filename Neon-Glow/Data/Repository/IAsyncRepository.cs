@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -6,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Types;
+
+#endregion
 
 namespace JCS.Neon.Glow.Data.Repository
 {

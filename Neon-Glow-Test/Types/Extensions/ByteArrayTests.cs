@@ -1,6 +1,10 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using JCS.Neon.Glow.Types.Extensions;
 using Xunit;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Types.Extensions
 {

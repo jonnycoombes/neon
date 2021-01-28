@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using JCS.Neon.Glow.Utilities.General;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.Cryptography
 {

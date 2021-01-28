@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -7,6 +9,8 @@ using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Types.Extensions;
 using JCS.Neon.Glow.Utilities.General;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.Cryptography
 {

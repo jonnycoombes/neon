@@ -1,9 +1,13 @@
+#region
+
 using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Utilities.General;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Data.Repository
 {

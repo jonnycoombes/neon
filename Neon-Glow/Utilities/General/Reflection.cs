@@ -1,9 +1,13 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Utilities.General
 {
