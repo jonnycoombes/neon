@@ -16,6 +16,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         ///     Encodes a string to Base64
         /// </summary>
         /// <param name="s"></param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static string Base64Encode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
@@ -37,6 +38,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         ///     Encodes a string to Base64
         /// </summary>
         /// <param name="s"></param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static string Base64UrlEncode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
@@ -72,8 +74,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns>Either null or last n-1 characters of a string</returns>
         public static string? Tail(this string s)
         {
-            if (s.Length == 0) return null;
-            return s[1..];
+            return s.Length == 0 ? null : s[1..];
         }
     }
 }

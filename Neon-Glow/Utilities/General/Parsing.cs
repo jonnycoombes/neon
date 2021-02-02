@@ -69,9 +69,7 @@ namespace JCS.Neon.Glow.Utilities.General
             Logs.MethodCall(_log);
             if (src == null) return Option<OffsetDateTime>.None;
             var result = OffsetDateTimePattern.GeneralIso.Parse(src);
-            if (result.Success)
-                return Option<OffsetDateTime>.Some(result.Value);
-            return Option<OffsetDateTime>.None;
+            return result.Success ? Option<OffsetDateTime>.Some(result.Value) : Option<OffsetDateTime>.None;
         }
 
         /// <summary>
@@ -84,9 +82,7 @@ namespace JCS.Neon.Glow.Utilities.General
             Logs.MethodCall(_log);
             if (src == null) return Option<LocalDateTime>.None;
             var result = LocalDateTimePattern.GeneralIso.Parse(src);
-            if (result.Success)
-                return Option<LocalDateTime>.Some(result.Value);
-            return Option<LocalDateTime>.None;
+            return result.Success ? Option<LocalDateTime>.Some(result.Value) : Option<LocalDateTime>.None;
         }
     }
 }

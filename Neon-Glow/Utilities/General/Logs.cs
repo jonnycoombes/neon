@@ -20,6 +20,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log"></param>
         /// <param name="memberName"></param>
+        /// <param name="filePath"></param>
         public static void MethodCall(ILogger log, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);
@@ -29,7 +30,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <summary>
         ///     Convenience method for logging at a debug level
         /// </summary>
-        /// <param name="log">The target <see cref="ILogger" instance /></param>
+        /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
         public static void Debug(ILogger log, string message)
         {
@@ -51,6 +52,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance /></param>
         /// <param name="message">The message to log</param>
+        /// <param name="memberName"></param>
         public static void Verbose(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Verbose);
@@ -61,6 +63,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance /></param>
         /// <param name="message">The message to log</param>
+        /// <param name="memberName"></param>
         public static void Warning(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Warning);
@@ -99,6 +102,7 @@ namespace JCS.Neon.Glow.Utilities.General
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" instance /></param>
         /// <param name="message">The message to log</param>
+        /// <param name="memberName"></param>
         public static void Error(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Error);
@@ -107,33 +111,34 @@ namespace JCS.Neon.Glow.Utilities.General
         /// <summary>
         ///     Utility method that will log at a specific level
         /// </summary>
+        /// <param name="message"></param>
         /// <param name="level">The level to log at</param>
         /// <param name="log">The <see cref="ILogger" /> to use</param>
         public static void LogAtLevel(ILogger log, string message, LogEventLevel level = LogEventLevel.Information)
         {
-            if (log.IsEnabled(level))
+            if (!log.IsEnabled(level)) return;
+            switch (level)
             {
-                switch (level)
-                {
-                    case LogEventLevel.Debug:
-                        log.Debug(message);
-                        break;
-                    case LogEventLevel.Error:
-                        log.Error(message);
-                        break;
-                    case LogEventLevel.Fatal:
-                        log.Fatal(message);
-                        break;
-                    case LogEventLevel.Information:
-                        log.Information(message);
-                        break;
-                    case LogEventLevel.Verbose:
-                        log.Verbose(message);
-                        break;
-                    case LogEventLevel.Warning:
-                        log.Warning(message);
-                        break;
-                }
+                case LogEventLevel.Debug:
+                    log.Debug(messageTemplate: message);
+                    break;
+                case LogEventLevel.Error:
+                    log.Error(messageTemplate: message);
+                    break;
+                case LogEventLevel.Fatal:
+                    log.Fatal(messageTemplate: message);
+                    break;
+                case LogEventLevel.Information:
+                    log.Information(messageTemplate: message);
+                    break;
+                case LogEventLevel.Verbose:
+                    log.Verbose(messageTemplate: message);
+                    break;
+                case LogEventLevel.Warning:
+                    log.Warning(messageTemplate: message);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
     }

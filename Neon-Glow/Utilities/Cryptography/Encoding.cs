@@ -86,23 +86,16 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             Logs.MethodCall(_log);
             try
             {
-                switch (encoding)
+                return encoding switch
                 {
-                    case ByteEncoding.Ascii:
-                        return System.Text.Encoding.ASCII.GetBytes(source);
-                    case ByteEncoding.Utf8:
-                        return System.Text.Encoding.UTF8.GetBytes(source);
-                    case ByteEncoding.Utf32:
-                        return System.Text.Encoding.UTF32.GetBytes(source);
-                    case ByteEncoding.Unicode:
-                        return System.Text.Encoding.Unicode.GetBytes(source);
-                    case ByteEncoding.BigEndianUnicode:
-                        return System.Text.Encoding.BigEndianUnicode.GetBytes(source);
-                    case ByteEncoding.Latin1:
-                        return System.Text.Encoding.Latin1.GetBytes(source);
-                    default:
-                        return System.Text.Encoding.UTF8.GetBytes(source);
-                }
+                    ByteEncoding.Ascii => System.Text.Encoding.ASCII.GetBytes(source),
+                    ByteEncoding.Utf8 => System.Text.Encoding.UTF8.GetBytes(source),
+                    ByteEncoding.Utf32 => System.Text.Encoding.UTF32.GetBytes(source),
+                    ByteEncoding.Unicode => System.Text.Encoding.Unicode.GetBytes(source),
+                    ByteEncoding.BigEndianUnicode => System.Text.Encoding.BigEndianUnicode.GetBytes(source),
+                    ByteEncoding.Latin1 => System.Text.Encoding.Latin1.GetBytes(source),
+                    _ => System.Text.Encoding.UTF8.GetBytes(source)
+                };
             }
             catch (Exception ex)
             {
@@ -122,23 +115,16 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             Logs.MethodCall(_log);
             try
             {
-                switch (encoding)
+                return encoding switch
                 {
-                    case ByteEncoding.Ascii:
-                        return System.Text.Encoding.ASCII.GetString(source);
-                    case ByteEncoding.Utf8:
-                        return System.Text.Encoding.UTF8.GetString(source);
-                    case ByteEncoding.Utf32:
-                        return System.Text.Encoding.UTF32.GetString(source);
-                    case ByteEncoding.Unicode:
-                        return System.Text.Encoding.Unicode.GetString(source);
-                    case ByteEncoding.BigEndianUnicode:
-                        return System.Text.Encoding.BigEndianUnicode.GetString(source);
-                    case ByteEncoding.Latin1:
-                        return System.Text.Encoding.Latin1.GetString(source);
-                    default:
-                        return System.Text.Encoding.UTF8.GetString(source);
-                }
+                    ByteEncoding.Ascii => System.Text.Encoding.ASCII.GetString(source),
+                    ByteEncoding.Utf8 => System.Text.Encoding.UTF8.GetString(source),
+                    ByteEncoding.Utf32 => System.Text.Encoding.UTF32.GetString(source),
+                    ByteEncoding.Unicode => System.Text.Encoding.Unicode.GetString(source),
+                    ByteEncoding.BigEndianUnicode => System.Text.Encoding.BigEndianUnicode.GetString(source),
+                    ByteEncoding.Latin1 => System.Text.Encoding.Latin1.GetString(source),
+                    _ => System.Text.Encoding.UTF8.GetString(source)
+                };
             }
             catch (Exception ex)
             {
@@ -198,7 +184,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         }
 
         /// <summary>
-        ///     Decode a string from Base64 using the given characted encoding
+        ///     Decode a string from Base64 using the given character encoding
         /// </summary>
         /// <param name="source">The source in Base64 format</param>
         /// <param name="encoding">The character encoding to use</param>

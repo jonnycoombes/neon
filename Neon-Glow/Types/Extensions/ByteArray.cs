@@ -37,13 +37,11 @@ namespace JCS.Neon.Glow.Types.Extensions
         public static byte[] Randomise(this byte[]? dest, bool nonZero = false)
         {
             if (dest == null || dest.Length == 0) throw new ArgumentException("Zero-length or null array cannot be randomised");
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                if (nonZero)
-                    rng.GetNonZeroBytes(dest);
-                else
-                    rng.GetBytes(dest);
-            }
+            using var rng = new RNGCryptoServiceProvider();
+            if (nonZero)
+                rng.GetNonZeroBytes(dest);
+            else
+                rng.GetBytes(dest);
 
             return dest;
         }
@@ -66,8 +64,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns>Either null or last n-1 elements</returns>
         public static byte[]? Tail(this byte[] arr)
         {
-            if (arr.Length == 0) return null;
-            return arr[1..];
+            return arr.Length == 0 ? null : arr[1..];
         }
     }
 }

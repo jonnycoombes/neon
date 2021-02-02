@@ -29,20 +29,16 @@ namespace JCS.Neon.Glow.Utilities.General
         {
             Logs.MethodCall(_log);
             var home = Environment.GetEnvironmentVariable("HOME");
-            if (home == null)
+            if (home != null) return Option<string>.Some(home);
+            try
             {
-                try
-                {
-                    return Option<string>.Some(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-                }
-                catch
-                {
-                    Logs.Warning(_log, "Failed to locate the current HOME directory");
-                    return Option<string>.None;
-                }
+                return Option<string>.Some(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             }
-
-            return Option<string>.Some(home);
+            catch
+            {
+                Logs.Warning(_log, "Failed to locate the current HOME directory");
+                return Option<string>.None;
+            }
         }
 
         /// <summary>
@@ -55,8 +51,7 @@ namespace JCS.Neon.Glow.Utilities.General
         {
             Logs.MethodCall(_log);
             var homeOption = GetCurrentHomePath();
-            string home;
-            if (homeOption.IsSome(out home))
+            if (homeOption.IsSome(out var home))
             {
                 var components = new[] {home};
                 components = components.Concat(suffix).ToArray();

@@ -47,13 +47,10 @@ namespace JCS.Neon.Glow.Utilities.General
             Logs.MethodCall(_log);
             try
             {
-                if (typeof(T).IsInterface)
-                {
-                    Logs.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
-                    return Option<T>.None;
-                }
+                if (!typeof(T).IsInterface) return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                Logs.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
+                return Option<T>.None;
 
-                return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
             }
             catch
             {
@@ -74,13 +71,10 @@ namespace JCS.Neon.Glow.Utilities.General
             Logs.MethodCall(_log);
             try
             {
-                if (!baseType.IsAssignableTo(typeof(T)))
-                {
-                    Logs.Warning(_log, "The specified type is not assignable to required type T");
-                    return Option<T>.None;
-                }
+                if (baseType.IsAssignableTo(typeof(T))) return new Option<T>((T) Activator.CreateInstance(baseType, args));
+                Logs.Warning(_log, "The specified type is not assignable to required type T");
+                return Option<T>.None;
 
-                return new Option<T>((T) Activator.CreateInstance(baseType, args));
             }
             catch
             {
@@ -100,8 +94,7 @@ namespace JCS.Neon.Glow.Utilities.General
         {
             Logs.MethodCall(_log);
             var instance = CreateInstance<E>(args);
-            E exception;
-            if (instance.IsSome(out exception))
+            if (instance.IsSome(out var exception))
                 return exception;
             return new InvalidOperationException($"Unable to raise the requested exception of type {typeof(E)}");
         }
@@ -114,9 +107,7 @@ namespace JCS.Neon.Glow.Utilities.General
         {
             Logs.MethodCall(_log);
             var assembly = Assembly.GetEntryAssembly();
-            if (includeAssemblyName)
-                return $"{assembly?.FullName} - {assembly?.GetName().Version}";
-            return $"{assembly?.GetName().Version}";
+            return includeAssemblyName ? $"{assembly?.FullName} - {assembly?.GetName().Version}" : $"{assembly?.GetName().Version}";
         }
     }
 }

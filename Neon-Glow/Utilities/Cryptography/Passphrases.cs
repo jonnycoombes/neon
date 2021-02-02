@@ -155,39 +155,35 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
                     "The specified passphrase length doesn't meet minimum length requirements");
             }
 
-            using (var rng = new RNGCryptoServiceProvider())
+            using var rng = new RNGCryptoServiceProvider();
+            var sb = new StringBuilder();
+            var randoms = new byte[2];
+            for (var i = 0; i < options.RequiredLength; i++)
             {
-                var sb = new StringBuilder();
-                var randoms = new byte[2];
-                for (var i = 0; i < options.RequiredLength; i++)
+                randoms = randoms.Randomise();
+                var charResidue = 0;
+                switch (randoms[0] % 4)
                 {
-                    randoms = randoms.Randomise();
-                    var charResidue = 0;
-                    switch (randoms[0] % 4)
-                    {
-                        case 0:
-                            charResidue = randoms[1] % UpperCaseCharacters.Length;
-                            sb.Append(UpperCaseCharacters[charResidue]);
-                            break;
-                        case 1:
-                            charResidue = randoms[1] % LowerCaseCharacters.Length;
-                            sb.Append(LowerCaseCharacters[charResidue]);
-                            break;
-                        case 2:
-                            charResidue = randoms[1] % NumericCharacters.Length;
-                            sb.Append(NumericCharacters[charResidue]);
-                            break;
-                        default:
-                            charResidue = randoms[1] % SpecialCharacters.Length;
-                            sb.Append(SpecialCharacters[charResidue]);
-                            break;
-                    }
+                    case 0:
+                        charResidue = randoms[1] % UpperCaseCharacters.Length;
+                        sb.Append(UpperCaseCharacters[charResidue]);
+                        break;
+                    case 1:
+                        charResidue = randoms[1] % LowerCaseCharacters.Length;
+                        sb.Append(LowerCaseCharacters[charResidue]);
+                        break;
+                    case 2:
+                        charResidue = randoms[1] % NumericCharacters.Length;
+                        sb.Append(NumericCharacters[charResidue]);
+                        break;
+                    default:
+                        charResidue = randoms[1] % SpecialCharacters.Length;
+                        sb.Append(SpecialCharacters[charResidue]);
+                        break;
                 }
-
-                if (options.EncodeBase64)
-                    return Encoding.EncodeBase64(sb.ToString());
-                return sb.ToString();
             }
+
+            return options.EncodeBase64 ? Encoding.EncodeBase64(sb.ToString()) : sb.ToString();
         }
 
         /// <summary>

@@ -170,7 +170,7 @@ namespace JCS.Neon.Glow.Data.Repository
         {
             Logs.MethodCall(_log);
             var selection = await SelectMany(expression, cancellationToken);
-            return selection.Select(v => f(v));
+            return selection.Select(f);
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.GetEnumerator" />

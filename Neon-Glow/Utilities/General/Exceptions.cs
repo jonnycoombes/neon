@@ -1,8 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Serilog;
 
 #endregion
@@ -15,11 +13,6 @@ namespace JCS.Neon.Glow.Utilities.General
     /// </summary>
     public static class Exceptions
     {
-        /// <summary>
-        ///     Cache to store constructor information for raising new exceptionss
-        /// </summary>
-        private static Dictionary<Type, ConstructorInfo> _ctorCache = new();
-
         /// <summary>
         ///     Generates a new exception of a given type, and logs the supplied message as an
         ///     error first.  An optional inner exception can be supplied

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -98,36 +99,21 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="aes">An instance of <see cref="System.Security.Cryptography.Aes" /></param>
         /// <param name="size">The required key size</param>
         /// <returns></returns>
-        private static bool ValidateKeySize(Aes aes, int size)
+        private static bool ValidateKeySize(SymmetricAlgorithm aes, int size)
         {
             Logs.MethodCall(_log);
-            foreach (var keySize in aes.LegalKeySizes)
-            {
-                if (size.Equals(size))
-                    return true;
-            }
-
-            return false;
+            return aes.LegalKeySizes.Any(_ => size.Equals(size));
         }
 
         /// <summary>
         ///     Creates and initialises a new instance of <see cref="System.Security.Cryptography.Aes" />
         /// </summary>
         /// <param name="options">A set of options for the cipher instance</param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
         /// <returns></returns>
         /// <exception cref="AesSymmetricException">If the specified options are invalid</exception>
-        private static Aes InitialiseCipher(AesSymmetricEncryptionOptions options)
-        {
-            return InitialiseCipher(options, null, null);
-        }
-
-        /// <summary>
-        ///     Creates and initialises a new instance of <see cref="System.Security.Cryptography.Aes" />
-        /// </summary>
-        /// <param name="options">A set of options for the cipher instance</param>
-        /// <returns></returns>
-        /// <exception cref="AesSymmetricException">If the specified options are invalid</exception>
-        private static Aes InitialiseCipher(AesSymmetricEncryptionOptions options, byte[]? key, byte[]? IV)
+        private static Aes InitialiseCipher(AesSymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
         {
             Logs.MethodCall(_log);
             Logs.Verbose(_log, $"Initialising AES with a suggested config of ({options.KeySize}, {options.Mode})");
@@ -144,8 +130,8 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
                 aes.Key = key;
             else
                 aes.GenerateKey();
-            if (IV != null)
-                aes.IV = IV;
+            if (iv != null)
+                aes.IV = iv;
             else
                 aes.GenerateIV();
             return aes;
@@ -156,7 +142,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// </summary>
         /// <param name="cipher">The current cipher instance</param>
         /// <returns>An array containing the key and then the IV in sequence</returns>
-        private static byte[] PackKeyAndIV(Aes cipher)
+        private static byte[] PackKeyAndIv(SymmetricAlgorithm cipher)
         {
             Logs.MethodCall(_log);
             var packed = BitConverter.GetBytes(cipher.KeySize);
@@ -168,14 +154,14 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// </summary>
         /// <param name="packed"></param>
         /// <returns>A <see cref="Pair{S,T}" />, with the leftmost entry being the unpacked key, the rightmost the IV</returns>
-        private static Pair<byte[], byte[]> UnpackKeyAndIV(byte[] packed)
+        private static Pair<byte[], byte[]> UnpackKeyAndIv(IReadOnlyCollection<byte> packed)
         {
             Logs.MethodCall(_log);
             var keySize = BitConverter.ToInt32(packed.Take(4).ToArray());
             var keyLength = keySize / 8;
             var key = packed.Skip(4).Take(keyLength).ToArray();
-            var IV = packed.Skip(4 + keyLength).Take(packed.Length - 4 - keyLength).ToArray();
-            return new Pair<byte[], byte[]>(key, IV);
+            var iv = packed.Skip(4 + keyLength).Take(packed.Count - 4 - keyLength).ToArray();
+            return new Pair<byte[], byte[]>(key, iv);
         }
 
         /// <summary>
@@ -185,8 +171,9 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="input">The source byte array to encrypt</param>
         /// <param name="certificate">A valid <see cref="X509Certificate2" /> which containing a public and private key pair</param>
         /// <param name="configureAction">Sets the encryption and wrapping options</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns>
-        ///     A <see cref="Pair" />, where the left value is a byte array containing a wrapped key, salt and IV, and the
+        ///     A <see cref="Pair{S,T}"/>, where the left value is a byte array containing a wrapped key, salt and IV, and the
         ///     right value contains the encrypted source
         /// </returns>
         /// <exception cref="AesSymmetricException"></exception>
@@ -217,21 +204,21 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             try
             {
                 // initialise the cipher, encrypt, pack the key and IV and perform any output encoding
-                using (var cipher = InitialiseCipher(options))
+                using var cipher = InitialiseCipher(options);
+                var encrypted = Transform(input, cipher, AesSymmetricTransformDirection.Encrypt);
+                var packed = PackKeyAndIv(cipher);
+                switch (options.SymmetricKeyWrappingOption)
                 {
-                    var encrypted = Transform(input, cipher, AesSymmetricTransformDirection.Encrypt);
-                    var packed = PackKeyAndIV(cipher);
-                    switch (options.SymmetricKeyWrappingOption)
-                    {
-                        case AesSymmetricKeyWrappingOption.WrapWithPublicKey:
-                            var rsaPublic = certificate.GetRSAPublicKey();
-                            var wrappedPublic = rsaPublic!.Encrypt(packed, RSAEncryptionPadding.Pkcs1);
-                            return new Pair<byte[], byte[]>(wrappedPublic, encrypted);
-                        default:
-                            var rsaPrivate = certificate.GetRSAPrivateKey();
-                            var wrappedPrivate = rsaPrivate!.Encrypt(packed, RSAEncryptionPadding.Pkcs1);
-                            return new Pair<byte[], byte[]>(wrappedPrivate, encrypted);
-                    }
+                    case AesSymmetricKeyWrappingOption.WrapWithPublicKey:
+                        var rsaPublic = certificate.GetRSAPublicKey();
+                        var wrappedPublic = rsaPublic!.Encrypt(packed, RSAEncryptionPadding.Pkcs1);
+                        return new Pair<byte[], byte[]>(wrappedPublic, encrypted);
+                    case AesSymmetricKeyWrappingOption.WrapWithPrivateKey:
+                        var rsaPrivate = certificate.GetRSAPrivateKey();
+                        var wrappedPrivate = rsaPrivate!.Encrypt(packed, RSAEncryptionPadding.Pkcs1);
+                        return new Pair<byte[], byte[]>(wrappedPrivate, encrypted);
+                    default:
+                        throw new ArgumentOutOfRangeException($"{nameof(options.SymmetricKeyWrappingOption)}");
                 }
             }
             catch (Exception ex)
@@ -248,6 +235,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="input">A pair where the leftmost is a wrapped, packed key and IV.  The rightmost is the encrypted payload</param>
         /// <param name="certificate">The x509 certificate to use for obtaining key unwrapping material from</param>
         /// <param name="configureAction">The <see cref="AesSymmetricEncryptionOptions" /> to use</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
         public static byte[] UnwrapAndDecrypt(Pair<byte[], byte[]> input, X509Certificate2 certificate,
             Action<AesSymmetricEncryptionOptionsBuilder> configureAction)
@@ -282,18 +270,18 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
                         var rsaPrivate = certificate.GetRSAPrivateKey();
                         unwrappedKeyParams = rsaPrivate!.Decrypt(input.Left, RSAEncryptionPadding.Pkcs1);
                         break;
-                    default:
+                    case AesSymmetricKeyUnwrappingOption.UnwrapWithPublicKey:
                         var rsaPublic = certificate.GetRSAPublicKey();
                         unwrappedKeyParams = rsaPublic!.Decrypt(input.Left, RSAEncryptionPadding.Pkcs1);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException($"{nameof(options.SymmetricKeyWrappingOption)}");
                 }
 
                 // unpack the key and IV
-                var unpackedKeyParams = UnpackKeyAndIV(unwrappedKeyParams);
-                using (var aes = InitialiseCipher(options, unpackedKeyParams.Left, unpackedKeyParams.Right))
-                {
-                    return Transform(input.Right, aes, AesSymmetricTransformDirection.Decrypt);
-                }
+                var unpackedKeyParams = UnpackKeyAndIv(unwrappedKeyParams);
+                using var aes = InitialiseCipher(options, unpackedKeyParams.Left, unpackedKeyParams.Right);
+                return Transform(input.Right, aes, AesSymmetricTransformDirection.Decrypt);
             }
             catch (Exception ex)
             {
@@ -309,60 +297,48 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="cipher">The (already initialised) cipher instance</param>
         /// <param name="direction">Specifies the direction of the transform</param>
         /// <returns></returns>
-        private static byte[] Transform(byte[] source, Aes cipher, AesSymmetricTransformDirection direction)
+        private static byte[] Transform(byte[] source, SymmetricAlgorithm cipher, AesSymmetricTransformDirection direction)
         {
             Logs.MethodCall(_log);
-            using (var cryptor =
-                direction == AesSymmetricTransformDirection.Encrypt ? cipher.CreateEncryptor() : cipher.CreateDecryptor())
+            using var cryptor =
+                direction == AesSymmetricTransformDirection.Encrypt ? cipher.CreateEncryptor() : cipher.CreateDecryptor();
+            Logs.Verbose(_log, "Encrypting larger data, using stream transform");
+            try
             {
-                Logs.Verbose(_log, "Encrypting larger data, using stream transform");
-                try
+                switch (direction)
                 {
-                    switch (direction)
+                    case AesSymmetricTransformDirection.Encrypt:
                     {
-                        case AesSymmetricTransformDirection.Encrypt:
+                        using var bufferStream = new MemoryStream();
+                        using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Write))
                         {
-                            byte[] encrypted;
-                            using (var bufferStream = new MemoryStream())
+                            using (var writer = new BinaryWriter(cryptoStream))
                             {
-                                using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Write))
-                                {
-                                    using (var writer = new BinaryWriter(cryptoStream))
-                                    {
-                                        writer.Write(source);
-                                    }
-                                }
-
-                                encrypted = bufferStream.ToArray();
+                                writer.Write(source);
                             }
-
-                            return encrypted;
                         }
-                        case AesSymmetricTransformDirection.Decrypt:
-                        {
-                            byte[] decrypted;
-                            using (var bufferStream = new MemoryStream(source))
-                            {
-                                using (var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Read))
-                                {
-                                    using (var reader = new BinaryReader(cryptoStream))
-                                    {
-                                        decrypted = reader.ReadBytes(source.Length);
-                                    }
-                                }
-                            }
 
-                            return decrypted;
-                        }
-                        default:
-                            throw Exceptions.LoggedException<AesSymmetricException>(_log,
-                                "Unreachable exception - here due to non-exhaustive pattern matching");
+                        var encrypted = bufferStream.ToArray();
+
+                        return encrypted;
                     }
+                    case AesSymmetricTransformDirection.Decrypt:
+                    {
+                        using var bufferStream = new MemoryStream(source);
+                        using var cryptoStream = new CryptoStream(bufferStream, cryptor, CryptoStreamMode.Read);
+                        using var reader = new BinaryReader(cryptoStream);
+                        var decrypted = reader.ReadBytes(source.Length);
+
+                        return decrypted;
+                    }
+                    default:
+                        throw Exceptions.LoggedException<AesSymmetricException>(_log,
+                            "Unreachable exception - here due to non-exhaustive pattern matching");
                 }
-                catch (Exception ex)
-                {
-                    throw Exceptions.LoggedException<AesSymmetricException>(_log, "Stream-based encryption failed", ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<AesSymmetricException>(_log, "Stream-based encryption failed", ex);
             }
         }
 
@@ -392,7 +368,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             public AesSymmetricKeyWrappingOption SymmetricKeyWrappingOption { get; set; } = AesSymmetricKeyWrappingOption.WrapWithPublicKey;
 
             /// <summary>
-            ///     If the key is going to be unwrapped using an asymmetic key, then what kind of key to use
+            ///     If the key is going to be unwrapped using an asymmetric key, then what kind of key to use
             /// </summary>
             public AesSymmetricKeyUnwrappingOption SymmetricKeyUnwrappingOption { get; set; } =
                 AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey;
@@ -451,7 +427,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             }
 
             /// <summary>
-            ///     Set the keysize
+            ///     Set the key size
             /// </summary>
             /// <param name="keySize"></param>
             /// <returns></returns>

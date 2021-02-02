@@ -27,6 +27,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// </summary>
         /// <param name="source">The path to the source pfx file</param>
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
+        /// <param name="exportable"></param>
         /// <returns>A valid <see cref="X509Certificate2" /></returns>
         /// <exception cref="X509CertificateException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
         public static X509Certificate2 ImportFromFile(string source, Func<string> pf, bool exportable = true)
@@ -88,9 +89,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             Logs.MethodCall(_log);
             try
             {
-                if (exportable)
-                    return new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable);
-                return new X509Certificate2(source, pf());
+                return exportable ? new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable) : new X509Certificate2(source, pf());
             }
             catch (Exception ex)
             {
@@ -152,7 +151,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <summary>
         ///     Exports a given certificate to a PKCS12 file, using a given passphrase to secure private key material
         /// </summary>
-        /// <param name="path">The path to export to (e.g. certifcate.pkcs12, certificate.pks)</param>
+        /// <param name="path">The path to export to (e.g. certificate.pkcs12, certificate.pks)</param>
         /// <param name="certificate">The certificate to export</param>
         /// <param name="pf">Function that returns a passphrase</param>
         /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
@@ -161,12 +160,10 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             Logs.MethodCall(_log);
             try
             {
-                using (var outFile = new FileStream(path, FileMode.OpenOrCreate))
-                {
-                    var export = ExportToByteArray(certificate, pf());
-                    await outFile.WriteAsync(export);
-                    await outFile.FlushAsync();
-                }
+                await using var outFile = new FileStream(path, FileMode.OpenOrCreate);
+                var export = ExportToByteArray(certificate, pf());
+                await outFile.WriteAsync(export);
+                await outFile.FlushAsync();
             }
             catch (Exception ex)
             {

@@ -63,7 +63,6 @@ namespace JCS.Neon.Glow.Data.Repository
         ///     model elements from <see cref="KeyedEntity{T}" /> in order to ensure uniformity and consistency
         ///     in repository behaviour.
         /// </summary>
-        /// <typeparam name="R">The type of the repository to instantiate</typeparam>
         /// <typeparam name="K">The key type of the underlying model entity type</typeparam>
         /// <typeparam name="V">The actual type of the underlying model entity type, derived from <see cref="KeyedEntity{T}" /></typeparam>
         /// <returns></returns>
@@ -73,14 +72,11 @@ namespace JCS.Neon.Glow.Data.Repository
         {
             _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var entityType = Model.FindEntityType(typeof(V).FullName!);
-            if (entityType == null)
-            {
-                var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
-                _log.Error(msg);
-                throw Exceptions.LoggedException<RepositoryAwareDbContextException>(_log, msg);
-            }
+            if (entityType != null) return new AsyncRepository<K, V>(this);
+            var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
+            _log.Error(msg);
+            throw Exceptions.LoggedException<RepositoryAwareDbContextException>(_log, msg);
 
-            return new AsyncRepository<K, V>(this);
         }
     }
 }

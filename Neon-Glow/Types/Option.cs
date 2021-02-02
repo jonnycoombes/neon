@@ -86,8 +86,10 @@ namespace JCS.Neon.Glow.Types
         /// <summary>
         ///     Standard functor for mapping the contents of an option
         /// </summary>
+        /// <param name="option"></param>
         /// <param name="f">The mapping function</param>
         /// <typeparam name="V">The target type</typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Option<V> Map<T, V>(this Option<T> option, Func<T, V> f)
             where T : notnull where V : notnull
@@ -99,6 +101,7 @@ namespace JCS.Neon.Glow.Types
         ///     Fold function that will convert an option to a different type based on
         ///     whether or not the option holds a value or not
         /// </summary>
+        /// <param name="option"></param>
         /// <param name="onSome">A function to execute on the option value if it exists</param>
         /// <param name="onNone">A function to execute on the option if the wrapped value is null</param>
         /// <typeparam name="T">The wrapped type for the option</typeparam>
@@ -138,9 +141,7 @@ namespace JCS.Neon.Glow.Types
         /// <returns></returns>
         public static T GetOrElse<T>(this Option<T> option, Func<T?> f)
         {
-            if (option.IsSome(out var value))
-                return value;
-            return f();
+            return option.IsSome(out var value) ? value : f();
         }
     }
 }

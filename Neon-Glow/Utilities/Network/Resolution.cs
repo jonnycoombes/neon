@@ -37,12 +37,6 @@ namespace JCS.Neon.Glow.Utilities.Network
             try
             {
                 var hostName = Dns.GetHostName();
-                if (hostName == null)
-                {
-                    hostName = Environment.GetEnvironmentVariable(HostNameEnvironmentKey);
-                    if (hostName == null) hostName = Environment.MachineName;
-                }
-
                 return hostName;
             }
             catch (Exception ex)
