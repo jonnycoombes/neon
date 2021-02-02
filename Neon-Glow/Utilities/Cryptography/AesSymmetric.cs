@@ -113,7 +113,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="iv"></param>
         /// <returns></returns>
         /// <exception cref="AesSymmetricException">If the specified options are invalid</exception>
-        private static Aes InitialiseCipher(AesSymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
+        private static Aes InitialiseAesCipher(AesSymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
         {
             Logs.MethodCall(_log);
             Logs.Verbose(_log, $"Initialising AES with a suggested config of ({options.KeySize}, {options.Mode})");
@@ -177,7 +177,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         ///     right value contains the encrypted source
         /// </returns>
         /// <exception cref="AesSymmetricException"></exception>
-        public static Pair<byte[], byte[]> EncryptAndWrap(byte[] input, X509Certificate2 certificate,
+        public static Pair<byte[], byte[]> EncryptAndWrapAes(byte[] input, X509Certificate2 certificate,
             Action<AesSymmetricEncryptionOptionsBuilder> configureAction)
         {
             Logs.MethodCall(_log);
@@ -204,7 +204,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
             try
             {
                 // initialise the cipher, encrypt, pack the key and IV and perform any output encoding
-                using var cipher = InitialiseCipher(options);
+                using var cipher = InitialiseAesCipher(options);
                 var encrypted = Transform(input, cipher, AesSymmetricTransformDirection.Encrypt);
                 var packed = PackKeyAndIv(cipher);
                 switch (options.SymmetricKeyWrappingOption)
@@ -237,7 +237,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
         /// <param name="configureAction">The <see cref="AesSymmetricEncryptionOptions" /> to use</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <returns></returns>
-        public static byte[] UnwrapAndDecrypt(Pair<byte[], byte[]> input, X509Certificate2 certificate,
+        public static byte[] UnwrapAndDecryptAes(Pair<byte[], byte[]> input, X509Certificate2 certificate,
             Action<AesSymmetricEncryptionOptionsBuilder> configureAction)
         {
             Logs.MethodCall(_log);
@@ -280,7 +280,7 @@ namespace JCS.Neon.Glow.Utilities.Cryptography
 
                 // unpack the key and IV
                 var unpackedKeyParams = UnpackKeyAndIv(unwrappedKeyParams);
-                using var aes = InitialiseCipher(options, unpackedKeyParams.Left, unpackedKeyParams.Right);
+                using var aes = InitialiseAesCipher(options, unpackedKeyParams.Left, unpackedKeyParams.Right);
                 return Transform(input.Right, aes, AesSymmetricTransformDirection.Decrypt);
             }
             catch (Exception ex)

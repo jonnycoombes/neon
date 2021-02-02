@@ -25,7 +25,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesSymmetric.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
@@ -36,7 +36,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             // things shouldn't get smaller when encrypting
             Assert.True(encryptionResult.Right.Length >= source.Length);
 
-            var decryptionResult = AesSymmetric.UnwrapAndDecrypt(encryptionResult, cert,
+            var decryptionResult = AesSymmetric.UnwrapAndDecryptAes(encryptionResult, cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesSymmetric.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesSymmetric.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
@@ -72,7 +72,7 @@ namespace JCS.Neon.Glow.Test.Utilities.Cryptography
             // things shouldn't get smaller when encrypting
             Assert.True(encryptionResult.Right.Length >= source.Length);
 
-            var decryptionResult = AesSymmetric.UnwrapAndDecrypt(encryptionResult, cert,
+            var decryptionResult = AesSymmetric.UnwrapAndDecryptAes(encryptionResult, cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
