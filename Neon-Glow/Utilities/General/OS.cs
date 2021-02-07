@@ -15,36 +15,34 @@ namespace JCS.Neon.Glow.Utilities.General
         ///     Windows OS check
         /// </summary>
         /// <returns>true if the current platform is Windows</returns>
-        public static bool IsWindows()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        }
+        public static bool Windows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         /// <summary>
         ///     Linux OS check
         /// </summary>
         /// <returns>true is the current platform is Linux</returns>
-        public static bool IsLinux()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        }
+        public static bool Linux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         /// <summary>
         ///     OSX OS check
         /// </summary>
         /// <returns>true if the current platform is OSX</returns>
-        public static bool IsOSX()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        }
+        public static bool OSX => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         /// <summary>
         ///     FreeBSD OS check
         /// </summary>
         /// <returns>true if the current platform is FreeBSD</returns>
-        public static bool IsFreeBSD()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        }
+        public static bool FreeBSD => RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+
+        /// <summary>
+        /// Returns true if the current architecture is x86
+        /// </summary>
+        public static bool X86 => RuntimeInformation.OSArchitecture == Architecture.X86;
+
+        /// <summary>
+        /// Returns true if the current architecture is x64
+        /// </summary>
+        public static bool X64 => RuntimeInformation.OSArchitecture == Architecture.X64;
     }
 }

@@ -36,8 +36,7 @@ namespace JCS.Neon.Glow.Utilities.Network
             Logs.MethodCall(_log);
             try
             {
-                var hostName = Dns.GetHostName();
-                return hostName;
+                return Dns.GetHostName();
             }
             catch (Exception ex)
             {
