@@ -2,6 +2,8 @@
 
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using JCS.Neon.Glow.Console;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Utilities.Cryptography;
 using JCS.Neon.Glow.Utilities.General;
@@ -70,6 +72,18 @@ namespace JCS.Neon.Glow.Test
                 return cert;
             }, () => new X509Certificate2());
             return result;
+        }
+
+        /// <summary>
+        /// Sleeps (suspends) the current thread of execution for a given number of seconds
+        /// </summary>
+        /// <param name="count">The amount to sleep the current thread in seconds.  Should be > 0</param>
+        protected static void SleepCurrentThread(int count)
+        {
+            if (count > 0)
+            {
+                Thread.Sleep(count * 1000);
+            }
         }
     }
 }

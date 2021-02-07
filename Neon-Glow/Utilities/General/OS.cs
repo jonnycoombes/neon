@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Runtime.InteropServices;
+// ReSharper disable InconsistentNaming
 
 #endregion
 

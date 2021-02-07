@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>JCS.Neon.Glow.Console.Test</RootNamespace>
+        <AssemblyName>JCS.Neon.Glow.Console.Test</AssemblyName>
+        <Company>JCS Software Ltd</Company>
+        <Product>JCS Neon Glow Console Tests</Product>
+        <AssemblyVersion>0.3.6</AssemblyVersion>
+        <FileVersion>0.3.6</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Neon-Glow\Neon-Glow.csproj" />
+    </ItemGroup>
+
+</Project>
