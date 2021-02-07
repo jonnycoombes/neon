@@ -1,6 +1,7 @@
 #region
 
 using System;
+using JCS.Neon.Glow.Interop.Windows;
 using JCS.Neon.Glow.Utilities.General;
 using Serilog;
 
@@ -24,13 +25,17 @@ namespace JCS.Neon.Glow.Console
         static AnsiConsole()
         {
             Logs.MethodCall(_log);
+            Kernel32.EnableVirtualTerminal();
         }
 
         /// <summary>
-        /// Clears the display by issuing the ClearDisplay ANSI code to the current console
+        ///     Clears the display by issuing the ClearDisplay ANSI code to the current console
         /// </summary>
-        /// <param name="clearBuffer">If set to true, the scrollback buffer is also cleared</param>
-        public static void ClearDisplay(bool clearBuffer= true)
+        /// <param name="clearBuffer">
+        ///     If set to true, the scrollback buffer is also cleared.  By default, this is disabled because
+        ///     it doesn't look to be supported very well across different terminals
+        /// </param>
+        public static void ClearDisplay(bool clearBuffer = false)
         {
             System.Console.Write(clearBuffer ? AnsiControlCodes.ClearDisplayClearBuffer : AnsiControlCodes.ClearDisplay);
         }
@@ -51,7 +56,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        /// Writes a simple line to current terminal
+        ///     Writes a simple line to current terminal
         /// </summary>
         /// <param name="value">The line to write to the console</param>
         public static void WriteLine(string value)
@@ -61,7 +66,7 @@ namespace JCS.Neon.Glow.Console
 
 
         /// <summary>
-        /// Writes a formatted string to the console
+        ///     Writes a formatted string to the console
         /// </summary>
         /// <param name="format">A format string</param>
         /// <param name="args">The arguments to be applied to the format string</param>

@@ -1,3 +1,4 @@
+// ReSharper disable All
 namespace JCS.Neon.Glow.Utilities.Console
 {
     /// <summary>
@@ -8,171 +9,171 @@ namespace JCS.Neon.Glow.Utilities.Console
         /// <summary>
         ///     Null
         /// </summary>
-        public static readonly char NUL = '\x00';
+        public const char NUL = '\x00';
 
         /// <summary>
         ///     Start of Heading
         /// </summary>
-        public static readonly char SOH = '\x01';
-
-        /// <summary>
-        ///     Start of Text
-        /// </summary>
-        public static readonly char STX = '\x02';
+        public const char SOH = '\x01';
 
         /// <summary>
         ///     End of Text
         /// </summary>
-        public static readonly char ETX = '\x03';
+        public const char ETX = '\x03';
 
         /// <summary>
         ///     End of Transmission
         /// </summary>
-        public static readonly char EOT = '\x04';
+        public const char EOT = '\x04';
 
         /// <summary>
         ///     Enquiry
         /// </summary>
-        public static readonly char ENQ = '\x05';
+        public const char ENQ = '\x05';
 
         /// <summary>
         ///     Acknowledge
         /// </summary>
-        public static readonly char ACK = '\x06';
+        public const char ACK = '\x06';
 
         /// <summary>
         ///     Bell
         /// </summary>
-        public static readonly char BEL = '\x07';
+        public const char BEL = '\x07';
 
         /// <summary>
         ///     Backspace
         /// </summary>
-        public static readonly char BS = '\x08';
+        public const char BS = '\x08';
 
         /// <summary>
         ///     Tabulate
         /// </summary>
-        public static readonly char TAB = '\x09';
+        public const char TAB = '\x09';
 
         /// <summary>
         ///     Line Feed
         /// </summary>
-        public static readonly char LF = '\x0a';
+        public const char LF = '\x0a';
 
         /// <summary>
         ///     Vertical Tabulation
         /// </summary>
-        public static readonly char VT = '\x0b';
+        public const char VT = '\x0b';
 
         /// <summary>
         ///     Form Feed
         /// </summary>
-        public static readonly char FF = '\x0c';
+        public const char FF = '\x0c';
 
         /// <summary>
         ///     Carriage Return
         /// </summary>
-        public static readonly char CR = '\x0d';
+        public const char CR = '\x0d';
 
         /// <summary>
         ///     Shift Out
         /// </summary>
-        public static readonly char SO = '\x0e';
+        public const char SO = '\x0e';
 
         /// <summary>
         ///     Shift In
         /// </summary>
-        public static readonly char SI = '\x0f';
+        public const char SI = '\x0f';
 
         /// <summary>
         ///     Data Link Escape
         /// </summary>
-        public static readonly char DLE = '\x10';
+        public const char DLE = '\x10';
 
         /// <summary>
         ///     Device Control 1 (XON)
         /// </summary>
-        public static readonly char DC1 = '\x11';
+        public const char DC1 = '\x11';
 
         /// <summary>
         ///     Device Control 2
         /// </summary>
-        public static readonly char DC2 = '\x12';
+        public const char DC2 = '\x12';
 
         /// <summary>
         ///     Device Control 3 (XOFF)
         /// </summary>
-        public static readonly char DC3 = '\x13';
+        public const char DC3 = '\x13';
 
         /// <summary>
         ///     Device Control 4
         /// </summary>
-        public static readonly char DC4 = '\x14';
+        public const char DC4 = '\x14';
 
         /// <summary>
         ///     Negative Acknowledge
         /// </summary>
-        public static readonly char NAK = '\x15';
+        public const char NAK = '\x15';
 
         /// <summary>
         ///     Synchronous Idle
         /// </summary>
-        public static readonly char SYN = '\x16';
+        public const char SYN = '\x16';
 
         /// <summary>
         ///     End of Transmission Block
         /// </summary>
-        public static readonly char ETB = '\x17';
+        public const char ETB = '\x17';
 
         /// <summary>
         ///     Cancel
         /// </summary>
-        public static readonly char CAN = '\x18';
+        public const char CAN = '\x18';
 
         /// <summary>
         ///     End of Medium
         /// </summary>
-        public static readonly char EM = '\x19';
+        public const char EM = '\x19';
 
         /// <summary>
         ///     Substitute
         /// </summary>
-        public static readonly char SUB = '\x1a';
+        public const char SUB = '\x1a';
 
         /// <summary>
         ///     Escape
         /// </summary>
-        public static readonly char ESC = '\x1b';
+        public const char ESC = '\x1b';
 
         /// <summary>
         ///     File Separator
         /// </summary>
-        public static readonly char FS = '\x1c';
+        public const char FS = '\x1c';
 
         /// <summary>
         ///     Group Separator
         /// </summary>
-        public static readonly char GS = '\x1d';
+        public const char GS = '\x1d';
 
         /// <summary>
         ///     Record Separator
         /// </summary>
-        public static readonly char RS = '\x1e';
+        public const char RS = '\x1e';
 
         /// <summary>
         ///     Unit Separator
         /// </summary>
-        public static readonly char US = '\x1f';
+        public const char US = '\x1f';
 
         /// <summary>
         ///     Space
         /// </summary>
-        public static readonly char SPC = '\x20';
+        public const char SPC = '\x20';
 
         /// <summary>
         ///     Delete
         /// </summary>
-        public static readonly char DEL = '\x7f';
+        public const char DEL = '\x7f';
+
+        /// <summary>
+        ///     Start of Text
+        /// </summary>
+        public const char STX = '\x02';
     }
 }
