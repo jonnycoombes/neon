@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Console.Test
 {
@@ -24,11 +25,10 @@ namespace JCS.Neon.Glow.Console.Test
         static void Main(string[] args)
         {
             AnsiConsole.WriteLine("Starting Neon Glow AnsiConsole Test Suite");
-            SleepCurrentThread(3);
-            AnsiConsole.WriteLine("Clearing current display");
-            SleepCurrentThread(1);
-            AnsiConsole.ClearDisplay();
-            AnsiConsole.ReportCursorPosition();
+            AnsiConsole.WriteLine("ClearScreenTest");
+            BasicTests.ClearScreenTest();
+            BasicTests.CursorPositionTests();
+            AnsiConsole.ReportDisplayGeometry();
             System.Console.ReadKey();
         }
     }

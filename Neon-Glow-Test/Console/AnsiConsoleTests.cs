@@ -20,28 +20,28 @@ namespace JCS.Neon.Glow.Test.Console
             AnsiConsole.WriteLine("Clearing display (no buffer wipe)");
             SleepCurrentThread(1);
             AnsiConsole.ClearDisplay(false);
-        AnsiConsole.ReportCursorPosition();
+        AnsiConsole.ReportCursorPosition(TODO);
             SleepCurrentThread(1);
             AnsiConsole.WriteLine("Clearing display (buffer wipe)");
             AnsiConsole.ClearDisplay();
-            AnsiConsole.ReportCursorPosition();
+            AnsiConsole.ReportCursorPosition(TODO);
         }
 
         [Fact(DisplayName = "Clearing from cursor to end")]
         public void ClearToEnd()
         {
             AnsiConsole.WriteLine("Clearing to end of display");
-            AnsiConsole.ReportCursorPosition();
+            AnsiConsole.ReportCursorPosition(TODO);
             SleepCurrentThread(5);
             AnsiConsole.ClearToEnd();
-            AnsiConsole.ReportCursorPosition();
+            AnsiConsole.ReportCursorPosition(TODO);
         }
 
         [Fact(DisplayName = "Clearing to the current cursor position")]
         public void ClearToCursor()
         {
             AnsiConsole.WriteLine("Clearing to cursor");
-            AnsiConsole.ReportCursorPosition();
+            AnsiConsole.ReportCursorPosition(TODO);
             SleepCurrentThread(5);
             AnsiConsole.ClearToCursor();
         }

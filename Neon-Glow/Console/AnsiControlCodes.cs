@@ -394,7 +394,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="top">The line number for the top of the scrolling region</param>
         /// <param name="bottom">The line number for the bottom of the scrolling region</param>
         /// <returns>An ANSI control code (DECSTBM)</returns>
-        public static string SetScrollingRegion(ushort top, ushort bottom)
+        public static string SetScrollingRegion(uint top, uint bottom)
         {
             return $"{CSI}{top};{bottom}r";
         }
@@ -404,7 +404,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of tabstops to move</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorHorizontalTab(ushort count = 1)
+        public static string CursorHorizontalTab(uint count = 1)
         {
             return $"{CSI}{count}l";
         }
@@ -414,7 +414,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of tabstops to move</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorBackwardsTab(ushort count = 1)
+        public static string CursorBackwardsTab(uint count = 1)
         {
             return $"{CSI}{count}Z";
         }
@@ -446,7 +446,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="g">The green channel</param>
         /// <param name="b">The blue channel</param>
         /// <returns>An ANSI control code</returns>
-        public static string SetForegroundColour(ushort r, ushort g, ushort b)
+        public static string SetForegroundColour(uint r, uint g, uint b)
         {
             return $"{CSI}{SgrMode.SetForegroundColour};2;{r};{g};{b}m";
         }
@@ -458,7 +458,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="g">The green channel</param>
         /// <param name="b">The blue channel</param>
         /// <returns>An ANSI control code</returns>
-        public static string SetBackgroundColour(ushort r, ushort g, ushort b)
+        public static string SetBackgroundColour(uint r, uint g, uint b)
         {
             return $"{CSI}{SgrMode.SetBackgroundColour};2;{r};{g};{b}m";
         }
@@ -488,7 +488,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to scroll</param>
         /// <returns>An ANSI control code</returns>
-        public static string ScrollUp(ushort count = 1)
+        public static string ScrollUp(uint count = 1)
         {
             return $"{CSI}{count}S";
         }
@@ -498,7 +498,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to scroll</param>
         /// <returns>An ANSI control code</returns>
-        public static string ScrollDown(ushort count = 1)
+        public static string ScrollDown(uint count = 1)
         {
             return $"{CSI}{count}S";
         }
@@ -508,7 +508,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor down</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorNextLine(ushort count = 1)
+        public static string CursorNextLine(uint count = 1)
         {
             return $"{CSI}{count}E";
         }
@@ -519,7 +519,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor down</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPreviousLine(ushort count = 1)
+        public static string CursorPreviousLine(uint count = 1)
         {
             return $"{CSI}{count}F";
         }
@@ -529,7 +529,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of columns to move the cursor</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorHorizontalAbsolute(ushort count = 1)
+        public static string CursorHorizontalAbsolute(uint count = 1)
         {
             return $"{CSI}{count}G";
         }
@@ -543,7 +543,7 @@ namespace JCS.Neon.Glow.Console
         ///     terminals
         /// </param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPosition(ushort row, ushort column)
+        public static string CursorPosition(uint row, uint column)
         {
             return $"{CSI}{row};{column}H";
         }
@@ -554,7 +554,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="row">The row for the cursor position</param>
         /// <param name="column">The column for the cursor position</param>
         /// <returns>An ANSI control code</returns>
-        public static string HorizontalVerticalPosition(ushort row, ushort column)
+        public static string HorizontalVerticalPosition(uint row, uint column)
         {
             return $"{CSI}{row};{column}f";
         }
@@ -564,7 +564,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="row">The row index</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPositionRow(ushort row)
+        public static string CursorPositionRow(uint row)
         {
             return $"{CSI}{row}H";
         }
@@ -574,7 +574,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="column">The column index</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPositionColumn(ushort column)
+        public static string CursorPositionColumn(uint column)
         {
             return $"{CSI};{column}H";
         }
@@ -584,7 +584,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor</param>
         /// <returns>An ANSI control code for moving the cursor up</returns>
-        public static string CursorUp(ushort count = 1)
+        public static string CursorUp(uint count = 1)
         {
             return $"{CSI}{count}A";
         }
@@ -594,7 +594,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor</param>
         /// <returns>An ANSI control code for moving the cursor up</returns>
-        public static string CursorDown(ushort count = 1)
+        public static string CursorDown(uint count = 1)
         {
             return $"{CSI}{count}B";
         }
@@ -604,7 +604,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor</param>
         /// <returns>An ANSI control code for moving the cursor up</returns>
-        public static string CursorForward(ushort count = 1)
+        public static string CursorForward(uint count = 1)
         {
             return $"{CSI}{count}C";
         }
@@ -614,7 +614,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to move the cursor</param>
         /// <returns>An ANSI control code for moving the cursor up</returns>
-        public static string CursorBackward(ushort count = 1)
+        public static string CursorBackward(uint count = 1)
         {
             return $"{CSI}{count}D";
         }
@@ -624,7 +624,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of spaces to insert</param>
         /// <returns>An ANSI control code</returns>
-        public static string InsertCharacter(ushort count = 1)
+        public static string InsertCharacter(uint count = 1)
         {
             return $"{CSI}{count}@";
         }
@@ -634,7 +634,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of characters to delete</param>
         /// <returns>An ANSI control code</returns>
-        public static string DeleteCharacter(ushort count = 1)
+        public static string DeleteCharacter(uint count = 1)
         {
             return $"{CSI}{count}P";
         }
@@ -644,7 +644,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of characters to erase</param>
         /// <returns>An ANSI control code</returns>
-        public static string EraseCharacter(ushort count = 1)
+        public static string EraseCharacter(uint count = 1)
         {
             return $"{CSI}{count}X";
         }
@@ -654,7 +654,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to insert</param>
         /// <returns>An ANSI control code</returns>
-        public static string InsertLine(ushort count = 1)
+        public static string InsertLine(uint count = 1)
         {
             return $"{CSI}{count}L";
         }
@@ -664,7 +664,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="count">The number of lines to delete</param>
         /// <returns>An ANSI control code</returns>
-        public static string DeleteLine(ushort count = 1)
+        public static string DeleteLine(uint count = 1)
         {
             return $"{CSI}{count}M";
         }
