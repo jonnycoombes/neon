@@ -64,7 +64,6 @@ namespace JCS.Neon.Glow.Console
             System.Console.WriteLine(value);
         }
 
-
         /// <summary>
         ///     Writes a formatted string to the console
         /// </summary>

@@ -28,6 +28,8 @@ namespace JCS.Neon.Glow.Console.Test
             AnsiConsole.WriteLine("Clearing current display");
             SleepCurrentThread(1);
             AnsiConsole.ClearDisplay();
+            AnsiConsole.ReportCursorPosition();
+            System.Console.ReadKey();
         }
     }
 }
