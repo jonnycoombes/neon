@@ -37,7 +37,7 @@ namespace JCS.Neon.Glow.Console
         /// </param>
         public static void ClearDisplay(bool clearBuffer = false)
         {
-            System.Console.Write(clearBuffer ? AnsiControlCodes.ClearDisplayClearBuffer : AnsiControlCodes.ClearDisplay);
+            System.Console.Write(clearBuffer ? AnsiControlCodes. EraseDisplayClearBuffer: AnsiControlCodes.EraseDisplay);
         }
 
         public static void ClearToEnd()
