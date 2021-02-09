@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 
 namespace JCS.Neon.Glow.Concurrency
@@ -14,6 +15,15 @@ namespace JCS.Neon.Glow.Concurrency
         public static void SleepCurrentThread(uint seconds)
         {
             Thread.Sleep((int)seconds * 1000);
+        }
+
+        /// <summary>
+        /// Suspends the current executing thread for a duration specified by a <see cref="TimeSpan"/>
+        /// </summary>
+        /// <param name="span">A <see cref="TimeSpan"/> defining the duration of the sleep</param>
+        public static void SleepCurrentThread(TimeSpan span)
+        {
+            Thread.Sleep(span.Milliseconds);
         }
     }
 }
