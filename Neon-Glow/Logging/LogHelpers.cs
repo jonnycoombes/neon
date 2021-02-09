@@ -40,7 +40,7 @@ namespace JCS.Neon.Glow.Logging
         /// <summary>
         ///     Convenience method for logging at a information level
         /// </summary>
-        /// <param name="log">The target <see cref="ILogger" instance /></param>
+        /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
         public static void Information(ILogger log, string message)
         {
@@ -50,7 +50,7 @@ namespace JCS.Neon.Glow.Logging
         /// <summary>
         ///     Convenience method for logging at a verbose level
         /// </summary>
-        /// <param name="log">The target <see cref="ILogger" instance /></param>
+        /// <param name="log">The target <see cref="ILogger"  /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
         public static void Verbose(ILogger log, string message, [CallerMemberName] string memberName = "")
@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.Logging
         /// <summary>
         ///     Convenience method for logging at a warning level
         /// </summary>
-        /// <param name="log">The target <see cref="ILogger" instance /></param>
+        /// <param name="log">The target <see cref="ILogger"  /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
         public static void Warning(ILogger log, string message, [CallerMemberName] string memberName = "")
@@ -100,7 +100,7 @@ namespace JCS.Neon.Glow.Logging
         /// <summary>
         ///     Convenience method for logging at a error level
         /// </summary>
-        /// <param name="log">The target <see cref="ILogger" instance /></param>
+        /// <param name="log">The target <see cref="ILogger"  /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
         public static void Error(ILogger log, string message, [CallerMemberName] string memberName = "")
@@ -120,22 +120,22 @@ namespace JCS.Neon.Glow.Logging
             switch (level)
             {
                 case LogEventLevel.Debug:
-                    log.Debug(messageTemplate: message);
+                    log.Debug(message);
                     break;
                 case LogEventLevel.Error:
-                    log.Error(messageTemplate: message);
+                    log.Error(message);
                     break;
                 case LogEventLevel.Fatal:
-                    log.Fatal(messageTemplate: message);
+                    log.Fatal(message);
                     break;
                 case LogEventLevel.Information:
-                    log.Information(messageTemplate: message);
+                    log.Information(message);
                     break;
                 case LogEventLevel.Verbose:
-                    log.Verbose(messageTemplate: message);
+                    log.Verbose(message);
                     break;
                 case LogEventLevel.Warning:
-                    log.Warning(messageTemplate: message);
+                    log.Warning(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);

@@ -161,7 +161,7 @@ namespace JCS.Neon.Glow.Cryptography
             for (var i = 0; i < options.RequiredLength; i++)
             {
                 randoms = randoms.Randomise();
-                var charResidue = 0;
+                int charResidue;
                 switch (randoms[0] % 4)
                 {
                     case 0:

@@ -263,7 +263,7 @@ namespace JCS.Neon.Glow.Cryptography
             try
             {
                 // firstly, unwrap the key and IV
-                byte[] unwrappedKeyParams = null;
+                byte[] unwrappedKeyParams;
                 switch (options.SymmetricKeyUnwrappingOption)
                 {
                     case AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey:

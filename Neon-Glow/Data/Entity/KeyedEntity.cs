@@ -33,6 +33,6 @@ namespace JCS.Neon.Glow.Data.Entity
         /// <summary>
         ///     The creation time instant for the entity
         /// </summary>
-        public Instant CreationTime { get; set; } = Instant.FromDateTimeUtc(System.DateTime.Now.ToUniversalTime());
+        public Instant CreationTime { get; set; } = Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
     }
 }
