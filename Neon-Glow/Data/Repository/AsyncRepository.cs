@@ -82,7 +82,7 @@ namespace JCS.Neon.Glow.Data.Repository
             LogHelpers.MethodCall(_log);
             try
             {
-                return !(await SelectOne(v => v.Id.Equals(key))).IsNone;
+                return !(await SelectOne(v => v.Id.Equals(key), cancellationToken)).IsNone;
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync" />
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectOne(K,System.Threading.CancellationToken)" />
         public async Task<Option<V>> SelectOne(K key, CancellationToken cancellationToken = default)
         {
             LogHelpers.MethodCall(_log);
@@ -106,7 +106,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadOneAsync" />
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             LogHelpers.MethodCall(_log);
@@ -133,7 +133,7 @@ namespace JCS.Neon.Glow.Data.Repository
                 () => Option<W>.None);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyAsync" />
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(K[],System.Threading.CancellationToken)" />
         public async Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default)
         {
             LogHelpers.MethodCall(_log);
@@ -148,7 +148,7 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.ReadManyAsync()" />
+        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
@@ -156,7 +156,7 @@ namespace JCS.Neon.Glow.Data.Repository
             try
             {
                 return await _context.Set<V>()
-                    .Where(expression).ToArrayAsync();
+                    .Where(expression).ToArrayAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -179,7 +179,7 @@ namespace JCS.Neon.Glow.Data.Repository
             LogHelpers.MethodCall(_log);
             try
             {
-                return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator();
+                return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -211,11 +211,11 @@ namespace JCS.Neon.Glow.Data.Repository
             {
                 for (var i = 0; i < newItems.Length; i++)
                 {
-                    var entityEntry = await _context.AddAsync(newItems[i]);
+                    var entityEntry = await _context.AddAsync(newItems[i], cancellationToken);
                     newItems[i] = entityEntry.Entity;
                 }
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return newItems;
             }
             catch (Exception ex)
@@ -255,7 +255,7 @@ namespace JCS.Neon.Glow.Data.Repository
             try
             {
                 _context.UpdateRange(items);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return items;
             }
             catch (Exception ex)
@@ -271,7 +271,7 @@ namespace JCS.Neon.Glow.Data.Repository
             try
             {
                 _context.Set<V>().Remove(item);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -286,7 +286,7 @@ namespace JCS.Neon.Glow.Data.Repository
             try
             {
                 _context.Set<V>().RemoveRange(items);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
