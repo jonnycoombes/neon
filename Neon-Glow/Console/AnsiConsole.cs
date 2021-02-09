@@ -71,6 +71,7 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     Clears the display by issuing the ClearDisplay ANSI code to the current console
         /// </summary>
+        /// <param name="resetCursor">If set to true, the cursor will be reset to the origin after clearing the display</param>
         /// <param name="clearBuffer">
         ///     If set to true, the scrollback buffer is also cleared.  By default, this is disabled because
         ///     it doesn't look to be supported very well across different terminals
@@ -78,7 +79,26 @@ namespace JCS.Neon.Glow.Console
         public static void ClearDisplay(bool resetCursor = false, bool clearBuffer = false)
         {
             CheckedWrite(clearBuffer ? AnsiControlCodes.EraseDisplayClearBuffer : AnsiControlCodes.EraseDisplay);
-            if (resetCursor) ResetCursor();
+            if (resetCursor)
+            {
+                ResetCursor();
+            }
+        }
+
+        /// <summary>
+        ///     Hides the cursor
+        /// </summary>
+        public static void HideCursor()
+        {
+            CheckedWrite(AnsiControlCodes.HideCursor);
+        }
+
+        /// <summary>
+        ///     Displays the cursor
+        /// </summary>
+        public static void ShowCursor()
+        {
+            CheckedWrite(AnsiControlCodes.ShowCursor);
         }
 
         /// <summary>
@@ -116,7 +136,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Checked version of <see cref="System.Console.Write" /> which logs information about any I/O errors.
+        ///     Checked version of System.Console.Write which logs information about any I/O errors.
         /// </summary>
         /// <param name="value">The value to write</param>
         private static void CheckedWrite(string value)
@@ -132,7 +152,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Checked version of <see cref="System.Console.WriteLine" /> which logs information about any I/O errors
+        ///     Checked version of System.Console.WriteLine which logs information about any I/O errors
         /// </summary>
         /// <param name="value">The value to write</param>
         private static void CheckedWriteLine(string value)
@@ -148,7 +168,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Checked version of <see cref="System.Console.Write" /> which logs I/O errors
+        ///     Checked version of System.Console.Write which logs I/O errors
         /// </summary>
         /// <param name="format">A format string</param>
         /// <param name="args">Optional argument array</param>
@@ -165,7 +185,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Checked version of <see cref="System.Console.WriteLine" /> which logs I/O errors
+        ///     Checked version of System.Console.WriteLine which logs I/O errors
         /// </summary>
         /// <param name="format">A format string</param>
         /// <param name="args">Optional argument array</param>
@@ -197,9 +217,13 @@ namespace JCS.Neon.Glow.Console
         public static void ReportCursorPosition(bool restoreCursor = true)
         {
             if (restoreCursor)
+            {
                 WriteRestoreCursor($"[row:{System.Console.CursorTop + 1}, col:{System.Console.CursorLeft + 1}]");
+            }
             else
+            {
                 Write($"[row:{System.Console.CursorTop + 1}, col:{System.Console.CursorLeft + 1}]");
+            }
         }
 
         /// <summary>
@@ -209,9 +233,13 @@ namespace JCS.Neon.Glow.Console
         public static void ReportDisplayGeometry(bool restoreCursor = true)
         {
             if (restoreCursor)
+            {
                 WriteRestoreCursor($"[rows:{System.Console.BufferHeight}, cols:{System.Console.BufferWidth}]");
+            }
             else
+            {
                 Write($"[rows:{System.Console.BufferHeight}, cols:{System.Console.BufferWidth}]");
+            }
         }
 
         /// <summary>
@@ -256,7 +284,10 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void RestoreCursorPosition()
         {
-            if (_cursorPositions.TryPop(out var position)) SetCursorPosition(position.Row, position.Column);
+            if (_cursorPositions.TryPop(out var position))
+            {
+                SetCursorPosition(position.Row, position.Column);
+            }
         }
 
         /// <summary>

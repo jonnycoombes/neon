@@ -43,13 +43,29 @@ namespace JCS.Neon.Glow.Console.Test
             
             // positioning the cursor
             Threading.SleepCurrentThread(TestInterval);
+            AnsiConsole.HideCursor();
             for (ushort i = 1; i <= 10; i++)
             {
                 AnsiConsole.SetCursorPosition(i,i);
                 AnsiConsole.ReportCursorPosition();
-                Threading.SleepCurrentThread(TestInterval);
+                Threading.SleepCurrentThread((TestInterval/2));
                 AnsiConsole.ClearDisplay(true);
             }
+            AnsiConsole.ShowCursor();
+        }
+
+        public static void BufferHeightTest()
+        {
+            AnsiConsole.ClearDisplay(true);
+            AnsiConsole.WriteLineRestoreCursor("Starting buffer height test...");
+            Threading.SleepCurrentThread(TestInterval);
+            AnsiConsole.ClearDisplay(true);
+            AnsiConsole.HideCursor();
+            for (var i = 1; i <= 5000; i++)
+            {
+                AnsiConsole.WriteRestoreCursor($"{i} - {AnsiConsole.ReportCursorPositionString()}");
+            }
+            AnsiConsole.ShowCursor();
         }
     }
 }

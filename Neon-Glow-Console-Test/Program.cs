@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Console.Test
             AnsiConsole.WriteLine("ClearScreenTest");
             BasicTests.ClearScreenTest();
             BasicTests.CursorPositionTests();
-            AnsiConsole.ReportDisplayGeometry();
+            BasicTests.BufferHeightTest();
             System.Console.ReadKey();
         }
     }
