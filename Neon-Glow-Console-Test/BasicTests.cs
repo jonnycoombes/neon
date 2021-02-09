@@ -1,5 +1,8 @@
+using System;
+using System.Linq;
 using System.Threading;
 using JCS.Neon.Glow.Concurrency;
+using JCS.Neon.Glow.Cryptography;
 
 namespace JCS.Neon.Glow.Console.Test
 {
@@ -13,48 +16,30 @@ namespace JCS.Neon.Glow.Console.Test
         /// </summary>
         private const int TestInterval = 2;
         
-        /// <summary>
-        ///     Test that checks that clearing the screen works ok
-        /// </summary>
-        public static void ClearScreenTest()
-        {
-            // clearing and resetting the display
-            AnsiConsole.WriteLine("Clearing console display and resetting cursor");
-            ThreadHelpers.SleepCurrentThread(TestInterval);
-            AnsiConsole.ClearDisplay(true);
-            
-            // clearing up to the current cursor position
-            AnsiConsole.WriteLine("Clearing display to cursor");
-            ThreadHelpers.SleepCurrentThread(TestInterval);
-            AnsiConsole.ClearToCursor();
-            
-            // clearing from the current cursor position
-            AnsiConsole.WriteLine("Clearing display from cursor to end");
-            ThreadHelpers.SleepCurrentThread(TestInterval);
-            AnsiConsole.ClearToEnd();
-        }
-
         public static void CursorPositionTests()
         {
             // resetting the cursor
-            AnsiConsole.WriteLine("Resetting the cursor to the origin");
-            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearDisplay(true);
+            AnsiConsole.WriteLine($"Current dimensions are ({AnsiConsole.Width}, {AnsiConsole.Height})");
             
             // positioning the cursor
             ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
-            for (ushort i = 1; i <= 10; i++)
+            var colcoords = Rng.BoundedSequence(500, 1, AnsiConsole.Width).ToArray();
+            var rowcoords = Rng.BoundedSequence(500, 1, AnsiConsole.Height).ToArray();
+            
+            for (ushort i = 0; i < 500; i++)
             {
-                AnsiConsole.SetCursorPosition(i,i);
-                AnsiConsole.ReportCursorPosition();
-                ThreadHelpers.SleepCurrentThread((TestInterval/2));
-                AnsiConsole.ClearDisplay(true);
+                AnsiConsole.SetCursorPosition(2, 1);
+                AnsiConsole.Write($"Plot coords: ({rowcoords[i]},{colcoords[i]})");
+                AnsiConsole.SetCursorPosition((uint)rowcoords[i],(uint)colcoords[i]);
+                AnsiConsole.Write($"{Char.ConvertFromUtf32(0x1f4a5)}");
+                ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(0.1));
             }
             AnsiConsole.ShowCursor();
         }
 
-        public static void BufferHeightTest()
+        public static void BufferStressTest()
         {
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.WriteLineRestoreCursor("Starting buffer height test...");

@@ -24,10 +24,8 @@ namespace JCS.Neon.Glow.Console.Test
         static void Main(string[] args)
         {
             AnsiConsole.WriteLine("Starting Neon Glow AnsiConsole Test Suite");
-            AnsiConsole.WriteLine("ClearScreenTest");
-            BasicTests.ClearScreenTest();
             BasicTests.CursorPositionTests();
-            BasicTests.BufferHeightTest();
+            BasicTests.BufferStressTest();
             System.Console.ReadKey();
         }
     }

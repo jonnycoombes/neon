@@ -69,6 +69,16 @@ namespace JCS.Neon.Glow.Console
         public static CursorPosition BottomRight => new((uint) System.Console.BufferHeight, (uint) System.Console.BufferWidth);
 
         /// <summary>
+        ///     Returns the currently reported width of the console
+        /// </summary>
+        public static int Width => System.Console.BufferWidth;
+
+        /// <summary>
+        ///     Returns the currently reported height of the console
+        /// </summary>
+        public static int Height => System.Console.BufferHeight;
+
+        /// <summary>
         ///     Clears the display by issuing the ClearDisplay ANSI code to the current console
         /// </summary>
         /// <param name="resetCursor">If set to true, the cursor will be reset to the origin after clearing the display</param>
@@ -373,7 +383,7 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     Record for storing a pair of cursor coordinates
         /// </summary>
-        public record CursorPosition
+        public class CursorPosition
         {
             /// <summary>
             ///     Construtor captures the current cursor position
