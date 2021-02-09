@@ -4,9 +4,9 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using JCS.Neon.Glow.Console;
+using JCS.Neon.Glow.Cryptography;
+using JCS.Neon.Glow.IO;
 using JCS.Neon.Glow.Types;
-using JCS.Neon.Glow.Utilities.Cryptography;
-using JCS.Neon.Glow.Utilities.General;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
@@ -65,10 +65,10 @@ namespace JCS.Neon.Glow.Test
         /// <returns></returns>
         protected X509Certificate2 LoadTestCertificate(string passphrase = "test")
         {
-            var sshOption = Files.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
+            var sshOption = FileHelpers.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
             var result = sshOption.Fold(path =>
             {
-                var cert = X509Certificates.ImportFromFile(path, () => passphrase);
+                var cert = X509CertificateHelper.ImportFromFile(path, () => passphrase);
                 return cert;
             }, () => new X509Certificate2());
             return result;

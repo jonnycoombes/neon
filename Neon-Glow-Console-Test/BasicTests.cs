@@ -1,5 +1,5 @@
 using System.Threading;
-using JCS.Neon.Glow.Utilities.General;
+using JCS.Neon.Glow.Concurrency;
 
 namespace JCS.Neon.Glow.Console.Test
 {
@@ -20,17 +20,17 @@ namespace JCS.Neon.Glow.Console.Test
         {
             // clearing and resetting the display
             AnsiConsole.WriteLine("Clearing console display and resetting cursor");
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearDisplay(true);
             
             // clearing up to the current cursor position
             AnsiConsole.WriteLine("Clearing display to cursor");
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearToCursor();
             
             // clearing from the current cursor position
             AnsiConsole.WriteLine("Clearing display from cursor to end");
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearToEnd();
         }
 
@@ -38,17 +38,17 @@ namespace JCS.Neon.Glow.Console.Test
         {
             // resetting the cursor
             AnsiConsole.WriteLine("Resetting the cursor to the origin");
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearDisplay(true);
             
             // positioning the cursor
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
             for (ushort i = 1; i <= 10; i++)
             {
                 AnsiConsole.SetCursorPosition(i,i);
                 AnsiConsole.ReportCursorPosition();
-                Threading.SleepCurrentThread((TestInterval/2));
+                ThreadHelpers.SleepCurrentThread((TestInterval/2));
                 AnsiConsole.ClearDisplay(true);
             }
             AnsiConsole.ShowCursor();
@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Console.Test
         {
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.WriteLineRestoreCursor("Starting buffer height test...");
-            Threading.SleepCurrentThread(TestInterval);
+            ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.HideCursor();
             for (var i = 1; i <= 5000; i++)

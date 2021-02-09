@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using JCS.Neon.Glow.Interop.Windows;
-using JCS.Neon.Glow.Utilities.General;
+using JCS.Neon.Glow.Logging;
+using JCS.Neon.Glow.OS.Interop.Windows;
 using Serilog;
 
 #endregion
@@ -44,7 +44,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         static AnsiConsole()
         {
-            Logs.MethodCall(_log);
+            LogHelpers.MethodCall(_log);
             Kernel32.EnableVirtualTerminal();
         }
 
@@ -147,7 +147,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (IOException ex)
             {
-                Logs.ExceptionWarning(_log, ex);
+                LogHelpers.ExceptionWarning(_log, ex);
             }
         }
 
@@ -163,7 +163,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (IOException ex)
             {
-                Logs.ExceptionWarning(_log, ex);
+                LogHelpers.ExceptionWarning(_log, ex);
             }
         }
 
@@ -180,7 +180,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (IOException ex)
             {
-                Logs.ExceptionWarning(_log, ex);
+                LogHelpers.ExceptionWarning(_log, ex);
             }
         }
 
@@ -197,7 +197,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (IOException ex)
             {
-                Logs.ExceptionWarning(_log, ex);
+                LogHelpers.ExceptionWarning(_log, ex);
             }
         }
 

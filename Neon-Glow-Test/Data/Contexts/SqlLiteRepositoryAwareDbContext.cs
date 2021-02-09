@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Test.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var instantConverter =
-                new ValueConverter<Instant, DateTime>(v =>
+                new ValueConverter<Instant, System.DateTime>(v =>
                         v.ToDateTimeUtc(),
                     v => Instant.FromDateTimeUtc(v));
 

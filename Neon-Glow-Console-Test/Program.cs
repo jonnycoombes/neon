@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-using JCS.Neon.Glow.Utilities.General;
 
 namespace JCS.Neon.Glow.Console.Test
 {
