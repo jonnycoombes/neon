@@ -18,6 +18,9 @@ namespace JCS.Neon.Glow.Console.Test
         
         public static void CursorPositionTests()
         {
+
+            AnsiConsole.SetTitle("Cursor Position Tests");
+            
             // resetting the cursor
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.WriteLine($"Current dimensions are ({AnsiConsole.Width}, {AnsiConsole.Height})");
@@ -42,6 +45,8 @@ namespace JCS.Neon.Glow.Console.Test
 
         public static void BufferStressTest()
         {
+            AnsiConsole.SetTitle("Buffer Stress Tests");
+            
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.WriteLineRestoreCursor("Starting buffer height test...");
             ThreadHelpers.SleepCurrentThread(TestInterval);
