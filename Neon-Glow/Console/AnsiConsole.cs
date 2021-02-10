@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.OS.Interop.Windows;
 using Serilog;
@@ -40,12 +41,22 @@ namespace JCS.Neon.Glow.Console
         private static readonly Stack<CursorPosition> _cursorPositions = new();
 
         /// <summary>
-        ///     Static constructor
+        ///     Static constructor - this does all the necessary preparatory work setting up the <see cref="System.Console" /> so that
+        ///     it behaves a bit more as we'd expect it to in the 21st century.
         /// </summary>
         static AnsiConsole()
         {
             LogHelpers.MethodCall(_log);
-            Kernel32.EnableVirtualTerminal();
+            try
+            {
+                Kernel32.EnableVirtualTerminal();
+                System.Console.OutputEncoding = Encoding.UTF8;
+            }
+            catch (Exception ex)
+            {
+                LogHelpers.Warning(_log, $"Caught an exception whilst attempting to setup the console \"{ex.Message}\"");
+                LogHelpers.ExceptionWarning(_log, ex);
+            }
         }
 
         /// <summary>
