@@ -131,7 +131,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Sets the cursor postion to a given row and column.  Both indexes are 0-based
+        ///     Sets the cursor postion to a given row and column.  Both indexes are 1-based.
+        ///     TODO Bounds checking on buffer size
         /// </summary>
         /// <param name="row">The row number</param>
         /// <param name="column">The column number</param>
@@ -389,6 +390,15 @@ namespace JCS.Neon.Glow.Console
         public static void Write(string format, object[]? args)
         {
             CheckedWrite(format, args);
+        }
+
+        /// <summary>
+        ///     Sets the current window/terminal title
+        /// </summary>
+        /// <param name="title">The title to set</param>
+        public static void SetTitle(string title)
+        {
+            CheckedWrite($"{AnsiControlCodes.SetWindowTitle(title)}");
         }
 
         /// <summary>
