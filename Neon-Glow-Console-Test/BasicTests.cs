@@ -25,18 +25,19 @@ namespace JCS.Neon.Glow.Console.Test
             // positioning the cursor
             ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
-            var colcoords = Rng.BoundedSequence(500, 1, AnsiConsole.Width).ToArray();
-            var rowcoords = Rng.BoundedSequence(500, 1, AnsiConsole.Height).ToArray();
+            var colcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Width).ToArray();
+            var rowcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Height).ToArray();
             
-            for (ushort i = 0; i < 500; i++)
+            for (ushort i = 0; i < 5000; i++)
             {
                 AnsiConsole.SetCursorPosition(2, 1);
                 AnsiConsole.Write($"Plot coords: ({rowcoords[i]},{colcoords[i]})");
                 AnsiConsole.SetCursorPosition((uint)rowcoords[i],(uint)colcoords[i]);
-                AnsiConsole.Write($"{Char.ConvertFromUtf32(0x1f4a5)}");
+                AnsiConsole.Write($"{char.ConvertFromUtf32(0x1f4a5)}");
                 ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(0.1));
             }
             AnsiConsole.ShowCursor();
+            System.Console.ReadKey();
         }
 
         public static void BufferStressTest()
