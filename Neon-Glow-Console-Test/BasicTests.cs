@@ -23,13 +23,13 @@ namespace JCS.Neon.Glow.Console.Test
             
             // resetting the cursor
             AnsiConsole.ClearDisplay(true);
-            AnsiConsole.WriteLine($"Current dimensions are ({AnsiConsole.Width}, {AnsiConsole.Height})");
+            AnsiConsole.WriteLine($"Current dimensions are ({AnsiConsole.Columns}, {AnsiConsole.Rows})");
             
             // positioning the cursor
             ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
-            var colcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Width).ToArray();
-            var rowcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Height).ToArray();
+            var colcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Columns).ToArray();
+            var rowcoords = Rng.BoundedSequence(5000, 1, AnsiConsole.Rows).ToArray();
             
             for (ushort i = 0; i < 5000; i++)
             {

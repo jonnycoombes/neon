@@ -82,12 +82,12 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     Returns the currently reported width of the console
         /// </summary>
-        public static int Width => System.Console.BufferWidth;
+        public static int Columns => System.Console.BufferWidth;
 
         /// <summary>
         ///     Returns the currently reported height of the console
         /// </summary>
-        public static int Height => System.Console.BufferHeight;
+        public static int Rows => System.Console.BufferHeight;
 
         /// <summary>
         ///     Clears the display by issuing the ClearDisplay ANSI code to the current console
