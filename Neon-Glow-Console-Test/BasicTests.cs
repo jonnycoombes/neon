@@ -52,10 +52,6 @@ namespace JCS.Neon.Glow.Console.Test
             ThreadHelpers.SleepCurrentThread(TestInterval);
             AnsiConsole.ClearDisplay(true);
             AnsiConsole.HideCursor();
-            for (var i = 1; i <= 5000; i++)
-            {
-                AnsiConsole.WriteRestoreCursor($"{i} - {AnsiConsole.ReportCursorPositionString()}");
-            }
             AnsiConsole.ShowCursor();
         }
     }

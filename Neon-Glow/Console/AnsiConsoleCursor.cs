@@ -106,5 +106,24 @@ namespace JCS.Neon.Glow.Console
         {
             CheckedWrite(AnsiControlCodes.CursorPosition(row, column));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        private static void CheckBounds(Point p)
+        {
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        public static void CheckBounds(int row, int column)
+            
+        {
+        }
     }
 }
