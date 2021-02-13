@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
+using System.Threading;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.OS.Interop.Windows;
+using JCS.Neon.Glow.Types;
 using Serilog;
 
 #endregion
@@ -15,9 +16,7 @@ namespace JCS.Neon.Glow.Console
     /// <summary>
     ///     <para>
     ///         Static alternative to the <see cref="Console" /> which provides support for various ANSI terminal operations.
-    ///         This
-    ///         wrapper
-    ///         around the basic .NET core <see cref="System.Console" /> has a number of differences and enhancements:
+    ///         This wrapper around the basic .NET core <see cref="System.Console" /> has a number of differences and enhancements:
     ///     </para>
     ///     <para>
     ///         AnsiConsole will attempt to switch to a virtual terminal mode on Windows 10 automatically using underlying
@@ -28,18 +27,27 @@ namespace JCS.Neon.Glow.Console
     ///         between the undelrying zero-based system used within .NET.
     ///     </para>
     /// </summary>
-    public static class AnsiConsole
+    public static partial class AnsiConsole
     {
+        /// <summary>
+        ///     An enumeration used to track which buffer the console is currently performing operations on
+        /// </summary>
+        public enum AnsiConsoleBuffer
+        {
+            Primary,
+            Alternative
+        }
+
         /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(AnsiConsole));
 
         /// <summary>
-        ///     Stack used for storing cursor positions
+        /// The state of the console at a given point in time
         /// </summary>
-        private static readonly Stack<CursorPosition> _cursorPositions = new();
-
+        private static AnsiConsoleState _state = new AnsiConsoleState();
+        
         /// <summary>
         ///     Static constructor - this does all the necessary preparatory work setting up the <see cref="System.Console" /> so that
         ///     it behaves a bit more as we'd expect it to in the 21st century.
@@ -58,26 +66,6 @@ namespace JCS.Neon.Glow.Console
                 LogHelpers.ExceptionWarning(_log, ex);
             }
         }
-
-        /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme top left of the display
-        /// </summary>
-        public static CursorPosition TopLeft => new(1, 1);
-
-        /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme top right of the display
-        /// </summary>
-        public static CursorPosition TopRight => new(1, (uint) System.Console.BufferWidth);
-
-        /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme bottom left of the display
-        /// </summary>
-        public static CursorPosition BottomLeft => new((uint) System.Console.BufferHeight, 1);
-
-        /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme bottom right of the display
-        /// </summary>
-        public static CursorPosition BottomRight => new((uint) System.Console.BufferHeight, (uint) System.Console.BufferWidth);
 
         /// <summary>
         ///     Returns the currently reported width of the console
@@ -107,38 +95,10 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Hides the cursor
+        ///     Switches to the alternative buffer and vice-versa.  The current buffer in use is tracked within the console state structure
         /// </summary>
-        public static void HideCursor()
+        public static void SwitchBuffer()
         {
-            CheckedWrite(AnsiControlCodes.HideCursor);
-        }
-
-        /// <summary>
-        ///     Displays the cursor
-        /// </summary>
-        public static void ShowCursor()
-        {
-            CheckedWrite(AnsiControlCodes.ShowCursor);
-        }
-
-        /// <summary>
-        ///     Resets the cursor to the first row, first column
-        /// </summary>
-        public static void ResetCursor()
-        {
-            CheckedWrite(AnsiControlCodes.CursorPosition(1, 1));
-        }
-
-        /// <summary>
-        ///     Sets the cursor postion to a given row and column.  Both indexes are 1-based.
-        ///     TODO Bounds checking on buffer size
-        /// </summary>
-        /// <param name="row">The row number</param>
-        /// <param name="column">The column number</param>
-        public static void SetCursorPosition(uint row, uint column)
-        {
-            CheckedWrite(AnsiControlCodes.CursorPosition(row, column));
         }
 
         /// <summary>
@@ -158,241 +118,6 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Checked version of System.Console.Write which logs information about any I/O errors.
-        /// </summary>
-        /// <param name="value">The value to write</param>
-        private static void CheckedWrite(string value)
-        {
-            try
-            {
-                System.Console.Write(value);
-            }
-            catch (IOException ex)
-            {
-                LogHelpers.ExceptionWarning(_log, ex);
-            }
-        }
-
-        /// <summary>
-        ///     Checked version of System.Console.WriteLine which logs information about any I/O errors
-        /// </summary>
-        /// <param name="value">The value to write</param>
-        private static void CheckedWriteLine(string value)
-        {
-            try
-            {
-                System.Console.WriteLine(value);
-            }
-            catch (IOException ex)
-            {
-                LogHelpers.ExceptionWarning(_log, ex);
-            }
-        }
-
-        /// <summary>
-        ///     Checked version of System.Console.Write which logs I/O errors
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">Optional argument array</param>
-        private static void CheckedWrite(string format, object[]? args)
-        {
-            try
-            {
-                System.Console.Write(format, args);
-            }
-            catch (IOException ex)
-            {
-                LogHelpers.ExceptionWarning(_log, ex);
-            }
-        }
-
-        /// <summary>
-        ///     Checked version of System.Console.WriteLine which logs I/O errors
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">Optional argument array</param>
-        private static void CheckedWriteLine(string format, object[]? args)
-        {
-            try
-            {
-                System.Console.WriteLine(format, args);
-            }
-            catch (IOException ex)
-            {
-                LogHelpers.ExceptionWarning(_log, ex);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the current cursor position as a string representation
-        /// </summary>
-        /// <returns>A string of the format "[row:{r},col:{c}]" where {r} is the current row, {c} is the current column</returns>
-        public static string ReportCursorPositionString()
-        {
-            return $"[row:{System.Console.CursorTop + 1}, col:{System.Console.CursorLeft + 1}]";
-        }
-
-        /// <summary>
-        ///     Utility function that just returns the current cursor position in (row, column) format
-        /// </summary>
-        /// <param name="restoreCursor">Whether or not the cursor position should be restored after writing</param>
-        public static void ReportCursorPosition(bool restoreCursor = true)
-        {
-            if (restoreCursor)
-            {
-                WriteRestoreCursor($"[row:{System.Console.CursorTop + 1}, col:{System.Console.CursorLeft + 1}]");
-            }
-            else
-            {
-                Write($"[row:{System.Console.CursorTop + 1}, col:{System.Console.CursorLeft + 1}]");
-            }
-        }
-
-        /// <summary>
-        ///     Writes out the current display metrics - i.e. the width and height of the display
-        /// </summary>
-        /// <param name="restoreCursor">Whether or not the cursor position should be restored after the write</param>
-        public static void ReportDisplayGeometry(bool restoreCursor = true)
-        {
-            if (restoreCursor)
-            {
-                WriteRestoreCursor($"[rows:{System.Console.BufferHeight}, cols:{System.Console.BufferWidth}]");
-            }
-            else
-            {
-                Write($"[rows:{System.Console.BufferHeight}, cols:{System.Console.BufferWidth}]");
-            }
-        }
-
-        /// <summary>
-        ///     Returns a string representation of the current screen geometry
-        /// </summary>
-        /// <returns>
-        ///     A string in the form "[rows:{r},cols:{c}]" where {r} is the current number of rows, {c} is the current number
-        ///     of columns
-        /// </returns>
-        public static string ReportDisplayGeometryString()
-        {
-            return $"[rows:{System.Console.BufferHeight}, cols:{System.Console.BufferWidth}]";
-        }
-
-        /// <summary>
-        ///     Writes to the display at the current cursor position with a terminating newline
-        /// </summary>
-        /// <param name="value">The value to write to the console</param>
-        public static void WriteLine(string value)
-        {
-            CheckedWriteLine(value);
-        }
-
-        /// <summary>
-        ///     Pushes the current cursor position onto the cursor position stack
-        /// </summary>
-        private static void PushCursorPosition()
-        {
-            _cursorPositions.Push(new CursorPosition());
-        }
-
-        /// <summary>
-        ///     Pops and discards a cursor position from the cursor position stack
-        /// </summary>
-        private static void PopCursorPosition()
-        {
-            _cursorPositions.Pop();
-        }
-
-        /// <summary>
-        ///     Pops a <see cref="CursorPosition" /> off the stack, and then sets the display cursor position based on it
-        /// </summary>
-        private static void RestoreCursorPosition()
-        {
-            if (_cursorPositions.TryPop(out var position))
-            {
-                SetCursorPosition(position.Row, position.Column);
-            }
-        }
-
-        /// <summary>
-        ///     Writes to the display at the current cursor position without a terminating newline, and then restores the cursor
-        ///     position
-        ///     to the location it was at prior to the write
-        /// </summary>
-        /// <param name="value"></param>
-        public static void WriteLineRestoreCursor(string value)
-        {
-            PushCursorPosition();
-            WriteLine(value);
-            RestoreCursorPosition();
-        }
-
-        /// <summary>
-        ///     Writes to the display at the current cursor position without a terminating newline, and then restores the cursor
-        ///     position
-        ///     to the location it was at prior to the write
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">Optional argument array to be applied to the format string</param>
-        public static void WriteLineRestoreCursor(string format, object[]? args)
-        {
-            PushCursorPosition();
-            WriteLine(format, args);
-            RestoreCursorPosition();
-        }
-
-        /// <summary>
-        ///     Writes to the display at the current cursor position without a terminating newline
-        /// </summary>
-        /// <param name="value">The value to write to the console</param>
-        public static void Write(string value)
-        {
-            CheckedWrite(value);
-        }
-
-        /// <summary>
-        ///     Writes to the display at the current cursor position without a terminating newline and then restores the cursor to
-        ///     the position it was in prior to the write
-        /// </summary>
-        /// <param name="value">The value to write to the console</param>
-        public static void WriteRestoreCursor(string value)
-        {
-            PushCursorPosition();
-            Write(value);
-            RestoreCursorPosition();
-        }
-
-        /// <summary>
-        ///     Writes a formatted string to the console at the current cursor position, with a terminating newline
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">The arguments to be applied to the format string</param>
-        public static void WriteLine(string format, object[]? args)
-        {
-            CheckedWriteLine(format, args);
-        }
-
-        /// <summary>
-        ///     Writes a formatted string to the display at the current cursor position, without a terminating newline
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">The arguments to be applied to the format string</param>
-        public static void WriteRestoreCursor(string format, object[]? args)
-        {
-            PushCursorPosition();
-            CheckedWrite(format, args);
-            RestoreCursorPosition();
-        }
-
-        /// <summary>
-        ///     Writes a formatted string to the display at the current cursor position, without a terminating newline
-        /// </summary>
-        /// <param name="format">A format string</param>
-        /// <param name="args">The arguments to be applied to the format string</param>
-        public static void Write(string format, object[]? args)
-        {
-            CheckedWrite(format, args);
-        }
-
-        /// <summary>
         ///     Sets the current window/terminal title
         /// </summary>
         /// <param name="title">The title to set</param>
@@ -401,40 +126,19 @@ namespace JCS.Neon.Glow.Console
             CheckedWrite($"{AnsiControlCodes.SetWindowTitle(title)}");
         }
 
+
         /// <summary>
-        ///     Record for storing a pair of cursor coordinates
+        ///     Exception class used throughout the <see cref="AnsiConsole" /> in the event of critical or transient errors
         /// </summary>
-        public class CursorPosition
+        public class AnsiConsoleException : Exception
         {
-            /// <summary>
-            ///     Construtor captures the current cursor position
-            /// </summary>
-            public CursorPosition()
+            public AnsiConsoleException(string? message) : base(message)
             {
-                Row = (uint) System.Console.CursorTop + 1;
-                Column = (uint) System.Console.CursorLeft + 1;
             }
 
-            /// <summary>
-            ///     Constructor which allows for the setting of row and column values
-            /// </summary>
-            /// <param name="row">The row value (1-based)</param>
-            /// <param name="column">The column value (1-based)</param>
-            public CursorPosition(uint row, uint column)
+            public AnsiConsoleException(string? message, Exception? innerException) : base(message, innerException)
             {
-                Row = row;
-                Column = column;
             }
-
-            /// <summary>
-            ///     The row coordinate (1-based)
-            /// </summary>
-            public uint Row { get; }
-
-            /// <summary>
-            ///     The column coordinate (1-based)
-            /// </summary>
-            public uint Column { get; }
         }
     }
 }

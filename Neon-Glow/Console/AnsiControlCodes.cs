@@ -537,13 +537,12 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     Generates a control code for setting the cursor position at coordinates (<paramref name="row" />, <paramref name="column" />)
         /// </summary>
-        /// <param name="row">The row index for the cursor position.  The values should be 1-based, although may be zero based on certain terminals</param>
+        /// <param name="row">The row index for the cursor position.  The values should be 1-based.</param>
         /// <param name="column">
-        ///     The column index for the cursor position.  The values should be 1-based, although may be zero-based on certain
-        ///     terminals
+        ///     The column index for the cursor position.  The values should be 1-based. 
         /// </param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPosition(uint row, uint column)
+        public static string CursorPosition(int row, int column)
         {
             return $"{CSI}{row};{column}H";
         }
@@ -554,7 +553,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="row">The row for the cursor position</param>
         /// <param name="column">The column for the cursor position</param>
         /// <returns>An ANSI control code</returns>
-        public static string HorizontalVerticalPosition(uint row, uint column)
+        public static string HorizontalVerticalPosition(int row, int column)
         {
             return $"{CSI}{row};{column}f";
         }
@@ -564,7 +563,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="row">The row index</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPositionRow(uint row)
+        public static string CursorPositionRow(int row)
         {
             return $"{CSI}{row}H";
         }
@@ -574,7 +573,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="column">The column index</param>
         /// <returns>An ANSI control code</returns>
-        public static string CursorPositionColumn(uint column)
+        public static string CursorPositionColumn(int column)
         {
             return $"{CSI};{column}H";
         }
