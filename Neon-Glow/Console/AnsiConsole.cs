@@ -1,12 +1,11 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using JCS.Neon.Glow.Logging;
+using JCS.Neon.Glow.OS;
 using JCS.Neon.Glow.OS.Interop.Windows;
-using JCS.Neon.Glow.Types;
 using Serilog;
 
 #endregion
@@ -16,7 +15,8 @@ namespace JCS.Neon.Glow.Console
     /// <summary>
     ///     <para>
     ///         Static alternative to the <see cref="Console" /> which provides support for various ANSI terminal operations.
-    ///         This wrapper around the basic .NET core <see cref="System.Console" /> has a number of differences and enhancements:
+    ///         This wrapper around the basic .NET core <see cref="System.Console" /> has a number of differences and
+    ///         enhancements:
     ///     </para>
     ///     <para>
     ///         AnsiConsole will attempt to switch to a virtual terminal mode on Windows 10 automatically using underlying
@@ -34,8 +34,8 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public enum AnsiConsoleBuffer
         {
-            Primary,
-            Alternative
+            Primary = 0,
+            Alternative = 1
         }
 
         /// <summary>
@@ -44,13 +44,24 @@ namespace JCS.Neon.Glow.Console
         private static readonly ILogger _log = Log.ForContext(typeof(AnsiConsole));
 
         /// <summary>
-        /// The state of the console at a given point in time
+        ///     The currently active buffer
         /// </summary>
-        private static AnsiConsoleState _state = new AnsiConsoleState();
-        
+        private static AnsiConsoleBuffer _currentBuffer = AnsiConsoleBuffer.Primary;
+
         /// <summary>
-        ///     Static constructor - this does all the necessary preparatory work setting up the <see cref="System.Console" /> so that
-        ///     it behaves a bit more as we'd expect it to in the 21st century.
+        ///     The current states of the console - one for each buffer.  Updates to state only affect the current buffer
+        /// </summary>
+        private static readonly AnsiConsoleState[] _states = {new(), new()};
+
+        /// <summary>
+        ///     A <see cref="Timer" /> used to periodically update the current state of the console
+        /// </summary>
+        private static Timer _stateUpdateTimer =
+            new(UpdateStateCallback, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
+
+        /// <summary>
+        ///     Static constructor - this does all the necessary preparatory work setting up the <see cref="System.Console" /> so
+        ///     that it behaves a bit more as we'd expect it to in the 21st century.
         /// </summary>
         static AnsiConsole()
         {
@@ -59,6 +70,8 @@ namespace JCS.Neon.Glow.Console
             {
                 Kernel32.EnableVirtualTerminal();
                 System.Console.OutputEncoding = Encoding.UTF8;
+                _currentBuffer = AnsiConsoleBuffer.Primary;
+                UpdateConsoleState();
             }
             catch (Exception ex)
             {
@@ -68,14 +81,49 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Returns the currently reported width of the console
+        ///     Returns the currently active buffer
         /// </summary>
-        public static int Columns => System.Console.BufferWidth;
+        public static AnsiConsoleBuffer CurrentBuffer => _currentBuffer;
 
         /// <summary>
-        ///     Returns the currently reported height of the console
+        ///     Returns the currently active state, depending on which buffer is currently in use
         /// </summary>
-        public static int Rows => System.Console.BufferHeight;
+        /// <returns>The currently applicable <see cref="AnsiConsoleState" /> instance</returns>
+        private static AnsiConsoleState CurrentState => _currentBuffer == AnsiConsoleBuffer.Primary ? _states[0] : _states[1];
+
+        /// <summary>
+        ///     Returns the current number of rows in the display
+        /// </summary>
+        public static int Rows => CurrentState.Rows;
+
+        /// <summary>
+        ///     Returns the current number of columns in the display
+        /// </summary>
+        public static int Columns => CurrentState.Columns;
+
+        /// <summary>
+        ///     Timed callback that updates the console state periodically
+        /// </summary>
+        /// <param name="state"></param>
+        private static void UpdateStateCallback(object? state)
+        {
+            UpdateConsoleState();
+        }
+
+        /// <summary>
+        ///     Updates the currently active state of the terminal.  Writes the information into the currently active
+        ///     <see cref="AnsiConsoleState" /> instance
+        /// </summary>
+        private static void UpdateConsoleState()
+        {
+            var state = CurrentState;
+            state.Rows = System.Console.BufferHeight;
+            state.Columns = System.Console.BufferWidth;
+            if (PlatformInformation.IsWindows)
+            {
+                state.Title = System.Console.Title;
+            }
+        }
 
         /// <summary>
         ///     Clears the display by issuing the ClearDisplay ANSI code to the current console
@@ -95,10 +143,27 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Switches to the alternative buffer and vice-versa.  The current buffer in use is tracked within the console state structure
+        ///     Switches to the alternative buffer and vice-versa.  The current buffer in use is tracked within the console state
+        ///     structure.  Note that when switching to the alternate buffer, it is always cleared.  The
+        ///     <paramref name="clearPrimary" />
+        ///     parameter lets the callee decided whether the primary buffer should be cleared when switched to
         /// </summary>
-        public static void SwitchBuffer()
+        /// <param name="clearPrimary">Whether or not the primary buffer should be cleared when switched do.</param>
+        public static void SwitchBuffer(bool clearPrimary = false)
         {
+            if (_currentBuffer == AnsiConsoleBuffer.Primary)
+            {
+                CheckedWrite(AnsiControlCodes.EnableAlternativeScreenBuffer);
+                _currentBuffer = AnsiConsoleBuffer.Alternative;
+                UpdateConsoleState();
+            }
+            else
+            {
+                CheckedWrite(AnsiControlCodes.DisableAlternativeScreenBuffer);
+                _currentBuffer = AnsiConsoleBuffer.Primary;
+                if (clearPrimary) ClearDisplay();
+                UpdateConsoleState();
+            }
         }
 
         /// <summary>
@@ -125,7 +190,6 @@ namespace JCS.Neon.Glow.Console
         {
             CheckedWrite($"{AnsiControlCodes.SetWindowTitle(title)}");
         }
-
 
         /// <summary>
         ///     Exception class used throughout the <see cref="AnsiConsole" /> in the event of critical or transient errors

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Serilog;
 using JCS.Neon.Glow.Logging;
+using NodaTime;
 
 #endregion
 
@@ -18,6 +19,33 @@ namespace JCS.Neon.Glow.Cryptography
         /// Static logger
         /// </summary>
         private static ILogger _log = Log.ForContext(typeof(Rng));
+
+        /// <summary>
+        /// Internal RNG instance TODO Sensible seeding of this?
+        /// </summary>
+        private static Random _rng = new Random();
+        
+        /// <summary>
+        /// Returns a random integer in the range -1 >= n >= -INTMAX
+        /// </summary>
+        /// <param name="max">The maximum value for the number generated</param>
+        /// <returns></returns>
+        public static int NonZeroNegativeInteger(int max)
+        {
+            LogHelpers.MethodCall(_log);
+            return -(_rng.Next(1, max));
+        }
+        
+        /// <summary>
+        /// Returns a random integer in the range 1 <= n <= INTMAX
+        /// </summary>
+        /// <param name="max">The maximum value for the number generated</param>
+        /// <returns></returns>
+        public static int NonZeroPositiveInteger(int max)
+        {
+            LogHelpers.MethodCall(_log);
+            return _rng.Next(1, max);
+        }
         
         /// <summary>
         ///     Generates a sequence of random integers within a given bounded range.
@@ -29,10 +57,9 @@ namespace JCS.Neon.Glow.Cryptography
         public static IEnumerable<int> BoundedSequence(uint count, int min, int max)
         {
             LogHelpers.MethodCall(_log);
-            var rng = new Random();
             while (count != 0)
             {
-                yield return rng.Next(min, max);
+                yield return _rng.Next(min, max);
                 count--;
             }
         }
@@ -47,10 +74,9 @@ namespace JCS.Neon.Glow.Cryptography
         public static IEnumerable<double> BoundedSequence(uint count, double scale)
         {
             LogHelpers.MethodCall(_log);
-            var rng = new Random();
             while (count != 0)
             {
-                yield return rng.NextDouble() * scale;
+                yield return _rng.NextDouble() * scale;
                 count--;
             }
         }
@@ -63,11 +89,10 @@ namespace JCS.Neon.Glow.Cryptography
         public static IEnumerable<byte> BoundedSequence(uint count)
         {
             LogHelpers.MethodCall(_log);
-            var rng = new Random();
             while (count != 0)
             {
                 var output = new byte[1];
-                rng.NextBytes(output);
+                _rng.NextBytes(output);
                 yield return output[0];
                 count--;
             }

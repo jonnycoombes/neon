@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 // ReSharper disable All
@@ -545,6 +546,17 @@ namespace JCS.Neon.Glow.Console
         public static string CursorPosition(int row, int column)
         {
             return $"{CSI}{row};{column}H";
+        }
+
+        /// <summary>
+        /// Generates a control code for setting cursor position at coordinates given by a <see cref="Point"/>.  The X-coord is sets
+        /// the column number, the Y-coord sets the row number
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns>An ANSI control code</returns>
+        public static string CursorPosition(Point position)
+        {
+            return $"{CSI}{position.Y};{position.X}H";
         }
 
         /// <summary>

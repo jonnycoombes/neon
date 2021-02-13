@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Drawing;
 
 #endregion
@@ -23,17 +24,17 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     <see cref="CursorPosition" /> representing the extreme top right of the display
         /// </summary>
-        public static Point TopRight => new(1, _state.Columns);
+        public static Point TopRight => new(1, CurrentState.Columns);
 
         /// <summary>
         ///     <see cref="CursorPosition" /> representing the extreme bottom left of the display
         /// </summary>
-        public static Point BottomLeft => new(_state.Rows, 1);
+        public static Point BottomLeft => new(CurrentState.Rows, 1);
 
         /// <summary>
         ///     <see cref="CursorPosition" /> representing the extreme bottom right of the display
         /// </summary>
-        public static Point BottomRight => new(_state.Rows, _state.Columns);
+        public static Point BottomRight => new(CurrentState.Rows, CurrentState.Columns);
 
         /// <summary>
         ///     Creates a <see cref="Point" /> with the current cursor coordinates, translated to a 1-based coordinate system
@@ -49,7 +50,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void PushCursorPosition()
         {
-            _state.PushCursorPosition(CurrentCursorPosition());
+            CurrentState.PushCursorPosition(CurrentCursorPosition());
         }
 
         /// <summary>
@@ -57,18 +58,19 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void PopCursorPosition()
         {
-            _state.PopCursorPosition();
+            CurrentState.PopCursorPosition();
         }
 
         /// <summary>
-        ///     Pops a <see cref="CursorPosition" /> off the stack, and then sets the display cursor position based on it.  If there are no
+        ///     Pops a <see cref="CursorPosition" /> off the stack, and then sets the display cursor position based on it.  If
+        ///     there are no
         ///     positions on the stack, then this a NOOP
         /// </summary>
         private static void RestoreCursorPosition()
         {
-            if (_state.PopCursorPosition().IsSome(out var p))
+            if (CurrentState.PopCursorPosition().IsSome(out var p))
             {
-                SetCursorPosition(p.Y, p.X);
+                SetCursorPosition(p);
             }
         }
 
@@ -97,33 +99,39 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Sets the cursor postion to a given row and column.  Both indexes are 1-based.
-        ///     TODO Bounds checking on buffer size
+        /// 
         /// </summary>
-        /// <param name="row">The row number</param>
-        /// <param name="column">The column number</param>
-        public static void SetCursorPosition(int row, int column)
+        /// <param name="position"></param>
+        public static void SetCursorPosition(Point position)
         {
-            CheckedWrite(AnsiControlCodes.CursorPosition(row, column));
+            CheckBounds(position);
+            CheckedWrite(AnsiControlCodes.CursorPosition(position));
         }
 
         /// <summary>
-        /// 
+        /// Checks whether a requested cursor position falls outside of the current console bounds
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="p">A cursor position, specified as a <see cref="Point"/></param>
         private static void CheckBounds(Point p)
         {
-            
+            if (p.X > CurrentState.Columns || p.Y > CurrentState.Rows)
+            {
+                throw new AnsiConsoleCursorBoundsError("Cursor position out of bounds");
+            }
         }
 
         /// <summary>
-        /// 
+        ///     Exception which is thrown when positioning or write operations fall outside the current bounds of the console
         /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        public static void CheckBounds(int row, int column)
-            
+        public class AnsiConsoleCursorBoundsError : AnsiConsoleException
         {
+            public AnsiConsoleCursorBoundsError(string? message) : base(message)
+            {
+            }
+
+            public AnsiConsoleCursorBoundsError(string? message, Exception? innerException) : base(message, innerException)
+            {
+            }
         }
     }
 }
