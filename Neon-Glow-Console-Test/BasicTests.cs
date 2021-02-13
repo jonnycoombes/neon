@@ -37,15 +37,7 @@ namespace JCS.Neon.Glow.Console.Test
                     if (i % 100 == 0)
                     {
                         AnsiConsole.SwitchBuffer(false);
-                        AnsiConsole.SetCursorPosition(AnsiConsole.Origin);
-                        if (AnsiConsole.CurrentBuffer == AnsiConsole.AnsiConsoleBuffer.Primary)
-                        {
-                            AnsiConsole.Write("Primary buffer");
-                        }
-                        else
-                        {
-                            AnsiConsole.Write("Alternate buffer");
-                        }
+                        AnsiConsole.SetTitle(AnsiConsole.CurrentBuffer.ToString());
                     }
 
                     AnsiConsole.SetCursorPosition(new Point(Rng.NonZeroPositiveInteger(AnsiConsole.Columns),

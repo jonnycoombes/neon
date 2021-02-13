@@ -117,12 +117,16 @@ namespace JCS.Neon.Glow.Console
         private static void UpdateConsoleState()
         {
             var state = CurrentState;
-            state.Rows = System.Console.BufferHeight;
-            state.Columns = System.Console.BufferWidth;
+
+            // windows specific call to retrieve the title
             if (PlatformInformation.IsWindows)
             {
                 state.Title = System.Console.Title;
             }
+
+            // raise an event if the geometry has changed
+            state.Rows = System.Console.BufferHeight;
+            state.Columns = System.Console.BufferWidth;
         }
 
         /// <summary>
@@ -161,9 +165,24 @@ namespace JCS.Neon.Glow.Console
             {
                 CheckedWrite(AnsiControlCodes.DisableAlternativeScreenBuffer);
                 _currentBuffer = AnsiConsoleBuffer.Primary;
-                if (clearPrimary) ClearDisplay();
+                if (clearPrimary)
+                {
+                    ClearDisplay();
+                }
+
                 UpdateConsoleState();
             }
+        }
+
+        /// <summary>
+        ///     Switches the current buffer and also sets the window title
+        /// </summary>
+        /// <param name="title">The title to apply</param>
+        /// <param name="clearPrimary">Whether or not the primary buffer should be cleared when switched to</param>
+        public static void SwitchBuffer(string title, bool clearPrimary = false)
+        {
+            SwitchBuffer(clearPrimary);
+            SetTitle(title);
         }
 
         /// <summary>
@@ -189,6 +208,7 @@ namespace JCS.Neon.Glow.Console
         public static void SetTitle(string title)
         {
             CheckedWrite($"{AnsiControlCodes.SetWindowTitle(title)}");
+            CurrentState.Title = title;
         }
 
         /// <summary>
