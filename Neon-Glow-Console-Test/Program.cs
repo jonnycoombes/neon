@@ -23,6 +23,7 @@ namespace JCS.Neon.Glow.Console.Test
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            if (!AnsiConsole.Enabled) AnsiConsole.Enable();
             AnsiConsole.WriteLine("Starting Neon Glow AnsiConsole Test Suite");
             BasicTests.CursorPositionTests();
             System.Console.ReadKey();

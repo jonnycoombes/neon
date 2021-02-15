@@ -42,7 +42,8 @@ namespace JCS.Neon.Glow.Console
         /// <returns>A <see cref="Point" /> containing the current cursor position (row, column)</returns>
         private static Point CurrentCursorPosition()
         {
-            return new(System.Console.CursorLeft + 1, System.Console.CursorTop + 1);
+            CheckEnabled();
+            return new Point(System.Console.CursorLeft + 1, System.Console.CursorTop + 1);
         }
 
         /// <summary>
@@ -50,6 +51,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void PushCursorPosition()
         {
+            CheckEnabled();
             CurrentState.PushCursorPosition(CurrentCursorPosition());
         }
 
@@ -58,6 +60,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void PopCursorPosition()
         {
+            CheckEnabled();
             CurrentState.PopCursorPosition();
         }
 
@@ -68,6 +71,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         private static void RestoreCursorPosition()
         {
+            CheckEnabled();
             if (CurrentState.PopCursorPosition().IsSome(out var p))
             {
                 SetCursorPosition(p);
@@ -79,6 +83,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public static void HideCursor()
         {
+            CheckEnabled();
             CheckedWrite(AnsiControlCodes.HideCursor);
         }
 
@@ -87,6 +92,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public static void ShowCursor()
         {
+            CheckEnabled();
             CheckedWrite(AnsiControlCodes.ShowCursor);
         }
 
@@ -95,25 +101,27 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public static void ResetCursor()
         {
+            CheckEnabled();
             CheckedWrite(AnsiControlCodes.CursorPosition(1, 1));
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="position"></param>
         public static void SetCursorPosition(Point position)
         {
+            CheckEnabled();
             CheckBounds(position);
             CheckedWrite(AnsiControlCodes.CursorPosition(position));
         }
 
         /// <summary>
-        /// Checks whether a requested cursor position falls outside of the current console bounds
+        ///     Checks whether a requested cursor position falls outside of the current console bounds
         /// </summary>
-        /// <param name="p">A cursor position, specified as a <see cref="Point"/></param>
+        /// <param name="p">A cursor position, specified as a <see cref="Point" /></param>
         private static void CheckBounds(Point p)
         {
+            CheckEnabled();
             if (p.X > CurrentState.Columns || p.Y > CurrentState.Rows)
             {
                 throw new AnsiConsoleCursorBoundsError("Cursor position out of bounds");

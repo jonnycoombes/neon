@@ -1,11 +1,13 @@
 #region
 
 using System;
+using System.IO;
 using System.Text;
 using System.Threading;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.OS;
 using JCS.Neon.Glow.OS.Interop.Windows;
+using NpgsqlTypes;
 using Serilog;
 
 #endregion
@@ -56,8 +58,17 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     A <see cref="Timer" /> used to periodically update the current state of the console
         /// </summary>
-        private static Timer _stateUpdateTimer =
-            new(UpdateStateCallback, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
+        private static Timer _stateUpdateTimer = null;
+
+        /// <summary>
+        ///     Object used to protect writes to the current enablement state
+        /// </summary>
+        private static readonly object _enablementLock = new();
+
+        /// <summary>
+        ///     Indicates whether or not the console is currently enabled
+        /// </summary>
+        private static bool _enabled;
 
         /// <summary>
         ///     Static constructor - this does all the necessary preparatory work setting up the <see cref="System.Console" /> so
@@ -81,6 +92,11 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
+        ///     Whether or not the console is currently enabled
+        /// </summary>
+        public static bool Enabled => _enabled;
+
+        /// <summary>
         ///     Returns the currently active buffer
         /// </summary>
         public static AnsiConsoleBuffer CurrentBuffer => _currentBuffer;
@@ -102,6 +118,71 @@ namespace JCS.Neon.Glow.Console
         public static int Columns => CurrentState.Columns;
 
         /// <summary>
+        ///     Enables the console and starts any background tasks
+        /// </summary>
+        public static void Enable()
+        {
+            lock (_enablementLock)
+            {
+                if (!_enabled)
+                {
+                    Kernel32.EnableVirtualTerminal();
+                    System.Console.OutputEncoding = Encoding.UTF8;
+                    _currentBuffer = AnsiConsoleBuffer.Primary;
+                    if (_stateUpdateTimer == null)
+                    {
+                        _stateUpdateTimer = new Timer(UpdateStateCallback, null, TimeSpan.FromMilliseconds(0),
+                            TimeSpan.FromMilliseconds(500));
+                    }
+
+                    _enabled = true;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Disables the console and cleans up any background tasks
+        /// </summary>
+        public static void Disable()
+        {
+            lock (_enablementLock)
+            {
+                if (_enabled)
+                {
+                    _stateUpdateTimer.Dispose();
+                    _stateUpdateTimer = null;
+                    _enabled = false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Internal method which checks whether or not the console is currently enabled.   If it isn't then any operations associated with
+        ///     the console (escpecially if the underlying platform is windows) will fail with an exception
+        /// </summary>
+        /// <exception cref="AnsiConsoleException">Thrown if the console is not currently enabled</exception>
+        private static void CheckEnabled()
+        {
+            lock (_enablementLock)
+            {
+                if (!_enabled)
+                {
+                    throw new AnsiConsoleException("Console is not currently active, please make a call to Enable() prior to usage");
+                }
+                else
+                {
+                    if (PlatformInformation.IsWindows)
+                    {
+                        if (!Kernel32.ConsoleWritable())
+                        {
+                            throw new AnsiConsoleException("Console is not currently writable");
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Timed callback that updates the console state periodically
         /// </summary>
         /// <param name="state"></param>
@@ -117,16 +198,30 @@ namespace JCS.Neon.Glow.Console
         private static void UpdateConsoleState()
         {
             var state = CurrentState;
-
-            // windows specific call to retrieve the title
-            if (PlatformInformation.IsWindows)
+            try
             {
-                state.Title = System.Console.Title;
+                if (PlatformInformation.IsWindows)
+                {
+                    if (Kernel32.ConsoleWritable())
+                    {
+                        state.Rows = System.Console.BufferHeight;
+                        state.Columns = System.Console.BufferWidth;
+                    }
+                    else
+                    {
+                        LogHelpers.Warning(_log, "Unable to obtain current (in, out, err) handles");
+                    }
+                }
+                else
+                {
+                    state.Rows = System.Console.BufferHeight;
+                    state.Columns = System.Console.BufferWidth;
+                }
             }
-
-            // raise an event if the geometry has changed
-            state.Rows = System.Console.BufferHeight;
-            state.Columns = System.Console.BufferWidth;
+            catch (Exception ex)
+            {
+                LogHelpers.Warning(_log, $"Failed to update console state exception message is \"{ex.Message}\"");
+            }
         }
 
         /// <summary>
@@ -139,6 +234,7 @@ namespace JCS.Neon.Glow.Console
         /// </param>
         public static void ClearDisplay(bool resetCursor = false, bool clearBuffer = false)
         {
+            CheckEnabled();
             CheckedWrite(clearBuffer ? AnsiControlCodes.EraseDisplayClearBuffer : AnsiControlCodes.EraseDisplay);
             if (resetCursor)
             {
@@ -155,6 +251,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="clearPrimary">Whether or not the primary buffer should be cleared when switched do.</param>
         public static void SwitchBuffer(bool clearPrimary = false)
         {
+            CheckEnabled();
             if (_currentBuffer == AnsiConsoleBuffer.Primary)
             {
                 CheckedWrite(AnsiControlCodes.EnableAlternativeScreenBuffer);
@@ -181,6 +278,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="clearPrimary">Whether or not the primary buffer should be cleared when switched to</param>
         public static void SwitchBuffer(string title, bool clearPrimary = false)
         {
+            CheckEnabled();
             SwitchBuffer(clearPrimary);
             SetTitle(title);
         }
@@ -190,6 +288,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public static void ClearToEnd()
         {
+            CheckEnabled();
             CheckedWrite(AnsiControlCodes.ClearToEnd);
         }
 
@@ -198,6 +297,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         public static void ClearToCursor()
         {
+            CheckEnabled();
             CheckedWrite(AnsiControlCodes.ClearToCursor);
         }
 
@@ -207,6 +307,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="title">The title to set</param>
         public static void SetTitle(string title)
         {
+            CheckEnabled();
             CheckedWrite($"{AnsiControlCodes.SetWindowTitle(title)}");
             CurrentState.Title = title;
         }

@@ -210,8 +210,8 @@ namespace JCS.Neon.Glow.Console
         public static readonly string CHA = $"{CSI}G";
 
         /// <summary>
-        ///     Cursor position - corresponding dynamic functions are <see cref="CursorPosition" />, <see cref="CursorPositionRow" /> and
-        ///     <see cref="CursorPositionColumn" />
+        ///     Cursor position - corresponding dynamic functions are <see cref="CursorPosition(int,int)" />, <see cref="CursorPositionRow(int)" /> and
+        ///     <see cref="CursorPositionColumn(int)" />
         /// </summary>
         public static readonly string CUP = $"{CSI}H";
 
@@ -540,7 +540,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         /// <param name="row">The row index for the cursor position.  The values should be 1-based.</param>
         /// <param name="column">
-        ///     The column index for the cursor position.  The values should be 1-based. 
+        ///     The column index for the cursor position.  The values should be 1-based.
         /// </param>
         /// <returns>An ANSI control code</returns>
         public static string CursorPosition(int row, int column)
@@ -549,8 +549,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        /// Generates a control code for setting cursor position at coordinates given by a <see cref="Point"/>.  The X-coord is sets
-        /// the column number, the Y-coord sets the row number
+        ///     Generates a control code for setting cursor position at coordinates given by a <see cref="Point" />.  The X-coord is sets
+        ///     the column number, the Y-coord sets the row number
         /// </summary>
         /// <param name="position"></param>
         /// <returns>An ANSI control code</returns>
@@ -560,7 +560,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Essentially a synonym for <see cref="CursorPosition" />
+        ///     Essentially a synonym for <see cref="CursorPosition(int,int)" />
         /// </summary>
         /// <param name="row">The row for the cursor position</param>
         /// <param name="column">The column for the cursor position</param>

@@ -22,8 +22,9 @@ namespace JCS.Neon.Glow.Console.Test
 
         public static void CursorPositionTests()
         {
+            if (!AnsiConsole.Enabled) AnsiConsole.Enable();
             AnsiConsole.SetTitle("Cursor Position Tests");
-
+            
             // resetting the cursor
             AnsiConsole.ClearDisplay(true);
 
@@ -40,14 +41,24 @@ namespace JCS.Neon.Glow.Console.Test
                         AnsiConsole.SetTitle(AnsiConsole.CurrentBuffer.ToString());
                     }
 
+                    // move to origin
+                    AnsiConsole.SetCursorPosition(AnsiConsole.Origin);
+                    // delete line
+                    AnsiConsole.EraseCurrentLine();
+                    AnsiConsole.Write($"Current dimensions: [rows: {AnsiConsole.Rows}, columns : {AnsiConsole.Columns}]");
+                    
                     AnsiConsole.SetCursorPosition(new Point(Rng.NonZeroPositiveInteger(AnsiConsole.Columns),
                         Rng.NonZeroPositiveInteger(AnsiConsole.Rows)));
                     AnsiConsole.Write($"{char.ConvertFromUtf32(0x1f196)}");
-                    ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(0.03));
+                    ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(0.5));
                 }
-                catch (AnsiConsole.AnsiConsoleCursorBoundsError ex)
+                catch (AnsiConsole.AnsiConsoleCursorBoundsError)
                 {
-                    System.Console.WriteLine("OOB exception caught");
+                    System.Console.WriteLine("OOB");
+                }
+                catch (AnsiConsole.AnsiConsoleException)
+                {
+                    ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(1));
                 }
             }
 

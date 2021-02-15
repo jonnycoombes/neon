@@ -1,6 +1,6 @@
 ﻿#region
 
-using System.IO;
+using System;
 using JCS.Neon.Glow.Logging;
 
 #endregion
@@ -17,11 +17,12 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value">The value to write</param>
         private static void CheckedWrite(string value)
         {
+            CheckEnabled();
             try
             {
                 System.Console.Write(value);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LogHelpers.ExceptionWarning(_log, ex);
             }
@@ -33,11 +34,12 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value">The value to write</param>
         private static void CheckedWriteLine(string value)
         {
+            CheckEnabled();
             try
             {
                 System.Console.WriteLine(value);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LogHelpers.ExceptionWarning(_log, ex);
             }
@@ -50,11 +52,12 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">Optional argument array</param>
         private static void CheckedWrite(string format, object[]? args)
         {
+            CheckEnabled();
             try
             {
                 System.Console.Write(format, args);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LogHelpers.ExceptionWarning(_log, ex);
             }
@@ -67,11 +70,12 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">Optional argument array</param>
         private static void CheckedWriteLine(string format, object[]? args)
         {
+            CheckEnabled();
             try
             {
                 System.Console.WriteLine(format, args);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 LogHelpers.ExceptionWarning(_log, ex);
             }
@@ -83,6 +87,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value">The value to write to the console</param>
         public static void WriteLine(string value)
         {
+            CheckEnabled();
             CheckedWriteLine(value);
         }
 
@@ -94,6 +99,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value"></param>
         public static void WriteLineRestoreCursor(string value)
         {
+            CheckEnabled();
             PushCursorPosition();
             WriteLine(value);
             RestoreCursorPosition();
@@ -108,6 +114,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">Optional argument array to be applied to the format string</param>
         public static void WriteLineRestoreCursor(string format, object[]? args)
         {
+            CheckEnabled();
             PushCursorPosition();
             WriteLine(format, args);
             RestoreCursorPosition();
@@ -119,6 +126,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value">The value to write to the console</param>
         public static void Write(string value)
         {
+            CheckEnabled();
             CheckedWrite(value);
         }
 
@@ -129,6 +137,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="value">The value to write to the console</param>
         public static void WriteRestoreCursor(string value)
         {
+            CheckEnabled();
             PushCursorPosition();
             Write(value);
             RestoreCursorPosition();
@@ -141,6 +150,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">The arguments to be applied to the format string</param>
         public static void WriteLine(string format, object[]? args)
         {
+            CheckEnabled();
             CheckedWriteLine(format, args);
         }
 
@@ -151,6 +161,7 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">The arguments to be applied to the format string</param>
         public static void WriteRestoreCursor(string format, object[]? args)
         {
+            CheckEnabled();
             PushCursorPosition();
             CheckedWrite(format, args);
             RestoreCursorPosition();
@@ -163,7 +174,23 @@ namespace JCS.Neon.Glow.Console
         /// <param name="args">The arguments to be applied to the format string</param>
         public static void Write(string format, object[]? args)
         {
+            CheckEnabled();
             CheckedWrite(format, args);
+        }
+
+        /// <summary>
+        /// Deletes the line at the current cursor position
+        /// </summary>
+        public static void DeleteCurrentLine()
+        {
+            CheckEnabled();
+            CheckedWrite($"{AnsiControlCodes.DeleteLine()}");
+        }
+
+        public static void EraseCurrentLine()
+        {
+            CheckEnabled();
+            CheckedWrite($"{AnsiControlCodes.EraseCharacter(15)}");
         }
     }
 }
