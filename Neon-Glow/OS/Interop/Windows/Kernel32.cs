@@ -148,7 +148,6 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
                 }
                 return true;
             }
-
             return true;
         }
 
