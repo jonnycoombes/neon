@@ -10,8 +10,7 @@ using NodaTime;
 namespace JCS.Neon.Glow.Data.Entity
 {
     /// <summary>
-    ///     An abstract base class for keyed entities which may be stored via the
-    ///     EF Core framework.
+    ///     An abstract base class for keyed entities which may be stored via the EF Core framework.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class KeyedEntity<T>
