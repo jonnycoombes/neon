@@ -47,7 +47,6 @@ namespace JCS.Neon.Glow.Data.Repository
         /// </summary>
         private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
 
-        /// <param name="cancellationToken"></param>
         /// <inheritdoc cref="IAsyncRepository{K,V}.Count" />
         public async Task<int> Count(CancellationToken cancellationToken = default)
         {
