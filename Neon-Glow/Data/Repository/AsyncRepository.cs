@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Data.Repository
         where V : KeyedEntity<K>
     {
         /// <summary>
-        ///     The undelrying context instace
+        ///     The underlying context instance
         /// </summary>
         private readonly RepositoryAwareDbContext _context;
 
