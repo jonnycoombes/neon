@@ -3,6 +3,8 @@
 using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Exceptions;
+using JCS.Neon.Glow.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -49,12 +51,14 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="options"></param>
         protected RepositoryAwareDbContext(DbContextOptions options) : base(options)
         {
+            LogHelpers.MethodCall(_log);
         }
 
         /// <summary>
         ///     <see cref="ILogger" /> instance
         /// </summary>
-        private ILogger _log => Log.ForContext(typeof(RepositoryAwareDbContext));
+        private static ILogger _log => Log.ForContext(typeof(RepositoryAwareDbContext));
+
 
         /// <summary>
         ///     Attempts to instantiate an instance of <see cref="IAsyncRepository{K,V}" /> which satifies
@@ -69,13 +73,17 @@ namespace JCS.Neon.Glow.Data.Repository
             where K : IComparable<K>, IEquatable<K>
             where V : KeyedEntity<K>
         {
-            _log.Debug($"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
+            LogHelpers.MethodCall(_log);
+            LogHelpers.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var entityType = Model.FindEntityType(typeof(V).FullName!);
-            if (entityType != null) return new AsyncRepository<K, V>(this);
-            var msg = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
-            _log.Error(msg);
-            throw Exceptions.ExceptionHelpers.LoggedException<RepositoryAwareDbContextException>(_log, msg);
+            if (entityType != null)
+            {
+                return new AsyncRepository<K, V>(this);
+            }
 
+            var message = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
+            LogHelpers.Error(_log, message);
+            throw ExceptionHelpers.LoggedException<RepositoryAwareDbContextException>(_log, message);
         }
     }
 }
