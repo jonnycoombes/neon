@@ -6,7 +6,7 @@ namespace JCS.Neon.Glow.Concurrency
     /// <summary>
     /// Placeholder for various threading related utilities
     /// </summary>
-    public static class ThreadHelpers
+    public static class ThreadHelper
     {
         /// <summary>
         /// Suspends the currently executing thread for a specified number of seconds

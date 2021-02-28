@@ -27,7 +27,7 @@ namespace JCS.Neon.Glow.DateAndTime
         /// <returns></returns>
         public static Option<string> ToGeneralIsoString(OffsetDateTime? src)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             return src == null ? Option<string>.None : Option<string>.Some(OffsetDateTimePattern.GeneralIso.Format(src.Value));
         }
 
@@ -38,7 +38,7 @@ namespace JCS.Neon.Glow.DateAndTime
         /// <returns></returns>
         public static Option<string> ToGeneralIsoString(LocalDateTime? src)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             return src == null ? Option<string>.None : Option<string>.Some(LocalDateTimePattern.GeneralIso.Format(src.Value));
         }
     }

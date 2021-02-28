@@ -13,7 +13,7 @@ namespace JCS.Neon.Glow.Logging
     /// <summary>
     ///     Static class containing methods for tidying up logging
     /// </summary>
-    public static class LogHelpers
+    public static class LogHelper
     {
         /// <summary>
         ///     Will log at a verbose level a method invocation

@@ -62,7 +62,7 @@ namespace JCS.Neon.Glow.Cryptography
     /// <summary>
     ///     Static class containing helper functions for various encodings
     /// </summary>
-    public static class EncodingHelpers
+    public static class EncodingHelper
     {
         /// <summary>
         ///     Padding character for use in Base64 encodings
@@ -72,7 +72,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(EncodingHelpers));
+        private static readonly ILogger _log = Log.ForContext(typeof(EncodingHelper));
 
         /// <summary>
         ///     Encodes a string using a given encoding
@@ -83,7 +83,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <exception cref="EncodingHelperException"></exception>
         public static byte[] StringToBytes(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 return encoding switch
@@ -99,7 +99,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<EncodingHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<EncodingHelperException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);
             }
         }
@@ -112,7 +112,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         public static string BytesToString(byte[] source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 return encoding switch
@@ -128,7 +128,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<EncodingHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<EncodingHelperException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);
             }
         }
@@ -141,7 +141,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         public static string EncodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes).TrimEnd(Base64PaddingChar).Replace('+', '-').Replace('/', '_');
         }
@@ -154,7 +154,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         public static string DecodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             source = source.Replace('-', '+').Replace('_', '/');
             switch (source.Length % 4)
             {
@@ -178,7 +178,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         public static string EncodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes);
         }
@@ -191,7 +191,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         public static string DecodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var bytes = Convert.FromBase64String(source);
             return BytesToString(bytes, encoding);
         }

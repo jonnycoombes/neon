@@ -51,7 +51,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="options"></param>
         protected RepositoryAwareDbContext(DbContextOptions options) : base(options)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace JCS.Neon.Glow.Data.Repository
             where K : IComparable<K>, IEquatable<K>
             where V : KeyedEntity<K>
         {
-            LogHelpers.MethodCall(_log);
-            LogHelpers.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
+            LogHelper.MethodCall(_log);
+            LogHelper.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var entityType = Model.FindEntityType(typeof(V).FullName!);
             if (entityType != null)
             {
@@ -82,8 +82,8 @@ namespace JCS.Neon.Glow.Data.Repository
             }
 
             var message = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
-            LogHelpers.Error(_log, message);
-            throw ExceptionHelpers.LoggedException<RepositoryAwareDbContextException>(_log, message);
+            LogHelper.Error(_log, message);
+            throw ExceptionHelper.LoggedException<RepositoryAwareDbContextException>(_log, message);
         }
     }
 }

@@ -14,12 +14,12 @@ namespace JCS.Neon.Glow.IO
     /// <summary>
     ///     Class which contains a bunch of useful file I/O related helper methods/functions
     /// </summary>
-    public static class FileHelpers
+    public static class FileHelper
     {
         /// <summary>
         ///     Private static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(FileHelpers));
+        private static readonly ILogger _log = Log.ForContext(typeof(FileHelper));
 
         /// <summary>
         ///     Tries to determine the current home path based on calls through to System.Environment
@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.IO
         /// <returns></returns>
         public static Option<string> GetCurrentHomePath()
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var home = Environment.GetEnvironmentVariable("HOME");
             if (home != null) return Option<string>.Some(home);
             try
@@ -37,7 +37,7 @@ namespace JCS.Neon.Glow.IO
             }
             catch
             {
-                LogHelpers.Warning(_log, "Failed to locate the current HOME directory");
+                LogHelper.Warning(_log, "Failed to locate the current HOME directory");
                 return Option<string>.None;
             }
         }
@@ -50,7 +50,7 @@ namespace JCS.Neon.Glow.IO
         /// <returns>A string option which is None if the home directory can't be located</returns>
         public static Option<string> GetHomeSubdirectoryPath(params string[] suffix)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var homeOption = GetCurrentHomePath();
             if (homeOption.IsSome(out var home))
             {
@@ -59,7 +59,7 @@ namespace JCS.Neon.Glow.IO
                 return Option<string>.Some(Path.Combine(components));
             }
 
-            LogHelpers.Warning(_log, "Failed to locate the current HOME directory");
+            LogHelper.Warning(_log, "Failed to locate the current HOME directory");
             return Option<string>.None;
         }
     }

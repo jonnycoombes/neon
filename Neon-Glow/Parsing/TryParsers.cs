@@ -28,14 +28,14 @@ namespace JCS.Neon.Glow.Parsing
         /// <returns>An option which will be some if the parse is successful</returns>
         public static Option<Guid> TryParseGuid(string input)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 return Option<Guid>.Some(Guid.Parse(input));
             }
             catch
             {
-                LogHelpers.Warning(_log, $"Failed to parse GUID with input \"{input}\"");
+                LogHelper.Warning(_log, $"Failed to parse GUID with input \"{input}\"");
                 return Option<Guid>.None;
             }
         }
@@ -47,14 +47,14 @@ namespace JCS.Neon.Glow.Parsing
         /// <returns>An option which will be Some if the parse is successful</returns>
         public static Option<Uri> TryParseUri(string input)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 return Option<Uri>.Some(new Uri(input));
             }
             catch
             {
-                LogHelpers.Warning(_log, $"Failed to parse Uri with input \"{input}\"");
+                LogHelper.Warning(_log, $"Failed to parse Uri with input \"{input}\"");
                 return Option<Uri>.None;
             }
         }
@@ -67,7 +67,7 @@ namespace JCS.Neon.Glow.Parsing
         /// <returns>An option value</returns>
         public static Option<OffsetDateTime> TryParseGeneralIsoOffsetDateTime(string? src)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             if (src == null) return Option<OffsetDateTime>.None;
             var result = OffsetDateTimePattern.GeneralIso.Parse(src);
             return result.Success ? Option<OffsetDateTime>.Some(result.Value) : Option<OffsetDateTime>.None;
@@ -80,7 +80,7 @@ namespace JCS.Neon.Glow.Parsing
         /// <returns>An option value</returns>
         public static Option<LocalDateTime> TryParseGeneralIsoLocalDateTime(string? src)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             if (src == null) return Option<LocalDateTime>.None;
             var result = LocalDateTimePattern.GeneralIso.Parse(src);
             return result.Success ? Option<LocalDateTime>.Some(result.Value) : Option<LocalDateTime>.None;

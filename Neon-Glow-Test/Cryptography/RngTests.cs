@@ -9,7 +9,7 @@ using Xunit;
 namespace JCS.Neon.Glow.Test.Cryptography
 {
     /// <summary>
-    ///     Test suite for <see cref="Rng" />
+    ///     Test suite for <see cref="RngHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
     public class RngTests : TestBase
@@ -22,7 +22,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
         [InlineData(25000)]
         public void CheckBoundedByteSequences(uint length)
         {
-            var iterator = Rng.BoundedSequence(length);
+            var iterator = RngHelper.BoundedSequence(length);
             var bytes = iterator as byte[] ?? iterator.ToArray();
             Assert.Equal((int) length, bytes.Count());
         }
@@ -35,7 +35,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
         [InlineData(25000, 123, 67894)]
         public void CheckBoundedIntegerSequences(uint length, int min, int max)
         {
-            var iterator = Rng.BoundedSequence(length, min, max);
+            var iterator = RngHelper.BoundedSequence(length, min, max);
             var ints = iterator as int[] ?? iterator.ToArray();
             Assert.Equal((int) length, ints.Count());
             if (length > 0)
@@ -52,7 +52,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
         [InlineData(25000, 22)]
         public void CheckBoundedDoubleSequences(uint length, double scale)
         {
-            var iterator = Rng.BoundedSequence(length, scale);
+            var iterator = RngHelper.BoundedSequence(length, scale);
             var doubles = iterator as double[] ?? iterator.ToArray();
             Assert.Equal((int) length, doubles.Count());
             if (length > 0)

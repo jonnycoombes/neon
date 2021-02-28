@@ -1,7 +1,7 @@
 ﻿#region
 
 using JCS.Neon.Glow.Cryptography;
-using static JCS.Neon.Glow.Cryptography.EncodingHelpers;
+using static JCS.Neon.Glow.Cryptography.EncodingHelper;
 
 #endregion
 

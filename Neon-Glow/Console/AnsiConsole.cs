@@ -76,7 +76,7 @@ namespace JCS.Neon.Glow.Console
         /// </summary>
         static AnsiConsole()
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 Kernel32.EnableVirtualTerminal();
@@ -86,8 +86,8 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.Warning(_log, $"Caught an exception whilst attempting to setup the console \"{ex.Message}\"");
-                LogHelpers.ExceptionWarning(_log, ex);
+                LogHelper.Warning(_log, $"Caught an exception whilst attempting to setup the console \"{ex.Message}\"");
+                LogHelper.ExceptionWarning(_log, ex);
             }
         }
 
@@ -209,7 +209,7 @@ namespace JCS.Neon.Glow.Console
                     }
                     else
                     {
-                        LogHelpers.Warning(_log, "Unable to obtain current (in, out, err) handles");
+                        LogHelper.Warning(_log, "Unable to obtain current (in, out, err) handles");
                     }
                 }
                 else
@@ -220,7 +220,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.Warning(_log, $"Failed to update console state exception message is \"{ex.Message}\"");
+                LogHelper.Warning(_log, $"Failed to update console state exception message is \"{ex.Message}\"");
             }
         }
 

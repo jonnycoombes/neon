@@ -12,7 +12,7 @@ namespace JCS.Neon.Glow.Exceptions
     ///     Class containing a bunch of static methods relating to throwing/processing
     ///     exceptions
     /// </summary>
-    public static class ExceptionHelpers
+    public static class ExceptionHelper
     {
         /// <summary>
         ///     Generates a new exception of a given type, and logs the supplied message as an
@@ -26,8 +26,8 @@ namespace JCS.Neon.Glow.Exceptions
         public static E LoggedException<E>(ILogger log, string message, Exception inner = null!)
             where E : Exception
         {
-            LogHelpers.Error(log, message);
-            return (E) Reflection.ReflectionHelpers.CreateException<E>(message, inner);
+            LogHelper.Error(log, message);
+            return (E) Reflection.ReflectionHelper.CreateException<E>(message, inner);
         }
     }
 }

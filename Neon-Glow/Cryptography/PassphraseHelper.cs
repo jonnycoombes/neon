@@ -109,7 +109,7 @@ namespace JCS.Neon.Glow.Cryptography
     /// <summary>
     ///     Contains static helper methods for the generation and validation of passwords
     /// </summary>
-    public static class PassphraseHelpers
+    public static class PassphraseHelper
     {
         /// <summary>
         ///     String containing valid upper case characters
@@ -134,7 +134,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(PassphraseHelpers));
+        private static readonly ILogger _log = Log.ForContext(typeof(PassphraseHelper));
 
         /// <summary>
         ///     Generates a random passphrase using the supplied options
@@ -144,14 +144,14 @@ namespace JCS.Neon.Glow.Cryptography
         /// <exception cref="PassphraseHelperException">Thrown if the supplied options are invalid</exception>
         public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder> configureAction)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var builder = new PassphraseGenerationOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<PassphraseHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<PassphraseHelperException>(_log,
                     "The specified passphrase length doesn't meet minimum length requirements");
             }
 
@@ -183,7 +183,7 @@ namespace JCS.Neon.Glow.Cryptography
                 }
             }
 
-            return options.EncodeBase64 ? EncodingHelpers.EncodeBase64(sb.ToString()) : sb.ToString();
+            return options.EncodeBase64 ? EncodingHelper.EncodeBase64(sb.ToString()) : sb.ToString();
         }
 
         /// <summary>

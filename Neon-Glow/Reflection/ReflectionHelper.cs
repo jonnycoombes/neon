@@ -15,12 +15,12 @@ namespace JCS.Neon.Glow.Reflection
     /// <summary>
     ///     Static class containing useful reflection methods and helpers
     /// </summary>
-    public static class ReflectionHelpers
+    public static class ReflectionHelper
     {
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelpers));
+        private static readonly ILogger _log = Log.ForContext(typeof(ReflectionHelper));
 
         /// <summary>
         ///     Searches the currently loaded assemblies for implementations of a given interface type
@@ -29,7 +29,7 @@ namespace JCS.Neon.Glow.Reflection
         /// <returns></returns>
         public static IEnumerable<Type> LocateAllImplementors<T>()
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var type = typeof(T);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
@@ -45,17 +45,17 @@ namespace JCS.Neon.Glow.Reflection
         /// <returns></returns>
         public static Option<T> CreateInstance<T>(params object?[] args)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 if (!typeof(T).IsInterface) return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
-                LogHelpers.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
+                LogHelper.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
                 return Option<T>.None;
 
             }
             catch
             {
-                LogHelpers.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
+                LogHelper.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
@@ -69,17 +69,17 @@ namespace JCS.Neon.Glow.Reflection
         /// <returns></returns>
         public static Option<T> CreateAndCastInstance<T>(Type baseType, params object?[] args)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             try
             {
                 if (baseType.IsAssignableTo(typeof(T))) return new Option<T>((T) Activator.CreateInstance(baseType, args));
-                LogHelpers.Warning(_log, "The specified type is not assignable to required type T");
+                LogHelper.Warning(_log, "The specified type is not assignable to required type T");
                 return Option<T>.None;
 
             }
             catch
             {
-                LogHelpers.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
+                LogHelper.Warning(_log, $"Failed to create a new instance of type {typeof(T)}");
                 return Option<T>.None;
             }
         }
@@ -93,7 +93,7 @@ namespace JCS.Neon.Glow.Reflection
         public static Exception CreateException<E>(params object?[] args)
             where E : Exception
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var instance = CreateInstance<E>(args);
             if (instance.IsSome(out var exception))
                 return exception;
@@ -106,7 +106,7 @@ namespace JCS.Neon.Glow.Reflection
         /// <returns></returns>
         public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var assembly = Assembly.GetEntryAssembly();
             return includeAssemblyName ? $"{assembly?.FullName} - {assembly?.GetName().Version}" : $"{assembly?.GetName().Version}";
         }

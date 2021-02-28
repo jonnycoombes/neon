@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.ExceptionWarning(_log, ex);
+                LogHelper.ExceptionWarning(_log, ex);
             }
         }
 
@@ -41,7 +41,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.ExceptionWarning(_log, ex);
+                LogHelper.ExceptionWarning(_log, ex);
             }
         }
 
@@ -59,7 +59,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.ExceptionWarning(_log, ex);
+                LogHelper.ExceptionWarning(_log, ex);
             }
         }
 
@@ -77,7 +77,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelpers.ExceptionWarning(_log, ex);
+                LogHelper.ExceptionWarning(_log, ex);
             }
         }
 

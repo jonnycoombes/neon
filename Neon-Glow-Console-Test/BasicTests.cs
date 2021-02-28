@@ -29,7 +29,7 @@ namespace JCS.Neon.Glow.Console.Test
             AnsiConsole.ClearDisplay(true);
 
             // positioning the cursor
-            ThreadHelpers.SleepCurrentThread(TestInterval);
+            ThreadHelper.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
             for (ushort i = 0; i < 5000; i++)
             {
@@ -47,10 +47,10 @@ namespace JCS.Neon.Glow.Console.Test
                     AnsiConsole.EraseCurrentLine();
                     AnsiConsole.Write($"Current dimensions: [rows: {AnsiConsole.Rows}, columns : {AnsiConsole.Columns}]");
                     
-                    AnsiConsole.SetCursorPosition(new Point(Rng.NonZeroPositiveInteger(AnsiConsole.Columns),
-                        Rng.NonZeroPositiveInteger(AnsiConsole.Rows)));
+                    AnsiConsole.SetCursorPosition(new Point(RngHelper.NonZeroPositiveInteger(AnsiConsole.Columns),
+                        RngHelper.NonZeroPositiveInteger(AnsiConsole.Rows)));
                     AnsiConsole.Write($"{char.ConvertFromUtf32(0x1f196)}");
-                    ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(0.5));
+                    ThreadHelper.SleepCurrentThread(TimeSpan.FromSeconds(0.5));
                 }
                 catch (AnsiConsole.AnsiConsoleCursorBoundsError)
                 {
@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Console.Test
                 }
                 catch (AnsiConsole.AnsiConsoleException)
                 {
-                    ThreadHelpers.SleepCurrentThread(TimeSpan.FromSeconds(1));
+                    ThreadHelper.SleepCurrentThread(TimeSpan.FromSeconds(1));
                 }
             }
 

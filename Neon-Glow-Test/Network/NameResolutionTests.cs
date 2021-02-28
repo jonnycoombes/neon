@@ -9,7 +9,7 @@ using Xunit;
 namespace JCS.Neon.Glow.Test.Network
 {
     /// <summary>
-    ///     Test suite for <see cref="NameResolutionHelpers" />
+    ///     Test suite for <see cref="NameResolutionHelper" />
     /// </summary>
     [Trait("Category", "Network")]
     public class NameResolutionTests : TestBase, IDisposable
@@ -22,7 +22,7 @@ namespace JCS.Neon.Glow.Test.Network
         [Trait("Category", "General")]
         public void ResolveHostName()
         {
-            var hostName = NameResolutionHelpers.GetCurrentHostName();
+            var hostName = NameResolutionHelper.GetCurrentHostName();
             Assert.NotNull(hostName);
         }
     }

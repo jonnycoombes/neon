@@ -65,7 +65,7 @@ namespace JCS.Neon.Glow.Test
         /// <returns></returns>
         protected X509Certificate2 LoadTestCertificate(string passphrase = "test")
         {
-            var sshOption = FileHelpers.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
+            var sshOption = FileHelper.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
             var result = sshOption.Fold(path =>
             {
                 var cert = X509CertificateHelper.ImportFromFile(path, () => passphrase);

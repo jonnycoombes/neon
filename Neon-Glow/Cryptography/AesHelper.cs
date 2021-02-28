@@ -18,7 +18,7 @@ namespace JCS.Neon.Glow.Cryptography
     /// <summary>
     ///     Static class containing a bunch of methods for dealing with AES-based symmetric encryption
     /// </summary>
-    public static class AesHelpers
+    public static class AesHelper
     {
         /// <summary>
         ///     Enumeration of input encoding types
@@ -91,7 +91,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <summary>
         ///     Static logger for this class
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(AesHelpers));
+        private static readonly ILogger _log = Log.ForContext(typeof(AesHelper));
 
         /// <summary>
         ///     Validates that a given key size is valid
@@ -101,7 +101,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         private static bool ValidateKeySize(SymmetricAlgorithm aes, int size)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             return aes.LegalKeySizes.Any(_ => size.Equals(size));
         }
 
@@ -115,12 +115,12 @@ namespace JCS.Neon.Glow.Cryptography
         /// <exception cref="AesHelperException">If the specified options are invalid</exception>
         private static Aes InitialiseAesCipher(AesSymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
         {
-            LogHelpers.MethodCall(_log);
-            LogHelpers.Verbose(_log, $"Initialising AES with a suggested config of ({options.KeySize}, {options.Mode})");
+            LogHelper.MethodCall(_log);
+            LogHelper.Verbose(_log, $"Initialising AES with a suggested config of ({options.KeySize}, {options.Mode})");
             var aes = Aes.Create();
             if (!ValidateKeySize(aes, options.KeySize))
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                     $"An invalid symmetric key size was specified - {options.KeySize} bits");
             }
 
@@ -144,7 +144,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns>An array containing the key and then the IV in sequence</returns>
         private static byte[] PackKeyAndIv(SymmetricAlgorithm cipher)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var packed = BitConverter.GetBytes(cipher.KeySize);
             return packed.Concatenate(cipher.Key).Concatenate(cipher.IV);
         }
@@ -156,7 +156,7 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns>A <see cref="Pair{S,T}" />, with the leftmost entry being the unpacked key, the rightmost the IV</returns>
         private static Pair<byte[], byte[]> UnpackKeyAndIv(IReadOnlyCollection<byte> packed)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             var keySize = BitConverter.ToInt32(packed.Take(4).ToArray());
             var keyLength = keySize / 8;
             var key = packed.Skip(4).Take(keyLength).ToArray();
@@ -180,26 +180,26 @@ namespace JCS.Neon.Glow.Cryptography
         public static Pair<byte[], byte[]> EncryptAndWrapAes(byte[] input, X509Certificate2 certificate,
             Action<AesSymmetricEncryptionOptionsBuilder> configureAction)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
 
             // perform option configuration
             var builder = new AesSymmetricEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
-            LogHelpers.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            LogHelper.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
 
             // check we have a private key if required
             if (options.SymmetricKeyWrappingOption == AesSymmetricKeyWrappingOption.WrapWithPrivateKey && !certificate.HasPrivateKey)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                     "Private key specified for key wrapping operations, but no private key present");
             }
 
             // check that the certificate has an RSA key type
             if (certificate.PublicKey.Key.SignatureAlgorithm != null
                 && !certificate.PublicKey.Key.SignatureAlgorithm.Equals("RSA", StringComparison.InvariantCultureIgnoreCase))
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log, "Specified certificate doesn't have a supported key type");
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log, "Specified certificate doesn't have a supported key type");
 
             try
             {
@@ -223,7 +223,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                     "Exception during crypto operation - could lead to a security issue", ex);
             }
         }
@@ -240,25 +240,25 @@ namespace JCS.Neon.Glow.Cryptography
         public static byte[] UnwrapAndDecryptAes(Pair<byte[], byte[]> input, X509Certificate2 certificate,
             Action<AesSymmetricEncryptionOptionsBuilder> configureAction)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
 
             // perform option configuration
             var builder = new AesSymmetricEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
-            LogHelpers.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            LogHelper.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
             // check we have a private key if required
             if (options.SymmetricKeyUnwrappingOption == AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                     "Private key specified for key unwrapping operations, but no private key present");
             }
 
             // check that the certificate has an RSA key type
             if (certificate.PublicKey.Key.SignatureAlgorithm != null
                 && !certificate.PublicKey.Key.SignatureAlgorithm.Equals("RSA", StringComparison.InvariantCultureIgnoreCase))
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log, "Specified certificate doesn't have a supported key type");
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log, "Specified certificate doesn't have a supported key type");
 
             try
             {
@@ -285,7 +285,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                     "Exception during crypto operation - could lead to a security issue", ex);
             }
         }
@@ -299,10 +299,10 @@ namespace JCS.Neon.Glow.Cryptography
         /// <returns></returns>
         private static byte[] Transform(byte[] source, SymmetricAlgorithm cipher, AesSymmetricTransformDirection direction)
         {
-            LogHelpers.MethodCall(_log);
+            LogHelper.MethodCall(_log);
             using var cryptor =
                 direction == AesSymmetricTransformDirection.Encrypt ? cipher.CreateEncryptor() : cipher.CreateDecryptor();
-            LogHelpers.Verbose(_log, "Encrypting larger data, using stream transform");
+            LogHelper.Verbose(_log, "Encrypting larger data, using stream transform");
             try
             {
                 switch (direction)
@@ -332,13 +332,13 @@ namespace JCS.Neon.Glow.Cryptography
                         return decrypted;
                     }
                     default:
-                        throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log,
+                        throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log,
                             "Unreachable exception - here due to non-exhaustive pattern matching");
                 }
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelpers.LoggedException<AesHelperException>(_log, "Stream-based encryption failed", ex);
+                throw Exceptions.ExceptionHelper.LoggedException<AesHelperException>(_log, "Stream-based encryption failed", ex);
             }
         }
 

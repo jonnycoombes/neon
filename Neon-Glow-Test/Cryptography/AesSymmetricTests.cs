@@ -10,7 +10,7 @@ using Encoding = System.Text.Encoding;
 namespace JCS.Neon.Glow.Test.Cryptography
 {
     /// <summary>
-    ///     Test suite for <see cref="AesHelpers" />
+    ///     Test suite for <see cref="AesHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
     public class AesSymmetricTests : TestBase
@@ -25,23 +25,23 @@ namespace JCS.Neon.Glow.Test.Cryptography
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesHelpers.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesHelper.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(AesHelpers.AesSymmetricKeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(AesHelper.AesSymmetricKeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
             Assert.True(encryptionResult.Right.Length >= source.Length);
 
-            var decryptionResult = AesHelpers.UnwrapAndDecryptAes(encryptionResult, cert,
+            var decryptionResult = AesHelper.UnwrapAndDecryptAes(encryptionResult, cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(AesHelpers.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(AesHelper.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -56,28 +56,28 @@ namespace JCS.Neon.Glow.Test.Cryptography
         [InlineData(256, 19024)]
         public void EncryptAndDecryptWithWrappingStream(int keySize, int size)
         {
-            var source = PassphraseHelpers.GenerateRandomPassphrase(
+            var source = PassphraseHelper.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
-            var encryptionResult = AesHelpers.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
+            var encryptionResult = AesHelper.EncryptAndWrapAes(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(AesHelpers.AesSymmetricKeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(AesHelper.AesSymmetricKeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
             Assert.True(encryptionResult.Right.Length >= source.Length);
 
-            var decryptionResult = AesHelpers.UnwrapAndDecryptAes(encryptionResult, cert,
+            var decryptionResult = AesHelper.UnwrapAndDecryptAes(encryptionResult, cert,
                 builder =>
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(AesHelpers.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(AesHelper.AesSymmetricKeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
