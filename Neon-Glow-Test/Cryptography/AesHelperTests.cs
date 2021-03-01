@@ -13,7 +13,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
     ///     Test suite for <see cref="AesHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class AesSymmetricTests : TestBase
+    public class AesHelperTests : TestBase
     {
         [Theory(DisplayName = "Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]

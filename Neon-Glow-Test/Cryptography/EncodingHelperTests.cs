@@ -9,7 +9,7 @@ using Xunit;
 namespace JCS.Neon.Glow.Test.Cryptography
 {
     [Trait("Category", "Cryptography")]
-    public class EncodingTests : TestBase
+    public class EncodingHelperTests : TestBase
     {
         [Theory(DisplayName = "Must be able to encode and decode in Base64 format")]
         [Trait("Category", "Cryptography")]
