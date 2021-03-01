@@ -86,7 +86,7 @@ namespace JCS.Neon.Glow.Test.Data
 
         protected void GenerateTestEntities()
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 _testEntries.Add(new ModelGuidKeyedTestEntity
                 {

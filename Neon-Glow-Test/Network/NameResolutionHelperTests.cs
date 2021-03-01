@@ -12,7 +12,7 @@ namespace JCS.Neon.Glow.Test.Network
     ///     Test suite for <see cref="NameResolutionHelper" />
     /// </summary>
     [Trait("Category", "Network")]
-    public class NameResolutionTests : TestBase, IDisposable
+    public class NameResolutionHelperTests : TestBase, IDisposable
     {
         public void Dispose()
         {
