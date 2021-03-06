@@ -12,7 +12,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
     ///     Test suite for <see cref="RngHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class RngTests : TestBase
+    public class RngHelperTests : TestBase
     {
         [Theory(DisplayName = "Must be able to generate sequences of bytes ")]
         [InlineData(256)]

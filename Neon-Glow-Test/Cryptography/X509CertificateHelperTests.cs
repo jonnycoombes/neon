@@ -14,7 +14,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
     ///     Test suite for <see cref="X509CertificateHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class X509CertificatesTests : TestBase, IDisposable
+    public class X509CertificateHelperTests : TestBase, IDisposable
     {
         public void Dispose()
         {

@@ -49,7 +49,7 @@ namespace JCS.Neon.Glow.Test.Data
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
             var total = await repository.Count();
             AddTestEntries();
-            Assert.Equal(total + 10, await repository.Count());
+            Assert.Equal(total + _testEntries.Count, await repository.Count());
         }
 
         [Fact(DisplayName = "Count items matching a predicate")]
@@ -222,7 +222,7 @@ namespace JCS.Neon.Glow.Test.Data
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
             AddTestEntries();
             var selected = await repository.SelectAndProjectMany(v => v.StringProperty.StartsWith("Sample"), v => v.StringProperty);
-            Assert.Equal(10, selected.Count());
+            Assert.Equal(_testEntries.Count, selected.Count());
         }
     }
 }

@@ -12,7 +12,7 @@ namespace JCS.Neon.Glow.Test.Cryptography
     ///     Test suite for <see cref="PassphraseHelper" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class PassphrasesTests : TestBase
+    public class PassphraseHelperTests : TestBase
     {
         [Theory(DisplayName = "Must be able to create a random password of a random length")]
         [Trait("Category", "Crypto")]
