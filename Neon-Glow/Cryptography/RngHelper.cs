@@ -2,9 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using Serilog;
 using JCS.Neon.Glow.Logging;
-using NodaTime;
+using Serilog;
 
 #endregion
 
@@ -16,28 +15,28 @@ namespace JCS.Neon.Glow.Cryptography
     public static class RngHelper
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext(typeof(RngHelper));
+        private static readonly ILogger _log = Log.ForContext(typeof(RngHelper));
 
         /// <summary>
-        /// Internal RNG instance TODO Sensible seeding of this?
+        ///     Internal RNG instance
         /// </summary>
-        private static Random _rng = new Random();
-        
+        private static readonly Random _rng = new();
+
         /// <summary>
-        /// Returns a random integer in the range -1 >= n >= -INTMAX
+        ///     Returns a random integer in the range -1 >= n >= -INTMAX
         /// </summary>
         /// <param name="max">The maximum value for the number generated</param>
         /// <returns></returns>
         public static int NonZeroNegativeInteger(int max)
         {
             LogHelper.MethodCall(_log);
-            return -(_rng.Next(1, max));
+            return -_rng.Next(1, max);
         }
-        
+
         /// <summary>
-        /// Returns a random integer in the range 1 <= n <= INTMAX
+        ///     Returns a random integer in the range 1 <= n <= INTMAX
         /// </summary>
         /// <param name="max">The maximum value for the number generated</param>
         /// <returns></returns>
@@ -46,7 +45,7 @@ namespace JCS.Neon.Glow.Cryptography
             LogHelper.MethodCall(_log);
             return _rng.Next(1, max);
         }
-        
+
         /// <summary>
         ///     Generates a sequence of random integers within a given bounded range.
         /// </summary>
