@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     A <see cref="Timer" /> used to periodically update the current state of the console
         /// </summary>
-        private static Timer _stateUpdateTimer = null;
+        private static Timer? _stateUpdateTimer = null;
 
         /// <summary>
         ///     Object used to protect writes to the current enablement state
