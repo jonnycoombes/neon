@@ -19,13 +19,13 @@ namespace JCS.Neon.Glow.Test.Data
         /// <summary>
         ///     The actual test context
         /// </summary>
-        protected SqlLiteRepositoryAwareDbContext _context;
+        protected SqlLiteAsyncRepositoryAwareDbContext _context;
 
 
         /// <summary>
         ///     The context options
         /// </summary>
-        protected DbContextOptions<SqlLiteRepositoryAwareDbContext> _contextOptions;
+        protected DbContextOptions<SqlLiteAsyncRepositoryAwareDbContext> _contextOptions;
 
         /// <summary>
         ///     For logging purposes
@@ -52,7 +52,7 @@ namespace JCS.Neon.Glow.Test.Data
 
         protected void CreateContextOptions()
         {
-            _contextOptions = new DbContextOptionsBuilder<SqlLiteRepositoryAwareDbContext>()
+            _contextOptions = new DbContextOptionsBuilder<SqlLiteAsyncRepositoryAwareDbContext>()
                 .UseSqlite(CreateInMemoryDatabase())
                 .EnableSensitiveDataLogging()
                 .Options;
@@ -60,7 +60,7 @@ namespace JCS.Neon.Glow.Test.Data
 
         protected void CreateContext()
         {
-            _context = new SqlLiteRepositoryAwareDbContext(_contextOptions);
+            _context = new SqlLiteAsyncRepositoryAwareDbContext(_contextOptions);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
         }

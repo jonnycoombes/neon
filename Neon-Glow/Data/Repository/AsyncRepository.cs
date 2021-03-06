@@ -19,7 +19,7 @@ namespace JCS.Neon.Glow.Data.Repository
 {
     /// <summary>
     ///     Default implementation of <see cref="IAsyncRepository{K,V}" />.  This implementation essentially
-    ///     translates operations to an underlying <see cref="RepositoryAwareDbContext" /> instance.
+    ///     translates operations to an underlying <see cref="AsyncRepositoryAwareDbContext" /> instance.
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
@@ -30,13 +30,13 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <summary>
         ///     The underlying context instance
         /// </summary>
-        private readonly RepositoryAwareDbContext _context;
+        private readonly AsyncRepositoryAwareDbContext _context;
 
         /// <summary>
-        ///     Constructor which takes a supporting <see cref="RepositoryAwareDbContext" /> instance
+        ///     Constructor which takes a supporting <see cref="AsyncRepositoryAwareDbContext" /> instance
         /// </summary>
         /// <param name="context"></param>
-        public AsyncRepository(RepositoryAwareDbContext context)
+        public AsyncRepository(AsyncRepositoryAwareDbContext context)
         {
             LogHelper.MethodCall(_log);
             _context = context;
