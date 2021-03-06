@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Exceptions
         /// <param name="inner">An optional inner exception</param>
         /// <typeparam name="E">The type of exception to be generated</typeparam>
         /// <returns>A new instance of type <see cref="E" />, derived from <see cref="Exception" /></returns>
-        public static E LoggedException<E>(ILogger log, string message, Exception inner = null!)
+        public static E LoggedException<E>(ILogger log, string message, Exception inner)
             where E : Exception
         {
             LogHelper.Error(log, message);
