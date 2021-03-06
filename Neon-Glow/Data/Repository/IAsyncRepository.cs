@@ -36,6 +36,9 @@ namespace JCS.Neon.Glow.Data.Repository
 
     #endregion
 
+    // TODO Add repository configuration enums, options and options builder
+    
+    
     /// <summary>
     ///     General repository interface for storing and manipulating items of type V which derive from <see cref="KeyedEntity{T}" />
     ///     with key type K.
@@ -104,6 +107,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="keys">An array of key values</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>A potentially empty enumeration of values</returns>
+        /// TODO change to IAsyncEnumerable return types
         public Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -112,6 +116,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">A predicate expression</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
+        /// TODO change to IAsyncEnumerable return types
         public Task<IEnumerable<K>> SelectManyKeys(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default);
 
@@ -121,6 +126,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="expression">An expression which evaluates to either <c>true</c> or <c>false</c> for each item of type V</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns></returns>
+        /// TODO change to IAsyncEnumerable return types
         public Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -132,6 +138,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <typeparam name="W">The projection/map type</typeparam>
         /// <returns></returns>
+        /// TODO change to IAsyncEnumerable return types
         public Task<IEnumerable<W>> SelectAndProjectMany<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default);
 

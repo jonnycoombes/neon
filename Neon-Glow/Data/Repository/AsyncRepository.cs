@@ -133,6 +133,7 @@ namespace JCS.Neon.Glow.Data.Repository
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(K[],System.Threading.CancellationToken)" />
+        /// TODO change to IAsyncEnumerable return types
         public async Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default)
         {
             LogHelper.MethodCall(_log);
@@ -148,6 +149,7 @@ namespace JCS.Neon.Glow.Data.Repository
         }
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
+        /// TODO change to IAsyncEnumerable return types
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
