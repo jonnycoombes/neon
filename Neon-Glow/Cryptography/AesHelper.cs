@@ -12,7 +12,7 @@ using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
 
 #endregion
-
+// TODO Make the methods in this class generic so that a pluggable Symmetric algorithm can be used
 namespace JCS.Neon.Glow.Cryptography
 {
     /// <summary>
@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Cryptography
     public static class AesHelper
     {
         /// <summary>
-        ///     Enumeration of input encoding types
+        ///     Enumeration of input encoding types TODO - Refactor out common symmetric options to single class
         /// </summary>
         public enum AesSymmetricInputEncoding
         {
@@ -94,7 +94,7 @@ namespace JCS.Neon.Glow.Cryptography
         private static readonly ILogger _log = Log.ForContext(typeof(AesHelper));
 
         /// <summary>
-        ///     Validates that a given key size is valid
+        ///     Validates that a given key size is valid TODO refactor out to common symmetric encryption class
         /// </summary>
         /// <param name="aes">An instance of <see cref="System.Security.Cryptography.Aes" /></param>
         /// <param name="size">The required key size</param>
