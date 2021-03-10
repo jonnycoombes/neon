@@ -179,7 +179,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        /// Deletes the line at the current cursor position
+        ///     Deletes the line at the current cursor position
         /// </summary>
         public static void DeleteCurrentLine()
         {

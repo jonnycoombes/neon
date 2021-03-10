@@ -63,7 +63,11 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns>Either null or the first character of the string</returns>
         public static char? Head(this string s)
         {
-            if (s.Length == 0) return null;
+            if (s.Length == 0)
+            {
+                return null;
+            }
+
             return s[0];
         }
 

@@ -30,7 +30,11 @@ namespace JCS.Neon.Glow.IO
         {
             LogHelper.MethodCall(_log);
             var home = Environment.GetEnvironmentVariable("HOME");
-            if (home != null) return Option<string>.Some(home);
+            if (home != null)
+            {
+                return Option<string>.Some(home);
+            }
+
             try
             {
                 return Option<string>.Some(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));

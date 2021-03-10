@@ -21,8 +21,16 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <exception cref="ArgumentException">If the source array is of zero length</exception>
         public static byte[] Concatenate(this byte[]? dest, byte[]? src)
         {
-            if (dest == null) throw new ArgumentException("This operation cannot be applied to a null array");
-            if (src == null || src.Length == 0) throw new ArgumentException("Source array is null or of zero-length");
+            if (dest == null)
+            {
+                throw new ArgumentException("This operation cannot be applied to a null array");
+            }
+
+            if (src == null || src.Length == 0)
+            {
+                throw new ArgumentException("Source array is null or of zero-length");
+            }
+
             Array.Resize(ref dest, dest.Length + src.Length);
             Array.Copy(src, 0, dest, dest.Length - src.Length, src.Length);
             return dest;
@@ -36,12 +44,20 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns>The original array (this is an extension method)</returns>
         public static byte[] Randomise(this byte[]? dest, bool nonZero = false)
         {
-            if (dest == null || dest.Length == 0) throw new ArgumentException("Zero-length or null array cannot be randomised");
+            if (dest == null || dest.Length == 0)
+            {
+                throw new ArgumentException("Zero-length or null array cannot be randomised");
+            }
+
             using var rng = new RNGCryptoServiceProvider();
             if (nonZero)
+            {
                 rng.GetNonZeroBytes(dest);
+            }
             else
+            {
                 rng.GetBytes(dest);
+            }
 
             return dest;
         }
@@ -53,7 +69,11 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns>First byte or null</returns>
         public static byte? Head(this byte[] arr)
         {
-            if (arr.Length == 0) return null;
+            if (arr.Length == 0)
+            {
+                return null;
+            }
+
             return arr[0];
         }
 

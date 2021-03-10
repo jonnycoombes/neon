@@ -12,5 +12,6 @@ namespace JCS.Neon.Glow.Test.Data.Entity
     /// </summary>
     public class NonModelGuidKeyedEntity : KeyedEntity<Guid>
     {
+    
     }
 }

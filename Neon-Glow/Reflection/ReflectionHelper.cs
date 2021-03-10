@@ -48,10 +48,13 @@ namespace JCS.Neon.Glow.Reflection
             LogHelper.MethodCall(_log);
             try
             {
-                if (!typeof(T).IsInterface) return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                if (!typeof(T).IsInterface)
+                {
+                    return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                }
+
                 LogHelper.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
                 return Option<T>.None;
-
             }
             catch
             {
@@ -72,10 +75,13 @@ namespace JCS.Neon.Glow.Reflection
             LogHelper.MethodCall(_log);
             try
             {
-                if (baseType.IsAssignableTo(typeof(T))) return new Option<T>((T) Activator.CreateInstance(baseType, args));
+                if (baseType.IsAssignableTo(typeof(T)))
+                {
+                    return new Option<T>((T) Activator.CreateInstance(baseType, args));
+                }
+
                 LogHelper.Warning(_log, "The specified type is not assignable to required type T");
                 return Option<T>.None;
-
             }
             catch
             {
@@ -96,7 +102,10 @@ namespace JCS.Neon.Glow.Reflection
             LogHelper.MethodCall(_log);
             var instance = CreateInstance<E>(args);
             if (instance.IsSome(out var exception))
+            {
                 return exception;
+            }
+
             return new InvalidOperationException($"Unable to raise the requested exception of type {typeof(E)}");
         }
 

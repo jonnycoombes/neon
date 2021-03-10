@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Exceptions;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
@@ -105,7 +106,8 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
+        /// <inheritdoc
+        ///     cref="IAsyncRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             LogHelper.MethodCall(_log);
@@ -148,7 +150,8 @@ namespace JCS.Neon.Glow.Data.Repository
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
+        /// <inheritdoc
+        ///     cref="IAsyncRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         /// TODO change to IAsyncEnumerable return types
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
@@ -308,9 +311,9 @@ namespace JCS.Neon.Glow.Data.Repository
             {
                 case PostgresException pex:
                     var message = $"{pex.MessageText}";
-                    return Exceptions.ExceptionHelper.LoggedException<AsyncRepositoryException>(_log, message, pex);
+                    return ExceptionHelper.LoggedException<AsyncRepositoryException>(_log, message, pex);
                 default:
-                    return Exceptions.ExceptionHelper.LoggedException<AsyncRepositoryException>(_log,
+                    return ExceptionHelper.LoggedException<AsyncRepositoryException>(_log,
                         $"DB Exception caught: \"{ex.Message}\"", ex);
             }
         }

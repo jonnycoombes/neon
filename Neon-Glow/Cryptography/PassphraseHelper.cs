@@ -3,6 +3,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using JCS.Neon.Glow.Exceptions;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
@@ -151,7 +152,7 @@ namespace JCS.Neon.Glow.Cryptography
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                throw Exceptions.ExceptionHelper.LoggedException<PassphraseHelperException>(_log,
+                throw ExceptionHelper.LoggedException<PassphraseHelperException>(_log,
                     "The specified passphrase length doesn't meet minimum length requirements");
             }
 

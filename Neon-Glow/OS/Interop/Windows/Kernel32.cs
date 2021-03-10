@@ -52,7 +52,7 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
         private static readonly ILogger _log = Log.ForContext(typeof(Kernel32));
 
         /// <summary>
-        /// Gets the current console mode bits
+        ///     Gets the current console mode bits
         /// </summary>
         /// <param name="hConsoleHandle">Console handle</param>
         /// <param name="lpMode">Store the current mode in here</param>
@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
         private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
         /// <summary>
-        /// Sets the console mode bits
+        ///     Sets the console mode bits
         /// </summary>
         /// <param name="hConsoleHandle">Console handle</param>
         /// <param name="dwMode">Set the mode to this</param>
@@ -70,7 +70,7 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
         private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
         /// <summary>
-        /// Retrieves a standard handle (e.g. in,out, err)
+        ///     Retrieves a standard handle (e.g. in,out, err)
         /// </summary>
         /// <param name="nStdHandle">The handle to retrieve</param>
         /// <returns></returns>
@@ -78,14 +78,14 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
         private static extern IntPtr GetStdHandle(int nStdHandle);
 
         /// <summary>
-        ///  Get the last known error code
+        ///     Get the last known error code
         /// </summary>
         /// <returns></returns>
         [DllImport("kernel32.dll")]
         private static extern uint GetLastError();
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetConsoleScreenBufferInfo(IntPtr hConsoleOutput, 
+        private static extern bool GetConsoleScreenBufferInfo(IntPtr hConsoleOutput,
             out CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBufferInfo);
 
         /// <summary>
@@ -146,8 +146,10 @@ namespace JCS.Neon.Glow.OS.Interop.Windows
                 {
                     return false;
                 }
+
                 return true;
             }
+
             return true;
         }
 

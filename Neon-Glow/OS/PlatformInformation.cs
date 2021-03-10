@@ -38,12 +38,12 @@ namespace JCS.Neon.Glow.OS
         public static bool IsFreeBSD => RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
 
         /// <summary>
-        /// Returns true if the current architecture is x86
+        ///     Returns true if the current architecture is x86
         /// </summary>
         public static bool IsX86 => RuntimeInformation.OSArchitecture == Architecture.X86;
 
         /// <summary>
-        /// Returns true if the current architecture is x64
+        ///     Returns true if the current architecture is x64
         /// </summary>
         public static bool IsX64 => RuntimeInformation.OSArchitecture == Architecture.X64;
     }

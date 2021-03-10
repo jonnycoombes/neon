@@ -12,7 +12,7 @@ using Serilog;
 namespace JCS.Neon.Glow.Parsing
 {
     /// <summary>
-    /// Contains a bunch of static methods which will attempt ("try") to parse various types and return an <see cref="Option{T}"/>
+    ///     Contains a bunch of static methods which will attempt ("try") to parse various types and return an <see cref="Option{T}" />
     /// </summary>
     public static class TryParsers
     {
@@ -68,7 +68,11 @@ namespace JCS.Neon.Glow.Parsing
         public static Option<OffsetDateTime> TryParseGeneralIsoOffsetDateTime(string? src)
         {
             LogHelper.MethodCall(_log);
-            if (src == null) return Option<OffsetDateTime>.None;
+            if (src == null)
+            {
+                return Option<OffsetDateTime>.None;
+            }
+
             var result = OffsetDateTimePattern.GeneralIso.Parse(src);
             return result.Success ? Option<OffsetDateTime>.Some(result.Value) : Option<OffsetDateTime>.None;
         }
@@ -81,7 +85,11 @@ namespace JCS.Neon.Glow.Parsing
         public static Option<LocalDateTime> TryParseGeneralIsoLocalDateTime(string? src)
         {
             LogHelper.MethodCall(_log);
-            if (src == null) return Option<LocalDateTime>.None;
+            if (src == null)
+            {
+                return Option<LocalDateTime>.None;
+            }
+
             var result = LocalDateTimePattern.GeneralIso.Parse(src);
             return result.Success ? Option<LocalDateTime>.Some(result.Value) : Option<LocalDateTime>.None;
         }

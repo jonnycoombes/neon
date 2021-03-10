@@ -37,8 +37,8 @@ namespace JCS.Neon.Glow.Data.Repository
     #endregion
 
     // TODO Add repository configuration enums, options and options builder
-    
-    
+
+
     /// <summary>
     ///     General repository interface for storing and manipulating items of type V which derive from <see cref="KeyedEntity{T}" />
     ///     with key type K.

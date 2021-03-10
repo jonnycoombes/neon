@@ -1,13 +1,11 @@
 #region
 
 using System;
-using System.IO;
 using System.Text;
 using System.Threading;
 using JCS.Neon.Glow.Logging;
 using JCS.Neon.Glow.OS;
 using JCS.Neon.Glow.OS.Interop.Windows;
-using NpgsqlTypes;
 using Serilog;
 
 #endregion
@@ -58,7 +56,7 @@ namespace JCS.Neon.Glow.Console
         /// <summary>
         ///     A <see cref="Timer" /> used to periodically update the current state of the console
         /// </summary>
-        private static Timer? _stateUpdateTimer = null;
+        private static Timer? _stateUpdateTimer;
 
         /// <summary>
         ///     Object used to protect writes to the current enablement state
@@ -169,14 +167,12 @@ namespace JCS.Neon.Glow.Console
                 {
                     throw new AnsiConsoleException("Console is not currently active, please make a call to Enable() prior to usage");
                 }
-                else
+
+                if (PlatformInformation.IsWindows)
                 {
-                    if (PlatformInformation.IsWindows)
+                    if (!Kernel32.ConsoleWritable())
                     {
-                        if (!Kernel32.ConsoleWritable())
-                        {
-                            throw new AnsiConsoleException("Console is not currently writable");
-                        }
+                        throw new AnsiConsoleException("Console is not currently writable");
                     }
                 }
             }

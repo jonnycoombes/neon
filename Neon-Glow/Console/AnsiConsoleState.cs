@@ -144,6 +144,7 @@ namespace JCS.Neon.Glow.Console
                 {
                     return Option<Point>.Some(position);
                 }
+
                 return Option<Point>.None;
             }
         }

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using JCS.Neon.Glow.Exceptions;
 using JCS.Neon.Glow.Logging;
 using Serilog;
 
@@ -37,7 +38,7 @@ namespace JCS.Neon.Glow.Cryptography
             if (!File.Exists(source))
             {
                 LogHelper.Warning(_log, "Specified source for x509 certificate doesn't exist, or can't be accessed");
-                throw Exceptions.ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
+                throw ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
                     $"Specified source PKCS12 file doesn't exist, or isn't accessible: {source}");
             }
 
@@ -56,7 +57,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
+                throw ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
                     "Import failed, see inner exception", ex);
             }
         }
@@ -93,7 +94,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
+                throw ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
                     "Import failed, see inner exception", ex);
             }
         }
@@ -129,7 +130,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
+                throw ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
                     "Export failed, see inner exception", ex);
             }
         }
@@ -167,7 +168,7 @@ namespace JCS.Neon.Glow.Cryptography
             }
             catch (Exception ex)
             {
-                throw Exceptions.ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
+                throw ExceptionHelper.LoggedException<X509CertificateHelperException>(_log,
                     "Export failed, see inner exception", ex);
             }
         }
