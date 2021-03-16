@@ -7,8 +7,11 @@ using Xunit;
 
 namespace JCS.Neon.Glow.Test.DateAndTime
 {
+    /// <summary>
+    /// Tests string conversion routines
+    /// </summary>
     [Trait("Category", "DateAndTime")]
-    public class StringConversionTests : TestBase
+    public class StringConversionHelperTests : TestBase
     {
         [Fact(DisplayName = "Can move between string and internal Instant representation through OffsetDateTime")]
         [Trait("Category", "DateAndTime")]
@@ -16,7 +19,7 @@ namespace JCS.Neon.Glow.Test.DateAndTime
         {
             var instant = Instant.FromDateTimeUtc(System.DateTime.Now.ToUniversalTime());
             var offsetDateTime = instant.InUtc().ToOffsetDateTime();
-            var stringOption = StringConversions.ToGeneralIsoString(offsetDateTime);
+            var stringOption = StringConversionHelper.ToGeneralIsoString(offsetDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
             var parsed = TryParsers.TryParseGeneralIsoOffsetDateTime(rep).Fold(
@@ -31,7 +34,7 @@ namespace JCS.Neon.Glow.Test.DateAndTime
         {
             var instant = Instant.FromDateTimeUtc(System.DateTime.Now.ToUniversalTime());
             var localDateTime = instant.ToDateTimeUtc().ToLocalDateTime();
-            var stringOption = StringConversions.ToGeneralIsoString(localDateTime);
+            var stringOption = StringConversionHelper.ToGeneralIsoString(localDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
             var parsed = TryParsers.TryParseGeneralIsoLocalDateTime(rep).Fold(

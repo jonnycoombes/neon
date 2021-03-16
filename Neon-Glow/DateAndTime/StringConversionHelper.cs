@@ -13,12 +13,12 @@ namespace JCS.Neon.Glow.DateAndTime
     /// <summary>
     ///     Class for holding general helper functions related to NodaTime
     /// </summary>
-    public static class StringConversions
+    public static class StringConversionHelper
     {
         /// <summary>
         ///     PRivate static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(StringConversions));
+        private static readonly ILogger _log = Log.ForContext(typeof(StringConversionHelper));
 
         /// <summary>
         ///     Converts a <see cref="OffsetDateTime" /> to a string
