@@ -17,22 +17,22 @@ namespace JCS.Neon.Glow.Console
         public static Point Origin = new(1, 1);
 
         /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme top left of the display
+        ///     <see cref="Point" /> representing the extreme top left of the display
         /// </summary>
         public static Point TopLeft => new(1, 1);
 
         /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme top right of the display
+        ///     <see cref="Point" /> representing the extreme top right of the display
         /// </summary>
         public static Point TopRight => new(1, CurrentState.Columns);
 
         /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme bottom left of the display
+        ///     <see cref="Point" /> representing the extreme bottom left of the display
         /// </summary>
         public static Point BottomLeft => new(CurrentState.Rows, 1);
 
         /// <summary>
-        ///     <see cref="CursorPosition" /> representing the extreme bottom right of the display
+        ///     <see cref="Point" /> representing the extreme bottom right of the display
         /// </summary>
         public static Point BottomRight => new(CurrentState.Rows, CurrentState.Columns);
 
@@ -65,7 +65,7 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Pops a <see cref="CursorPosition" /> off the stack, and then sets the display cursor position based on it.  If
+        ///     Pops a <see cref="Point" /> off the stack, and then sets the display cursor position based on it.  If
         ///     there are no
         ///     positions on the stack, then this a NOOP
         /// </summary>
