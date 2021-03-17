@@ -4,13 +4,13 @@ using Xunit;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.DateAndTime
+namespace JCS.Neon.Glow.Test.Dates
 {
     /// <summary>
     ///     Tests for date/time arithmetic helper functions
     /// </summary>
-    [Trait("Category", "DateAndTime")]
-    public class DateTimeArithmeticHelperTests : TestBase
+    [Trait("Category", "Dates")]
+    public class DateArithmeticHelperTests : TestBase
     {
     }
 }

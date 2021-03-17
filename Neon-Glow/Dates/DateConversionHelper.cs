@@ -8,17 +8,17 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.DateAndTime
+namespace JCS.Neon.Glow.Dates
 {
     /// <summary>
     ///     Class for holding general helper functions related to NodaTime
     /// </summary>
-    public static class DateTimeStringConversionHelper
+    public static class DateConversionHelper
     {
         /// <summary>
         ///     PRivate static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(DateTimeStringConversionHelper));
+        private static readonly ILogger _log = Log.ForContext(typeof(DateConversionHelper));
 
         /// <summary>
         ///     Converts a <see cref="OffsetDateTime" /> to a string
