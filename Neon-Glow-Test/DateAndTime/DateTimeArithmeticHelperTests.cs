@@ -10,7 +10,7 @@ namespace JCS.Neon.Glow.Test.DateAndTime
     ///     Tests for date/time arithmetic helper functions
     /// </summary>
     [Trait("Category", "DateAndTime")]
-    public class ArithmeticHelperTests : TestBase
+    public class DateTimeArithmeticHelperTests : TestBase
     {
     }
 }

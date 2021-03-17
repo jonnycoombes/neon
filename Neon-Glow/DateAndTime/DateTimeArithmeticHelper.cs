@@ -5,7 +5,8 @@
     ///     time/data structures.  Internally, even calculations involving the system (.NET) <see cref="System.DateTime" /> structure will be
     ///     converted internally to Noda representations in order to take advantage of Noda's improved functionality.
     /// </summary>
-    public class ArithmeticHelper
+    public static class DateTimeArithmeticHelper
     {
+        
     }
 }

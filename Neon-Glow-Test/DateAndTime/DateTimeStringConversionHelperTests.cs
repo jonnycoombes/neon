@@ -19,7 +19,7 @@ namespace JCS.Neon.Glow.Test.DateAndTime
         {
             var instant = Instant.FromDateTimeUtc(System.DateTime.Now.ToUniversalTime());
             var offsetDateTime = instant.InUtc().ToOffsetDateTime();
-            var stringOption = StringConversionHelper.ToGeneralIsoString(offsetDateTime);
+            var stringOption = DateTimeStringConversionHelper.ToGeneralIsoString(offsetDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
             var parsed = TryParsers.TryParseGeneralIsoOffsetDateTime(rep).Fold(
@@ -34,7 +34,7 @@ namespace JCS.Neon.Glow.Test.DateAndTime
         {
             var instant = Instant.FromDateTimeUtc(System.DateTime.Now.ToUniversalTime());
             var localDateTime = instant.ToDateTimeUtc().ToLocalDateTime();
-            var stringOption = StringConversionHelper.ToGeneralIsoString(localDateTime);
+            var stringOption = DateTimeStringConversionHelper.ToGeneralIsoString(localDateTime);
             Assert.True(!stringOption.IsNone);
             var rep = stringOption.GetOrElse(() => null);
             var parsed = TryParsers.TryParseGeneralIsoLocalDateTime(rep).Fold(
