@@ -1,12 +1,12 @@
 ﻿#region
 
-using JCS.Neon.Glow.Statics.Cryptography;
+using JCS.Neon.Glow.Statics.Crypto;
 using JCS.Neon.Glow.Types.Extensions;
 using Xunit;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Statics.Cryptography
+namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     [Trait("Category", "Cryptography")]
     public class EncodingTests : TestBase

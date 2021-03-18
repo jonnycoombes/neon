@@ -1,12 +1,12 @@
 #region
 
 using System.Linq;
-using JCS.Neon.Glow.Statics.Cryptography;
+using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Statics.Cryptography
+namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     /// <summary>
     ///     Test suite for <see cref="Rng" />

@@ -13,7 +13,7 @@ using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Cryptography
+namespace JCS.Neon.Glow.Statics.Crypto
 {
     /// <summary>
     ///     Static class containing a bunch of methods for dealing with AES-based symmetric encryption

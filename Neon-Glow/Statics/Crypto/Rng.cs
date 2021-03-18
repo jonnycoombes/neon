@@ -6,7 +6,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Cryptography
+namespace JCS.Neon.Glow.Statics.Crypto
 {
     /// <summary>
     ///     Class containing utilities for the generation of random numbers

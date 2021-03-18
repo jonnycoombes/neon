@@ -8,7 +8,7 @@ using JCS.Neon.Glow.Types;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using File = JCS.Neon.Glow.Statics.IO.File;
-using X509Certificate = JCS.Neon.Glow.Statics.Cryptography.X509Certificate;
+using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 
 #endregion
 

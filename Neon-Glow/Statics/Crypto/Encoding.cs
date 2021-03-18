@@ -6,7 +6,7 @@ using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Cryptography
+namespace JCS.Neon.Glow.Statics.Crypto
 {
     #region Exceptions
 

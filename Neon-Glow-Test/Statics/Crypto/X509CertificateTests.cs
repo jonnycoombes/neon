@@ -3,13 +3,12 @@
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using JCS.Neon.Glow.Statics.Cryptography;
 using Xunit;
-using X509Certificate = JCS.Neon.Glow.Statics.Cryptography.X509Certificate;
+using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Statics.Cryptography
+namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     /// <summary>
     ///     Test suite for <see cref="X509Certificate" />

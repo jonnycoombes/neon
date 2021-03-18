@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using JCS.Neon.Glow.Statics.Concurrency;
-using JCS.Neon.Glow.Statics.Cryptography;
+using JCS.Neon.Glow.Statics.Crypto;
 
 #endregion
 

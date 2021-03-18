@@ -1,13 +1,13 @@
 ﻿#region
 
 using System.Security.Cryptography;
-using JCS.Neon.Glow.Statics.Cryptography;
+using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
 using Encoding = System.Text.Encoding;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Statics.Cryptography
+namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     /// <summary>
     ///     Test suite for <see cref="SymmetricEncryption" />
