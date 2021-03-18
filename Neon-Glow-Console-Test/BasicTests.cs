@@ -3,8 +3,8 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using JCS.Neon.Glow.Concurrency;
-using JCS.Neon.Glow.Cryptography;
+using JCS.Neon.Glow.Statics.Concurrency;
+using JCS.Neon.Glow.Statics.Cryptography;
 
 #endregion
 
@@ -29,7 +29,7 @@ namespace JCS.Neon.Glow.Console.Test
             AnsiConsole.ClearDisplay(true);
 
             // positioning the cursor
-            ThreadHelper.SleepCurrentThread(TestInterval);
+            Thread.SleepCurrentThread(TestInterval);
             AnsiConsole.HideCursor();
             for (ushort i = 0; i < 5000; i++)
             {
@@ -47,10 +47,10 @@ namespace JCS.Neon.Glow.Console.Test
                     AnsiConsole.EraseCurrentLine();
                     AnsiConsole.Write($"Current dimensions: [rows: {AnsiConsole.Rows}, columns : {AnsiConsole.Columns}]");
                     
-                    AnsiConsole.SetCursorPosition(new Point(RngHelper.NonZeroPositiveInteger(AnsiConsole.Columns),
-                        RngHelper.NonZeroPositiveInteger(AnsiConsole.Rows)));
+                    AnsiConsole.SetCursorPosition(new Point(Rng.NonZeroPositiveInteger(AnsiConsole.Columns),
+                        Rng.NonZeroPositiveInteger(AnsiConsole.Rows)));
                     AnsiConsole.Write($"{char.ConvertFromUtf32(0x1f196)}");
-                    ThreadHelper.SleepCurrentThread(TimeSpan.FromSeconds(0.5));
+                    Thread.SleepCurrentThread(TimeSpan.FromSeconds(0.5));
                 }
                 catch (AnsiConsole.AnsiConsoleCursorBoundsError)
                 {
@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Console.Test
                 }
                 catch (AnsiConsole.AnsiConsoleException)
                 {
-                    ThreadHelper.SleepCurrentThread(TimeSpan.FromSeconds(1));
+                    Thread.SleepCurrentThread(TimeSpan.FromSeconds(1));
                 }
             }
 

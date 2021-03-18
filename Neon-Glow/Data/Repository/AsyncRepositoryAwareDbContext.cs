@@ -3,10 +3,10 @@
 using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
-using JCS.Neon.Glow.Exceptions;
-using JCS.Neon.Glow.Logging;
+using JCS.Neon.Glow.Statics.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -18,7 +18,7 @@ namespace JCS.Neon.Glow.Data.Repository
 
     #region Exceptions
 
-    public class AsyncRepositoryAwareDbContextException : Exception
+    public class AsyncRepositoryAwareDbContextException : System.Exception
     {
         public AsyncRepositoryAwareDbContextException()
         {
@@ -32,7 +32,7 @@ namespace JCS.Neon.Glow.Data.Repository
         {
         }
 
-        public AsyncRepositoryAwareDbContextException(string? message, Exception? innerException) : base(message, innerException)
+        public AsyncRepositoryAwareDbContextException(string? message, System.Exception? innerException) : base(message, innerException)
         {
         }
     }
@@ -51,7 +51,7 @@ namespace JCS.Neon.Glow.Data.Repository
         /// <param name="options"></param>
         protected AsyncRepositoryAwareDbContext(DbContextOptions options) : base(options)
         {
-            LogHelper.MethodCall(_log);
+            Logging.MethodCall(_log);
         }
 
         /// <summary>
@@ -75,12 +75,12 @@ namespace JCS.Neon.Glow.Data.Repository
             where K : IComparable<K>, IEquatable<K>
             where V : KeyedEntity<K>
         {
-            LogHelper.MethodCall(_log);
-            LogHelper.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
+            Logging.MethodCall(_log);
+            Logging.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var fullName = typeof(V).FullName;
             if (string.IsNullOrEmpty(fullName))
             {
-                throw ExceptionHelper.LoggedException<AsyncRepositoryAwareDbContextException>(_log, "Failed to locate value type name");
+                throw Exception.LoggedException<AsyncRepositoryAwareDbContextException>(_log, "Failed to locate value type name");
             }
 
             var entityType = Model.FindEntityType(typeof(V).FullName!);
@@ -90,8 +90,8 @@ namespace JCS.Neon.Glow.Data.Repository
             }
 
             var message = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
-            LogHelper.Error(_log, message);
-            throw ExceptionHelper.LoggedException<AsyncRepositoryAwareDbContextException>(_log, message);
+            Logging.Error(_log, message);
+            throw Exception.LoggedException<AsyncRepositoryAwareDbContextException>(_log, message);
         }
     }
 }

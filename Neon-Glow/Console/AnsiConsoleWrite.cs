@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using JCS.Neon.Glow.Logging;
+using JCS.Neon.Glow.Statics.Logging;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelper.ExceptionWarning(_log, ex);
+                Logging.ExceptionWarning(_log, ex);
             }
         }
 
@@ -41,7 +41,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelper.ExceptionWarning(_log, ex);
+                Logging.ExceptionWarning(_log, ex);
             }
         }
 
@@ -59,7 +59,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelper.ExceptionWarning(_log, ex);
+                Logging.ExceptionWarning(_log, ex);
             }
         }
 
@@ -77,7 +77,7 @@ namespace JCS.Neon.Glow.Console
             }
             catch (Exception ex)
             {
-                LogHelper.ExceptionWarning(_log, ex);
+                Logging.ExceptionWarning(_log, ex);
             }
         }
 
