@@ -24,9 +24,9 @@ namespace JCS.Neon.Glow.Statics.DateTime
         public static DateInterval[] WeekdayBuckets(System.DateTime start, System.DateTime end, IsoDayOfWeek startDay, IsoDayOfWeek endDay)
         {
             return WeekdayBuckets(LocalDateTime.FromDateTime(start), LocalDateTime.FromDateTime(end), startDay, endDay);
-        }
+        }   
 
-        /// <summary>
+          /// <summary>
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
@@ -34,6 +34,19 @@ namespace JCS.Neon.Glow.Statics.DateTime
         /// <param name="endDay"></param>
         /// <returns></returns>
         public static DateInterval[] WeekdayBuckets(LocalDateTime start, LocalDateTime end, IsoDayOfWeek startDay, IsoDayOfWeek endDay)
+        {
+            return WeekdayBuckets(start.Date, end.Date, startDay, endDay);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="startDay"></param>
+        /// <param name="endDay"></param>
+        /// <returns></returns>
+        public static DateInterval[] WeekdayBuckets(LocalDate start, LocalDate end, IsoDayOfWeek startDay, IsoDayOfWeek endDay)
         {
             var intervals = new List<DateInterval>();
             return intervals.ToArray();
