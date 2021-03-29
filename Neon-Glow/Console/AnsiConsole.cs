@@ -147,7 +147,7 @@ namespace JCS.Neon.Glow.Console
             {
                 if (_enabled)
                 {
-                    _stateUpdateTimer.Dispose();
+                    _stateUpdateTimer?.Dispose();
                     _stateUpdateTimer = null;
                     _enabled = false;
                 }
