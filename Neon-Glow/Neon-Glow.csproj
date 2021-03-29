@@ -46,7 +46,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Models" />
-      <Folder Include="Statics" />
     </ItemGroup>
 
 </Project>

@@ -4,12 +4,12 @@ using System;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Concurrency
+namespace JCS.Neon.Glow.Statics
 {
     /// <summary>
     ///     Placeholder for various threading related utilities
     /// </summary>
-    public static class Thread
+    public static class Threads
     {
         /// <summary>
         ///     Suspends the currently executing thread for a specified number of seconds

@@ -9,7 +9,7 @@ using Xunit;
 namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     /// <summary>
-    ///     Test suite for <see cref="Passphrase" />
+    ///     Test suite for <see cref="Passphrases" />
     /// </summary>
     [Trait("Category", "Cryptography")]
     public class PassphraseTests : TestBase
@@ -29,12 +29,12 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var options = new PassphraseGenerationOptions {RequiredLength = length};
             if (length >= PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                var passphrase = Passphrase.GenerateRandomPassphrase(builder => { builder.SetRequiredLength(length); });
+                var passphrase = Passphrases.GenerateRandomPassphrase(builder => { builder.SetRequiredLength(length); });
                 Assert.Equal(length, passphrase.Length);
             }
             else
             {
-                Assert.Throws<PassphraseException>(() => Passphrase.GenerateRandomPassphrase(
+                Assert.Throws<PassphraseException>(() => Passphrases.GenerateRandomPassphrase(
                     builder => { builder.SetRequiredLength(length); }));
             }
         }
@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var cache = new Dictionary<string, string>();
             for (var i = 0; i < sampleCount; i++)
             {
-                var passphrase = Passphrase.GenerateRandomPassphrase(
+                var passphrase = Passphrases.GenerateRandomPassphrase(
                     builder => { builder.SetRequiredLength(passphraseLength); });
                 Assert.DoesNotContain(cache.Keys, k => k.Equals(passphrase));
                 cache.Add(passphrase, null);

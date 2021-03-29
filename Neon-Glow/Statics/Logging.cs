@@ -8,7 +8,7 @@ using Serilog.Events;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Logging
+namespace JCS.Neon.Glow.Statics
 {
     /// <summary>
     ///     Static class containing methods for tidying up logging

@@ -18,8 +18,8 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [InlineData("Some random test with some ][;-09 weird characters")]
         public void PerformBase64Transcoding(string source)
         {
-            var encoded = Encoding.EncodeBase64(source);
-            var decoded = Encoding.DecodeBase64(encoded);
+            var encoded = Encodings.EncodeBase64(source);
+            var decoded = Encodings.DecodeBase64(encoded);
             Assert.Equal(source, decoded);
         }
 
@@ -31,8 +31,8 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [InlineData("http://jcs-software.co.uk/neon-tetra?test&value=1")]
         public void PerformBase64UrlTranscoding(string source)
         {
-            var encoded = Encoding.EncodeBase64(source);
-            var decoded = Encoding.DecodeBase64(encoded);
+            var encoded = Encodings.EncodeBase64(source);
+            var decoded = Encodings.DecodeBase64(encoded);
             Assert.Equal(source, decoded);
         }
 
@@ -45,8 +45,8 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [InlineData("Some further random tests ", ByteEncoding.Utf32)]
         public void PerformByteTranscoding(string source, ByteEncoding encoding)
         {
-            var encoded = Encoding.StringToBytes(source, encoding);
-            var decoded = Encoding.BytesToString(encoded, encoding);
+            var encoded = Encodings.StringToBytes(source, encoding);
+            var decoded = Encodings.BytesToString(encoded, encoding);
             Assert.Equal(source, decoded);
         }
 

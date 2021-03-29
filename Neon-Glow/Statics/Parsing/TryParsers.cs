@@ -27,14 +27,14 @@ namespace JCS.Neon.Glow.Statics.Parsing
         /// <returns>An option which will be some if the parse is successful</returns>
         public static Option<Guid> TryParseGuid(string input)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             try
             {
                 return Option<Guid>.Some(Guid.Parse(input));
             }
             catch
             {
-                Logging.Logging.Warning(_log, $"Failed to parse GUID with input \"{input}\"");
+                Logging.Warning(_log, $"Failed to parse GUID with input \"{input}\"");
                 return Option<Guid>.None;
             }
         }
@@ -46,14 +46,14 @@ namespace JCS.Neon.Glow.Statics.Parsing
         /// <returns>An option which will be Some if the parse is successful</returns>
         public static Option<Uri> TryParseUri(string input)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             try
             {
                 return Option<Uri>.Some(new Uri(input));
             }
             catch
             {
-                Logging.Logging.Warning(_log, $"Failed to parse Uri with input \"{input}\"");
+                Logging.Warning(_log, $"Failed to parse Uri with input \"{input}\"");
                 return Option<Uri>.None;
             }
         }
@@ -66,7 +66,7 @@ namespace JCS.Neon.Glow.Statics.Parsing
         /// <returns>An option value</returns>
         public static Option<OffsetDateTime> TryParseGeneralIsoOffsetDateTime(string? src)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             if (src == null)
             {
                 return Option<OffsetDateTime>.None;
@@ -83,7 +83,7 @@ namespace JCS.Neon.Glow.Statics.Parsing
         /// <returns>An option value</returns>
         public static Option<LocalDateTime> TryParseGeneralIsoLocalDateTime(string? src)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             if (src == null)
             {
                 return Option<LocalDateTime>.None;

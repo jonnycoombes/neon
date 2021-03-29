@@ -2,7 +2,6 @@
 
 using System;
 using Serilog;
-using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -62,7 +61,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing helper functions for various encodings
     /// </summary>
-    public static class Encoding
+    public static class Encodings
     {
         /// <summary>
         ///     Padding character for use in Base64 encodings
@@ -72,7 +71,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(Encoding));
+        private static readonly ILogger _log = Log.ForContext(typeof(Encodings));
 
         /// <summary>
         ///     Encodes a string using a given encoding
@@ -83,7 +82,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <exception cref="EncodingException"></exception>
         public static byte[] StringToBytes(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             try
             {
                 return encoding switch
@@ -99,7 +98,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exception.LoggedException<EncodingException>(_log,
+                throw Exceptions.LoggedException<EncodingException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);
             }
         }
@@ -112,7 +111,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public static string BytesToString(byte[] source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             try
             {
                 return encoding switch
@@ -128,7 +127,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exception.LoggedException<EncodingException>(_log,
+                throw Exceptions.LoggedException<EncodingException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);
             }
         }
@@ -141,7 +140,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public static string EncodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes).TrimEnd(Base64PaddingChar).Replace('+', '-').Replace('/', '_');
         }
@@ -154,7 +153,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public static string DecodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             source = source.Replace('-', '+').Replace('_', '/');
             switch (source.Length % 4)
             {
@@ -178,7 +177,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public static string EncodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
             return Convert.ToBase64String(bytes);
         }
@@ -191,7 +190,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public static string DecodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var bytes = Convert.FromBase64String(source);
             return BytesToString(bytes, encoding);
         }

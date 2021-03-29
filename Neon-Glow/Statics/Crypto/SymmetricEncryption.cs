@@ -9,7 +9,6 @@ using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
-using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -111,7 +110,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         private static bool ValidateKeySize(SymmetricAlgorithm algorithm, int size)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             return algorithm.LegalKeySizes.Any(_ => size.Equals(size));
         }
 
@@ -125,19 +124,19 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <exception cref="SymmetricEncryptionException">If the specified options are invalid</exception>
         private static SymmetricAlgorithm InitialiseCipher(SymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
         {
-            Logging.Logging.MethodCall(_log);
-            Logging.Logging.Verbose(_log,
+            Logging.MethodCall(_log);
+            Logging.Verbose(_log,
                 $"Initialising {options.SymmetricAlgorithmOption.ToString()} with a suggested config of ({options.KeySize}, {options.Mode})");
             var algorithm = SymmetricAlgorithm.Create(options.SymmetricAlgorithmOption.ToString());
             if (algorithm == null)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     $"An invalid or unavailable symmetric encryption algorithm has been selected - \"{options.SymmetricAlgorithmOption}\"");
             }
 
             if (!ValidateKeySize(algorithm, options.KeySize))
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     $"An invalid symmetric key size was specified - {options.KeySize} bits");
             }
 
@@ -171,7 +170,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns>An array containing the key and then the IV in sequence</returns>
         private static byte[] PackKeyAndIv(SymmetricAlgorithm cipher)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var packed = BitConverter.GetBytes(cipher.KeySize);
             return packed.Concatenate(cipher.Key).Concatenate(cipher.IV);
         }
@@ -183,7 +182,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns>A <see cref="Pair{S,T}" />, with the leftmost entry being the unpacked key, the rightmost the IV</returns>
         private static Pair<byte[], byte[]> UnpackKeyAndIv(IReadOnlyCollection<byte> packed)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var keySize = BitConverter.ToInt32(packed.Take(4).ToArray());
             var keyLength = keySize / 8;
             var key = packed.Skip(4).Take(keyLength).ToArray();
@@ -207,19 +206,19 @@ namespace JCS.Neon.Glow.Statics.Crypto
         public static Pair<byte[], byte[]> EncryptAndWrap(byte[] input, X509Certificate2 certificate,
             Action<SymmetricEncryptionOptionsBuilder> configureAction)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
 
             // perform option configuration
             var builder = new SymmetricEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
-            Logging.Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
 
             // check we have a private key if required
             if (options.SymmetricKeyWrappingOption == KeyWrappingOption.WrapWithPrivateKey && !certificate.HasPrivateKey)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Private key specified for key wrapping operations, but no private key present");
             }
 
@@ -227,7 +226,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             if (certificate.PublicKey.Key.SignatureAlgorithm != null
                 && !certificate.PublicKey.Key.SignatureAlgorithm.Equals("RSA", StringComparison.InvariantCultureIgnoreCase))
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Specified certificate doesn't have a supported key type");
             }
 
@@ -253,7 +252,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Exception during crypto operation - could lead to a security issue", ex);
             }
         }
@@ -270,18 +269,18 @@ namespace JCS.Neon.Glow.Statics.Crypto
         public static byte[] UnwrapAndDecrypt(Pair<byte[], byte[]> input, X509Certificate2 certificate,
             Action<SymmetricEncryptionOptionsBuilder> configureAction)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
 
             // perform option configuration
             var builder = new SymmetricEncryptionOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
-            Logging.Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
             // check we have a private key if required
             if (options.KeyUnwrappingOption == KeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Private key specified for key unwrapping operations, but no private key present");
             }
 
@@ -289,7 +288,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             if (certificate.PublicKey.Key.SignatureAlgorithm != null
                 && !certificate.PublicKey.Key.SignatureAlgorithm.Equals("RSA", StringComparison.InvariantCultureIgnoreCase))
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Specified certificate doesn't have a supported key type");
             }
 
@@ -318,7 +317,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                     "Exception during crypto operation - could lead to a security issue", ex);
             }
         }
@@ -332,10 +331,10 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         private static byte[] Transform(byte[] source, SymmetricAlgorithm cipher, TransformDirectionOption directionOption)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             using var cryptor =
                 directionOption == TransformDirectionOption.Encrypt ? cipher.CreateEncryptor() : cipher.CreateDecryptor();
-            Logging.Logging.Verbose(_log, "Encrypting larger data, using stream transform");
+            Logging.Verbose(_log, "Encrypting larger data, using stream transform");
             try
             {
                 switch (directionOption)
@@ -363,13 +362,13 @@ namespace JCS.Neon.Glow.Statics.Crypto
                         return decrypted;
                     }
                     default:
-                        throw Exception.LoggedException<SymmetricEncryptionException>(_log,
+                        throw Exceptions.LoggedException<SymmetricEncryptionException>(_log,
                             "Unreachable exception - here due to non-exhaustive pattern matching");
                 }
             }
             catch (System.Exception ex)
             {
-                throw Exception.LoggedException<SymmetricEncryptionException>(_log, "Stream-based encryption failed", ex);
+                throw Exceptions.LoggedException<SymmetricEncryptionException>(_log, "Stream-based encryption failed", ex);
             }
         }
 

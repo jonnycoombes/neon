@@ -3,7 +3,7 @@
 using System;
 using System.Text;
 using System.Threading;
-using JCS.Neon.Glow.Statics.Logging;
+using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.OS;
 using JCS.Neon.Glow.Statics.OS.Interop.Windows;
 using Serilog;

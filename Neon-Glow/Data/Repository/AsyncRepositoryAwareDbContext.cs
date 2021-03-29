@@ -3,10 +3,9 @@
 using System;
 using System.Runtime.Serialization;
 using JCS.Neon.Glow.Data.Entity;
-using JCS.Neon.Glow.Statics.Logging;
+using JCS.Neon.Glow.Statics;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -80,7 +79,7 @@ namespace JCS.Neon.Glow.Data.Repository
             var fullName = typeof(V).FullName;
             if (string.IsNullOrEmpty(fullName))
             {
-                throw Exception.LoggedException<AsyncRepositoryAwareDbContextException>(_log, "Failed to locate value type name");
+                throw Exceptions.LoggedException<AsyncRepositoryAwareDbContextException>(_log, "Failed to locate value type name");
             }
 
             var entityType = Model.FindEntityType(typeof(V).FullName!);
@@ -91,7 +90,7 @@ namespace JCS.Neon.Glow.Data.Repository
 
             var message = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
             Logging.Error(_log, message);
-            throw Exception.LoggedException<AsyncRepositoryAwareDbContextException>(_log, message);
+            throw Exceptions.LoggedException<AsyncRepositoryAwareDbContextException>(_log, message);
         }
     }
 }

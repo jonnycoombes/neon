@@ -93,18 +93,18 @@ namespace JCS.Neon.Glow.Statics.OS.Interop.Windows
         /// </summary>
         public static void EnableVirtualTerminal()
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             if (!PlatformInformation.IsWindows)
             {
-                Logging.Logging.Warning(_log, "Current platform is not Windows, so unable to set virtual terminal mode");
+                Logging.Warning(_log, "Current platform is not Windows, so unable to set virtual terminal mode");
                 return;
             }
 
-            Logging.Logging.Verbose(_log, "Attempting necessary P/Invoke calls to modify console behaviour");
+            Logging.Verbose(_log, "Attempting necessary P/Invoke calls to modify console behaviour");
             var stdOutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
             if (!GetConsoleMode(stdOutHandle, out var consoleMode))
             {
-                Logging.Logging.Warning(_log,
+                Logging.Warning(_log,
                     $"Failed to retrieve the current console mode.  GetLastError reports a value of \"{GetLastError()}\"");
                 return;
             }
@@ -112,7 +112,7 @@ namespace JCS.Neon.Glow.Statics.OS.Interop.Windows
             consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
             if (!SetConsoleMode(stdOutHandle, consoleMode))
             {
-                Logging.Logging.Warning(_log,
+                Logging.Warning(_log,
                     $"Failed to set virtual terminal mode for the console. GetLastError reports a value of \"{GetLastError()}\"");
             }
         }

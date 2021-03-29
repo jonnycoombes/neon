@@ -7,12 +7,11 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Data.Entity;
-using JCS.Neon.Glow.Statics.Logging;
+using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Types;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Serilog;
-using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -311,9 +310,9 @@ namespace JCS.Neon.Glow.Data.Repository
             {
                 case PostgresException pex:
                     var message = $"{pex.MessageText}";
-                    return Exception.LoggedException<AsyncRepositoryException>(_log, message, pex);
+                    return Exceptions.LoggedException<AsyncRepositoryException>(_log, message, pex);
                 default:
-                    return Exception.LoggedException<AsyncRepositoryException>(_log,
+                    return Exceptions.LoggedException<AsyncRepositoryException>(_log,
                         $"DB Exception caught: \"{ex.Message}\"", ex);
             }
         }

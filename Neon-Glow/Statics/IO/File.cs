@@ -27,7 +27,7 @@ namespace JCS.Neon.Glow.Statics.IO
         /// <returns></returns>
         public static Option<string> GetCurrentHomePath()
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var home = Environment.GetEnvironmentVariable("HOME");
             if (home != null)
             {
@@ -40,7 +40,7 @@ namespace JCS.Neon.Glow.Statics.IO
             }
             catch
             {
-                Logging.Logging.Warning(_log, "Failed to locate the current HOME directory");
+                Logging.Warning(_log, "Failed to locate the current HOME directory");
                 return Option<string>.None;
             }
         }
@@ -53,7 +53,7 @@ namespace JCS.Neon.Glow.Statics.IO
         /// <returns>A string option which is None if the home directory can't be located</returns>
         public static Option<string> GetHomeSubdirectoryPath(params string[] suffix)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var homeOption = GetCurrentHomePath();
             if (homeOption.IsSome(out var home))
             {
@@ -62,7 +62,7 @@ namespace JCS.Neon.Glow.Statics.IO
                 return Option<string>.Some(Path.Combine(components));
             }
 
-            Logging.Logging.Warning(_log, "Failed to locate the current HOME directory");
+            Logging.Warning(_log, "Failed to locate the current HOME directory");
             return Option<string>.None;
         }
     }

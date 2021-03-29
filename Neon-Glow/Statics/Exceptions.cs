@@ -4,13 +4,13 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics.Exceptions
+namespace JCS.Neon.Glow.Statics
 {
     /// <summary>
     ///     Class containing a bunch of static methods relating to throwing/processing
     ///     exceptions
     /// </summary>
-    public static class Exception
+    public static class Exceptions
     {
         /// <summary>
         ///     Generates a new exception of a given type, and logs the supplied message as an
@@ -24,8 +24,8 @@ namespace JCS.Neon.Glow.Statics.Exceptions
         public static E LoggedException<E>(ILogger log, string message, System.Exception inner)
             where E : System.Exception
         {
-            Logging.Logging.Error(log, message);
-            return (E) Reflection.Reflection.CreateException<E>(message, inner);
+            Logging.Error(log, message);
+            return (E) Reflection.CreateException<E>(message, inner);
         }
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace JCS.Neon.Glow.Statics.Exceptions
         public static E LoggedException<E>(ILogger log, string message)
             where E : System.Exception
         {
-            Logging.Logging.Error(log, message);
-            return (E) Reflection.Reflection.CreateException<E>(message);
+            Logging.Error(log, message);
+            return (E) Reflection.CreateException<E>(message);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using JCS.Neon.Glow.Statics.Logging;
+using JCS.Neon.Glow.Statics;
 
 #endregion
 

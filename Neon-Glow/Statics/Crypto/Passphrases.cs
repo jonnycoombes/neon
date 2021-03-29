@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using JCS.Neon.Glow.Types.Extensions;
 using Serilog;
-using Exception = JCS.Neon.Glow.Statics.Exceptions.Exception;
 
 #endregion
 
@@ -109,7 +108,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Contains static helper methods for the generation and validation of passwords
     /// </summary>
-    public static class Passphrase
+    public static class Passphrases
     {
         /// <summary>
         ///     String containing valid upper case characters
@@ -134,7 +133,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(Passphrase));
+        private static readonly ILogger _log = Log.ForContext(typeof(Passphrases));
 
         /// <summary>
         ///     Generates a random passphrase using the supplied options
@@ -144,14 +143,14 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <exception cref="PassphraseException">Thrown if the supplied options are invalid</exception>
         public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder> configureAction)
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             var builder = new PassphraseGenerationOptionsBuilder();
             configureAction(builder);
             var options = builder.Options;
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                throw Exception.LoggedException<PassphraseException>(_log,
+                throw Exceptions.LoggedException<PassphraseException>(_log,
                     "The specified passphrase length doesn't meet minimum length requirements");
             }
 
@@ -183,7 +182,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
                 }
             }
 
-            return options.EncodeBase64 ? Encoding.EncodeBase64(sb.ToString()) : sb.ToString();
+            return options.EncodeBase64 ? Encodings.EncodeBase64(sb.ToString()) : sb.ToString();
         }
 
         /// <summary>

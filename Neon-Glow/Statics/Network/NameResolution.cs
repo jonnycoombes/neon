@@ -32,14 +32,14 @@ namespace JCS.Neon.Glow.Statics.Network
         /// <returns></returns>
         public static string GetCurrentHostName()
         {
-            Logging.Logging.MethodCall(_log);
+            Logging.MethodCall(_log);
             try
             {
                 return Dns.GetHostName();
             }
             catch (Exception ex)
             {
-                Logging.Logging.Warning(_log, $"Exception whilst attempting the lookup of current hostname \"{ex.Message}\"");
+                Logging.Warning(_log, $"Exception whilst attempting the lookup of current hostname \"{ex.Message}\"");
                 return Environment.MachineName;
             }
         }

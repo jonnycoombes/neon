@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         public void EncryptAndDecryptWithWrappingStreamAes(int keySize, int size,
             SymmetricEncryption.SymmetricAlgorithmOption algorithm)
         {
-            var source = Passphrase.GenerateRandomPassphrase(
+            var source = Passphrases.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
             var cert = LoadTestCertificate();
 
@@ -137,7 +137,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         public void EncryptAndDecryptWithWrappingStreamTripleDes(int keySize, int size,
             SymmetricEncryption.SymmetricAlgorithmOption algorithm)
         {
-            var source = Passphrase.GenerateRandomPassphrase(
+            var source = Passphrases.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
             var cert = LoadTestCertificate();
 
