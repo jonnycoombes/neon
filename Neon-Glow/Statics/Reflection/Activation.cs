@@ -12,8 +12,7 @@ using Serilog;
 namespace JCS.Neon.Glow.Statics.Reflection
 {
     /// <summary>
-    ///
-    ///  Static class containing useful reflection methods and helpers
+    ///  Static class containing utilites relating to the activation of types
     /// </summary>
     public static class Activation
     {
@@ -109,15 +108,6 @@ namespace JCS.Neon.Glow.Statics.Reflection
             return new InvalidOperationException($"Unable to raise the requested exception of type {typeof(E)}");
         }
 
-        /// <summary>
-        ///     Returns a string containing the version of the currently executing assembly
-        /// </summary>
-        /// <returns></returns>
-        public static string GetApplicationAssemblyVersion(bool includeAssemblyName = false)
-        {
-            Logging.MethodCall(_log);
-            var assembly = Assembly.GetEntryAssembly();
-            return includeAssemblyName ? $"{assembly?.FullName} - {assembly?.GetName().Version}" : $"{assembly?.GetName().Version}";
-        }
+ 
     }
 }
