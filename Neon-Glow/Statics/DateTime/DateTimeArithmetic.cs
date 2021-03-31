@@ -39,7 +39,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
         }
 
         /// <summary>
-        /// 
+        ///  
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>

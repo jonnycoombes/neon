@@ -9,7 +9,7 @@ namespace JCS.Neon.Glow.Statics
     /// <summary>
     ///     Placeholder for various threading related utilities
     /// </summary>
-    public static class Threads
+    public static class Threading
     {
         /// <summary>
         ///     Suspends the currently executing thread for a specified number of seconds

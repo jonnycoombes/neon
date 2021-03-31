@@ -9,17 +9,18 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Statics
+namespace JCS.Neon.Glow.Statics.Reflection
 {
     /// <summary>
-    ///     Static class containing useful reflection methods and helpers
+    ///
+    ///  Static class containing useful reflection methods and helpers
     /// </summary>
-    public static class Reflection
+    public static class Activation
     {
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext(typeof(Reflection));
+        private static readonly ILogger _log = Log.ForContext(typeof(Activation));
 
         /// <summary>
         ///     Searches the currently loaded assemblies for implementations of a given interface type

@@ -1,5 +1,6 @@
 #region
 
+using JCS.Neon.Glow.Statics.Reflection;
 using Serilog;
 
 #endregion
@@ -25,7 +26,7 @@ namespace JCS.Neon.Glow.Statics
             where E : System.Exception
         {
             Logging.Error(log, message);
-            return (E) Reflection.CreateException<E>(message, inner);
+            return (E) Activation.CreateException<E>(message, inner);
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace JCS.Neon.Glow.Statics
             where E : System.Exception
         {
             Logging.Error(log, message);
-            return (E) Reflection.CreateException<E>(message);
+            return (E) Activation.CreateException<E>(message);
         }
     }
 }
