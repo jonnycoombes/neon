@@ -4,6 +4,7 @@ using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Text;
 using Serilog;
+using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 #endregion
 
@@ -39,6 +40,21 @@ namespace JCS.Neon.Glow.Statics.DateTime
         {
             Logging.MethodCall(_log);
             return src == null ? Option<string>.None : Option<string>.Some(LocalDateTimePattern.GeneralIso.Format(src.Value));
+        }
+
+        /// <summary>
+        /// Creates a local date interval based on two (possibly non-local) <see cref="DateTime"/> instances
+        /// </summary>
+        /// <param name="start">The starting point of the interval</param>
+        /// <param name="end">The end point of the interval</param>
+        /// <returns></returns>
+        public static DateInterval ToLocalDateInterval(System.DateTime start, System.DateTime end)
+        {
+            if (start > end)
+            {
+                throw new ArgumentOutOfRangeException(nameof(start), @"The start date must be less than or equal to the end date");
+            }
+            return new DateInterval(LocalDate.FromDateTime(start), LocalDate.FromDateTime(end));
         }
     }
 }
