@@ -9,7 +9,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository
+namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
     ///     Exception type specific to <see cref="IAsyncRepository{K,V}" /> aware contexts

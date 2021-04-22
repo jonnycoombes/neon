@@ -15,7 +15,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository
+namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
     ///     Default implementation of <see cref="IAsyncRepository{K,V}" />.  This implementation essentially

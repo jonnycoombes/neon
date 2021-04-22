@@ -1,6 +1,7 @@
 #region
 
 using System;
+using JCS.Neon.Glow.Data.Repository.EFCore;
 using JCS.Neon.Glow.Test.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -10,7 +11,7 @@ using NodaTime;
 
 namespace JCS.Neon.Glow.Test.Data.Contexts
 {
-    public class SqlLiteAsyncRepositoryAwareDbContext : Glow.Data.Repository.AsyncRepositoryAwareDbContext
+    public class SqlLiteAsyncRepositoryAwareDbContext : AsyncRepositoryAwareDbContext
     {
         public SqlLiteAsyncRepositoryAwareDbContext(DbContextOptions<SqlLiteAsyncRepositoryAwareDbContext> options)
             : base(options)
