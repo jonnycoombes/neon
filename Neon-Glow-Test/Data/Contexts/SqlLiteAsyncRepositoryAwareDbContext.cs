@@ -2,7 +2,7 @@
 
 using System;
 using JCS.Neon.Glow.Data.Repository.EFCore;
-using JCS.Neon.Glow.Test.Data.Entity;
+using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;

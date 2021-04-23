@@ -2,16 +2,15 @@
 
 using System;
 using System.Linq;
-using JCS.Neon.Glow.Data.Repository;
 using JCS.Neon.Glow.Data.Repository.EFCore;
-using JCS.Neon.Glow.Test.Data.Entity;
+using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using JCS.Neon.Glow.Types;
 using Xunit;
 using Xunit.Abstractions;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data
+namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 {
     /// <summary>
     ///     Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository" />

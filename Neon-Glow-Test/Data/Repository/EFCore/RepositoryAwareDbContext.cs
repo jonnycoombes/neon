@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using JCS.Neon.Glow.Test.Data.Contexts;
-using JCS.Neon.Glow.Test.Data.Entity;
+using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data
+namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 {
     public abstract class RepositoryAwareDbContext : TestBase, IDisposable
     {
