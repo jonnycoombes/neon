@@ -1,7 +1,7 @@
 #region
 
 using System;
-using JCS.Neon.Glow.Data.Entity;
+using JCS.Neon.Glow.Data.Repository.EFCore;
 
 #endregion
 

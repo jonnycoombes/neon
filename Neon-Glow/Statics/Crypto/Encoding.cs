@@ -138,7 +138,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="source">The source to encode</param>
         /// <param name="encoding">The underlying character encoding</param>
         /// <returns></returns>
-        public static string EncodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
+        public static string Base64UrlEncode(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
             Logging.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
@@ -151,7 +151,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="source">The encoded string</param>
         /// <param name="encoding">The underlying character encoding</param>
         /// <returns></returns>
-        public static string DecodeBase64Url(string source, ByteEncoding encoding = ByteEncoding.Utf8)
+        public static string Base64UrlDecode(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
             Logging.MethodCall(_log);
             source = source.Replace('-', '+').Replace('_', '/');
@@ -175,7 +175,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="source">Source string</param>
         /// <param name="encoding">The character encoding to use</param>
         /// <returns></returns>
-        public static string EncodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
+        public static string Base64Encode(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
             Logging.MethodCall(_log);
             var bytes = StringToBytes(source, encoding);
@@ -188,7 +188,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="source">The source in Base64 format</param>
         /// <param name="encoding">The character encoding to use</param>
         /// <returns></returns>
-        public static string DecodeBase64(string source, ByteEncoding encoding = ByteEncoding.Utf8)
+        public static string Base64Decode(string source, ByteEncoding encoding = ByteEncoding.Utf8)
         {
             Logging.MethodCall(_log);
             var bytes = Convert.FromBase64String(source);

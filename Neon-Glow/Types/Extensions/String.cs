@@ -20,7 +20,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns></returns>
         public static string Base64Encode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            return EncodeBase64(s, encoding);
+            return Encodings.Base64Encode(s, encoding);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns></returns>
         public static string Base64Decode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            return DecodeBase64(s, encoding);
+            return Encodings.Base64Decode(s, encoding);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns></returns>
         public static string Base64UrlEncode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            return EncodeBase64Url(s, encoding);
+            return Encodings.Base64UrlEncode(s, encoding);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace JCS.Neon.Glow.Types.Extensions
         /// <returns></returns>
         public static string Base64UrlDecode(this string s, ByteEncoding encoding = ByteEncoding.Utf8)
         {
-            return DecodeBase64Url(s, encoding);
+            return Encodings.Base64UrlDecode(s, encoding);
         }
 
         /// <summary>

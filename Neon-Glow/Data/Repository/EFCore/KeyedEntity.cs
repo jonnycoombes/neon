@@ -7,7 +7,7 @@ using NodaTime;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Entity
+namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
     ///     An abstract base class for keyed entities which may be stored via the EF Core framework.

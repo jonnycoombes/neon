@@ -18,11 +18,11 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Theory(DisplayName =
             "(AES) Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]
-        [InlineData(128, "this is a test string", SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
-        [InlineData(256, "this is a different test string", SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
-        [InlineData(256, "t", SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
+        [InlineData(128, "this is a test string", SymmetricAlgorithmOption.Aes)]
+        [InlineData(256, "this is a different test string", SymmetricAlgorithmOption.Aes)]
+        [InlineData(256, "t", SymmetricAlgorithmOption.Aes)]
         public void EncryptAndDecryptWithWrappingSingleBlockAes(int keySize, string source,
-            SymmetricEncryption.SymmetricAlgorithmOption algorithm)
+            SymmetricAlgorithmOption algorithm)
         {
             var cert = LoadTestCertificate();
 
@@ -33,7 +33,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                     builder.SetSymmetricAlgorithm(algorithm);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(SymmetricEncryption.KeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -44,7 +44,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(SymmetricEncryption.KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -54,14 +54,14 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Theory(DisplayName =
             "(AES) Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]
-        [InlineData(128, 256, SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
-        [InlineData(128, 1024, SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
-        [InlineData(256, 256, SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
-        [InlineData(256, 19024, SymmetricEncryption.SymmetricAlgorithmOption.Aes)]
+        [InlineData(128, 256, SymmetricAlgorithmOption.Aes)]
+        [InlineData(128, 1024, SymmetricAlgorithmOption.Aes)]
+        [InlineData(256, 256, SymmetricAlgorithmOption.Aes)]
+        [InlineData(256, 19024, SymmetricAlgorithmOption.Aes)]
         public void EncryptAndDecryptWithWrappingStreamAes(int keySize, int size,
-            SymmetricEncryption.SymmetricAlgorithmOption algorithm)
+            SymmetricAlgorithmOption algorithm)
         {
-            var source = Passphrases.GenerateRandomPassphrase(
+            var source = Passphrase.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
             var cert = LoadTestCertificate();
 
@@ -70,10 +70,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                 builder =>
                 {
                     builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetSymmetricAlgorithm(SymmetricEncryption.SymmetricAlgorithmOption.Aes);
+                    builder.SetSymmetricAlgorithm(SymmetricAlgorithmOption.Aes);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(SymmetricEncryption.KeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -84,7 +84,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                 {
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(SymmetricEncryption.KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -94,11 +94,11 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Theory(DisplayName =
             "(TripleDes) Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]
-        [InlineData(128, "this is a test string", SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
-        [InlineData(128, "this is a different test string", SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
-        [InlineData(128, "t", SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, "this is a test string", SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, "this is a different test string", SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, "t", SymmetricAlgorithmOption.TripleDes)]
         public void EncryptAndDecryptWithWrappingSingleBlockTripleDes(int keySize, string source,
-            SymmetricEncryption.SymmetricAlgorithmOption algorithm)
+            SymmetricAlgorithmOption algorithm)
         {
             var cert = LoadTestCertificate();
 
@@ -109,7 +109,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                     builder.SetSymmetricAlgorithm(algorithm);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(SymmetricEncryption.KeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -121,7 +121,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                     builder.SetSymmetricAlgorithm(algorithm);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(SymmetricEncryption.KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -131,13 +131,13 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Theory(DisplayName =
             "(TripleDes) Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]
-        [InlineData(128, 256, SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
-        [InlineData(128, 1024, SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
-        [InlineData(128, 19024, SymmetricEncryption.SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, 256, SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, 1024, SymmetricAlgorithmOption.TripleDes)]
+        [InlineData(128, 19024, SymmetricAlgorithmOption.TripleDes)]
         public void EncryptAndDecryptWithWrappingStreamTripleDes(int keySize, int size,
-            SymmetricEncryption.SymmetricAlgorithmOption algorithm)
+            SymmetricAlgorithmOption algorithm)
         {
-            var source = Passphrases.GenerateRandomPassphrase(
+            var source = Passphrase.GenerateRandomPassphrase(
                 builder => { builder.SetRequiredLength(size); });
             var cert = LoadTestCertificate();
 
@@ -148,7 +148,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                     builder.SetSymmetricAlgorithm(algorithm);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(SymmetricEncryption.KeyWrappingOption.WrapWithPublicKey);
+                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -160,7 +160,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                     builder.SetSymmetricAlgorithm(algorithm);
                     builder.SetCipherMode(CipherMode.CBC);
                     builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(SymmetricEncryption.KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);

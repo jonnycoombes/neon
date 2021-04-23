@@ -2,7 +2,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using JCS.Neon.Glow.Data.Entity;
 using JCS.Neon.Glow.Statics;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
