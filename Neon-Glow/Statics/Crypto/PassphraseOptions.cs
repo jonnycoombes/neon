@@ -62,14 +62,27 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// </summary>
     public class PassphraseGenerationOptionsBuilder
     {
-        public PassphraseGenerationOptions Options = new();
+        /// <summary>
+        ///     The actual <see cref="PassphraseGenerationOptions" /> instance
+        /// </summary>
+        public readonly PassphraseGenerationOptions Options = new();
 
+        /// <summary>
+        ///     Sets the required length for new passphrases
+        /// </summary>
+        /// <param name="length">A non-zero length</param>
+        /// <returns>The current builder instance</returns>
         public PassphraseGenerationOptionsBuilder SetRequiredLength(int length)
         {
             Options.RequiredLength = length;
             return this;
         }
 
+        /// <summary>
+        ///     Determines whether a passphrase should be base64 encoded or not
+        /// </summary>
+        /// <param name="b"><code>true</code> if passphrases should be base64 encoded, <code>false</code> otherwise</param>
+        /// <returns>The current builder instance</returns>
         public PassphraseGenerationOptionsBuilder SetBase64Encoding(bool b)
         {
             Options.EncodeBase64 = b;
