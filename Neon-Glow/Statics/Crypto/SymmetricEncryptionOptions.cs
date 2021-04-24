@@ -130,7 +130,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <summary>
         ///     The actual options
         /// </summary>
-        public SymmetricEncryptionOptions Options = new();
+        public readonly SymmetricEncryptionOptions Options = new();
 
         /// <summary>
         ///     Sets the encryption algorithm to use
