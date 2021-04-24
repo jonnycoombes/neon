@@ -164,5 +164,28 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Options.ApplicationName = name;
             return this;
         }
+
+        /// <summary>
+        ///     Adds a server address to the current options instance
+        /// </summary>
+        /// <param name="host">The hostname of the server</param>
+        /// <param name="port">The port number of the server</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder AddServerAddress(string host, int port)
+        {
+            Options.AddServerAddress(host, port);
+            return this;
+        }
+
+        /// <summary>
+        ///     Adds a server address to the current options instance, using the default port
+        /// </summary>
+        /// <param name="host">The hostname of the server</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder AddServerAddress(string host)
+        {
+            Options.AddServerAddress(host);
+            return this;
+        }
     }
 }
