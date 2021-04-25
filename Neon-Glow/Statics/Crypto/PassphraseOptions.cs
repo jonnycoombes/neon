@@ -1,3 +1,5 @@
+using JCS.Neon.Glow.Types;
+
 namespace JCS.Neon.Glow.Statics.Crypto
 {
     /// <summary>
@@ -60,12 +62,12 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Builder for configuration options
     /// </summary>
-    public class PassphraseGenerationOptionsBuilder
+    public class PassphraseGenerationOptionsBuilder : Builder<PassphraseGenerationOptions>
     {
         /// <summary>
         ///     The actual <see cref="PassphraseGenerationOptions" /> instance
         /// </summary>
-        public readonly PassphraseGenerationOptions Options = new();
+        private readonly PassphraseGenerationOptions _options = new();
 
         /// <summary>
         ///     Sets the required length for new passphrases
@@ -74,7 +76,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns>The current builder instance</returns>
         public PassphraseGenerationOptionsBuilder SetRequiredLength(int length)
         {
-            Options.RequiredLength = length;
+            _options.RequiredLength = length;
             return this;
         }
 
@@ -85,8 +87,17 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns>The current builder instance</returns>
         public PassphraseGenerationOptionsBuilder SetBase64Encoding(bool b)
         {
-            Options.EncodeBase64 = b;
+            _options.EncodeBase64 = b;
             return this;
+        }
+
+        /// <summary>
+        /// Builds a new instance of <see cref="PassphraseGenerationOptions"/>
+        /// </summary>
+        /// <returns>A new <see cref="PassphraseGenerationOptions"/> instance</returns>
+        public PassphraseGenerationOptions Build()
+        {
+            return _options;
         }
     }
 }

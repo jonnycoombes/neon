@@ -133,7 +133,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             // perform option configuration
             var builder = new SymmetricEncryptionOptionsBuilder();
             configureAction(builder);
-            var options = builder.Options;
+            var options = builder.Build();
 
             Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
 
@@ -196,7 +196,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             // perform option configuration
             var builder = new SymmetricEncryptionOptionsBuilder();
             configureAction(builder);
-            var options = builder.Options;
+            var options = builder.Build();
 
             Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
             // check we have a private key if required

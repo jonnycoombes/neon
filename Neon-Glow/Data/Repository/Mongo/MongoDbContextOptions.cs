@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using JCS.Neon.Glow.Statics.Reflection;
+using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 
@@ -9,6 +10,44 @@ using MongoDB.Driver.Core.Configuration;
 
 namespace JCS.Neon.Glow.Data.Repository.Mongo
 {
+    /// <summary>
+    ///     Enumeration for denoting the type of authentication to use in order to connect to Mongo
+    /// </summary>
+    public enum MongoAuthenticationType
+    {
+        /// <summary>
+        ///     Basic authentication, using SCRAM (Salted Challenge Response Authentication Mechanism).  Username and password
+        ///     required.
+        /// </summary>
+        Basic,
+
+        /// <summary>
+        ///     Certificate based authentication.  A valid X509 certificate is required, with associated private key material
+        /// </summary>
+        X509Certificate
+    }
+
+    /// <summary>
+    ///     Enumeration for denoting the type of channel to use in order to connect to Mongo
+    /// </summary>
+    public enum MongoChannelType
+    {
+        /// <summary>
+        ///     No channel encryption (DO NOT USE IN PRODUCTION)
+        /// </summary>
+        PlainText,
+
+        /// <summary>
+        ///     Secure sockets utilising TLS 1.1 or higher
+        /// </summary>
+        Secure,
+
+        /// <summary>
+        ///     Secure sockets utilising TLS 1.1 or higher, but with no certificate revocation checking.  (Useful for debug).
+        /// </summary>
+        SecureNoRevocationChecks
+    }
+
     /// <summary>
     ///     Class for containing Mongo DB context options
     /// </summary>
@@ -38,6 +77,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An optional application name
         /// </summary>
         public string ApplicationName { get; set; } = DefaultApplicationName;
+
+        /// <summary>
+        ///     The <see cref="MongoAuthenticationType" /> to use
+        /// </summary>
+        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Basic;
+
+        /// <summary>
+        ///     The <see cref="MongoChannelType" /> to use
+        /// </summary>
+        public MongoChannelType ChannelType { get; set; } = MongoChannelType.PlainText;
 
         /// <summary>
         ///     Accesses a <see cref="MongoClientSettings" /> instance based on the current options
@@ -114,12 +163,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Builder class for <see cref="MongoDbContextOptions" />
     /// </summary>
-    public class MongoDbContextOptionsBuilder
+    public class MongoDbContextOptionsBuilder : Builder<MongoDbContextOptions>
     {
         /// <summary>
         ///     The actual <see cref="MongoDbContextOptions" /> instance
         /// </summary>
-        private readonly MongoDbContextOptions Options = new();
+        private readonly MongoDbContextOptions _options = new();
 
         /// <summary>
         ///     Sets the <see cref="MongoDbContextOptions.ServerScheme" /> property
@@ -128,7 +177,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder SetScheme(ConnectionStringScheme scheme)
         {
-            Options.ServerScheme = scheme;
+            _options.ServerScheme = scheme;
             return this;
         }
 
@@ -139,7 +188,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder SetServerHost(string host)
         {
-            Options.ServerHost = host;
+            _options.ServerHost = host;
             return this;
         }
 
@@ -150,7 +199,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder SetServerPort(int port)
         {
-            Options.ServerPort = port;
+            _options.ServerPort = port;
             return this;
         }
 
@@ -161,7 +210,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder SetApplicationName(string name)
         {
-            Options.ApplicationName = name;
+            _options.ApplicationName = name;
             return this;
         }
 
@@ -173,7 +222,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder AddServerAddress(string host, int port)
         {
-            Options.AddServerAddress(host, port);
+            _options.AddServerAddress(host, port);
             return this;
         }
 
@@ -184,8 +233,39 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder AddServerAddress(string host)
         {
-            Options.AddServerAddress(host);
+            _options.AddServerAddress(host);
             return this;
+        }
+
+        /// <summary>
+        ///     Sets the authentication type to use
+        /// </summary>
+        /// <param name="authenticationType">A value from the <see cref="MongoAuthenticationType" /> enumeration</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetAuthenticationType(MongoAuthenticationType authenticationType)
+        {
+            _options.AuthenticationType = authenticationType;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the channel type to use.
+        /// </summary>
+        /// <param name="channelType">A valid value from the <see cref="MongoChannelType" /> enumeration</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetChannelType(MongoChannelType channelType)
+        {
+            _options.ChannelType = channelType;
+            return this;
+        }
+
+        /// <summary>
+        /// Builds a <see cref="MongoDbContextOptions"/> instance
+        /// </summary>
+        /// <returns>A fresh, mint-scented <see cref="MongoDbContextOptions"/> instance</returns>
+        public MongoDbContextOptions Build()
+        {
+            return _options;
         }
     }
 }

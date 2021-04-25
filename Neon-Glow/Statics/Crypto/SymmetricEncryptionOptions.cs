@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using JCS.Neon.Glow.Types;
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
@@ -125,12 +126,12 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Builder for encryption options
     /// </summary>
-    public class SymmetricEncryptionOptionsBuilder
+    public class SymmetricEncryptionOptionsBuilder : Builder<SymmetricEncryptionOptions>
     {
         /// <summary>
         ///     The actual options
         /// </summary>
-        public readonly SymmetricEncryptionOptions Options = new();
+        private readonly SymmetricEncryptionOptions _options = new();
 
         /// <summary>
         ///     Sets the encryption algorithm to use
@@ -139,7 +140,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns>The current builder instance</returns>
         public SymmetricEncryptionOptionsBuilder SetSymmetricAlgorithm(SymmetricAlgorithmOption option)
         {
-            Options.SymmetricAlgorithmOption = option;
+            _options.SymmetricAlgorithmOption = option;
             return this;
         }
 
@@ -150,7 +151,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetKeyWrappingOption(KeyWrappingOption option)
         {
-            Options.SymmetricKeyWrappingOption = option;
+            _options.SymmetricKeyWrappingOption = option;
             return this;
         }
 
@@ -161,7 +162,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetKeyUnwrappingOption(KeyUnwrappingOption option)
         {
-            Options.KeyUnwrappingOption = option;
+            _options.KeyUnwrappingOption = option;
             return this;
         }
 
@@ -172,7 +173,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetKeySize(int keySize)
         {
-            Options.KeySize = keySize;
+            _options.KeySize = keySize;
             return this;
         }
 
@@ -183,7 +184,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetCipherMode(CipherMode mode)
         {
-            Options.Mode = mode;
+            _options.Mode = mode;
             return this;
         }
 
@@ -194,7 +195,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetOutputEncoding(OutputEncodingOption encodingOption)
         {
-            Options.SymmetricOutputEncodingOption = encodingOption;
+            _options.SymmetricOutputEncodingOption = encodingOption;
             return this;
         }
 
@@ -205,8 +206,17 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <returns></returns>
         public SymmetricEncryptionOptionsBuilder SetInputEncoding(InputEncodingOption encodingOption)
         {
-            Options.InputEncodingOption = encodingOption;
+            _options.InputEncodingOption = encodingOption;
             return this;
+        }
+
+        /// <summary>
+        /// Builds a new <see cref="SymmetricEncryptionOptions"/> instance
+        /// </summary>
+        /// <returns></returns>
+        public SymmetricEncryptionOptions Build()
+        {
+            return _options;
         }
     }
 }

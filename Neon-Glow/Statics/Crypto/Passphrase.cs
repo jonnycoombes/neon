@@ -70,7 +70,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             Logging.MethodCall(_log);
             var builder = new PassphraseGenerationOptionsBuilder();
             configureAction(builder);
-            var options = builder.Options;
+            var options = builder.Build();
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)
             {
