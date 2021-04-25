@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Console.Test
                 }
                 catch (AnsiConsole.AnsiConsoleCursorBoundsError)
                 {
-                    System.Console.WriteLine("OOB");
+                    System.Console.WriteLine(@"OOB");
                 }
                 catch (AnsiConsole.AnsiConsoleException)
                 {

@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
@@ -89,11 +90,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoChannelType ChannelType { get; set; } = MongoChannelType.PlainText;
 
         /// <summary>
-        ///     Accesses a <see cref="MongoClientSettings" /> instance based on the current options
-        /// </summary>
-        public MongoClientSettings Settings => BuildSettings();
-
-        /// <summary>
         ///     Accesses a <see cref="MongoServerAddress" /> instance based on the current options
         /// </summary>
         public MongoServerAddress ServerAddress => BuildServerAddress();
@@ -104,9 +100,52 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public IEnumerable<MongoServerAddress> ServerAddresses => BuildServerAddresses();
 
         /// <summary>
-        ///     Internal collection of
+        ///     Internal collection of <see cref="MongoServerAddress" /> objects
         /// </summary>
         private List<MongoServerAddress> _serverAddresses { get; } = new();
+
+        /// <summary>
+        ///     An internal list of <see cref="X509Certificate" /> instances
+        /// </summary>
+        private List<X509Certificate> _clientCertificates { get; } = new();
+
+        /// <summary>
+        ///     Returns the currently configured list of possible client certificates
+        /// </summary>
+        public IEnumerable<X509Certificate> ClientCertificates => BuildClientCertificates();
+
+        /// <summary>
+        ///     An optional <see cref="X509Certificate" /> instance to use when the selected authentication type is
+        ///     <see cref="MongoAuthenticationType.X509Certificate" />
+        /// </summary>
+        public X509Certificate? AuthenticationCertificate { get; set; }
+
+        /// <summary>
+        /// An optional authentication database name
+        /// </summary>
+        public string? AuthenticationDatabase { get; set; }
+
+        /// <summary>
+        ///     An optional username to use for authentication.  If SCRAM authentication is chosen, this field needs to be non-null
+        ///     and a password also needs to be provided.  If X509Certificate authentication is selected, then this username needs
+        ///     to match the FQN present in the selected certificate.
+        /// </summary>
+        public string? Username { get; set; }
+
+        /// <summary>
+        ///     An optional password to use for SCRAM authentication.
+        /// </summary>
+        public string? Password { get; set; }
+
+        /// <summary>
+        ///     Returns the internal list of client <see cref="X509Certificate" /> instances to be used when SSL is selected as the
+        ///     channel type
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{X509Certificate}" /></returns>
+        private IEnumerable<X509Certificate> BuildClientCertificates()
+        {
+            return _clientCertificates;
+        }
 
         /// <summary>
         ///     Builds a single <see cref="MongoServerAddress" /> based on the <see cref="ServerHost" /> and
@@ -128,6 +167,15 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        ///     Adds a new <see cref="X509Certifcate" /> to the list of available certificates
+        /// </summary>
+        /// <param name="certificate">A valid <see cref="X509Certificate" /> instance</param>
+        public void AddClientCertificate(X509Certificate certificate)
+        {
+            _clientCertificates.Add(certificate);
+        }
+
+        /// <summary>
         ///     Adds a new server address to the internal server address collection
         /// </summary>
         /// <param name="host">The server host name</param>
@@ -145,19 +193,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             _serverAddresses.Add(new MongoServerAddress(host));
         }
-
-        /// <summary>
-        ///     Takes the relevant options and builds an instance of <see cref="MongoClientSettings" />
-        /// </summary>
-        /// <returns>A new <see cref="MongoClientSettings" /> instance</returns>
-        private MongoClientSettings BuildSettings()
-        {
-            return new()
-            {
-                ApplicationName = ApplicationName,
-                Scheme = ServerScheme
-            };
-        }
     }
 
     /// <summary>
@@ -169,6 +204,15 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The actual <see cref="MongoDbContextOptions" /> instance
         /// </summary>
         private readonly MongoDbContextOptions _options = new();
+
+        /// <summary>
+        ///     Builds a <see cref="MongoDbContextOptions" /> instance
+        /// </summary>
+        /// <returns>A fresh, mint-scented <see cref="MongoDbContextOptions" /> instance</returns>
+        public MongoDbContextOptions Build()
+        {
+            return _options;
+        }
 
         /// <summary>
         ///     Sets the <see cref="MongoDbContextOptions.ServerScheme" /> property
@@ -260,12 +304,27 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// Builds a <see cref="MongoDbContextOptions"/> instance
+        ///     Sets the username to be used during authentication
         /// </summary>
-        /// <returns>A fresh, mint-scented <see cref="MongoDbContextOptions"/> instance</returns>
-        public MongoDbContextOptions Build()
+        /// <param name="username">A user name</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetUsername(string username)
         {
-            return _options;
+            _options.Username = username;
+            return this;
         }
+
+        /// <summary>
+        ///     A password to be used during SCRAM authentication
+        /// </summary>
+        /// <param name="password">A password</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetPassword(string password)
+        {
+            _options.Password = password;
+            return this;
+        }
+        
+        
     }
 }
