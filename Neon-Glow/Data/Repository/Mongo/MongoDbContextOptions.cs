@@ -80,6 +80,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public string ApplicationName { get; set; } = DefaultApplicationName;
 
         /// <summary>
+        ///     An optional replica set name, which may be used to construct a valid connection string
+        /// </summary>
+        public string? ReplicaSet { get; set; }
+
+        /// <summary>
         ///     The <see cref="MongoAuthenticationType" /> to use
         /// </summary>
         public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Basic;
@@ -121,7 +126,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public X509Certificate? AuthenticationCertificate { get; set; }
 
         /// <summary>
-        /// An optional authentication database name
+        ///     An optional authentication database name
         /// </summary>
         public string? AuthenticationDatabase { get; set; }
 
@@ -324,7 +329,49 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _options.Password = password;
             return this;
         }
-        
-        
+
+        /// <summary>
+        ///     Sets the database to use for authentication.  The default is 'admin'
+        /// </summary>
+        /// <param name="authenticationDatabase">A database name to use for authentication</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetAuthenticationDatabase(string authenticationDatabase)
+        {
+            _options.AuthenticationDatabase = authenticationDatabase;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the X509 certificate to be used for authentication
+        /// </summary>
+        /// <param name="certificate">A <see cref="X509Certificate" /> instance</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetAuthenticationCertificate(X509Certificate certificate)
+        {
+            _options.AuthenticationCertificate = certificate;
+            return this;
+        }
+
+        /// <summary>
+        ///     Adds a certificate which can be used in order to establish a SSL/TLS tunnel to the Mongo server
+        /// </summary>
+        /// <param name="certificate">A <see cref="X509Certificate" /></param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder AddClientCertificate(X509Certificate certificate)
+        {
+            _options.AddClientCertificate(certificate);
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the replica set name
+        /// </summary>
+        /// <param name="replicaSetName">The name of a replica set</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetReplicaSet(string replicaSetName)
+        {
+            _options.ReplicaSet = replicaSetName;
+            return this;
+        }
     }
 }
