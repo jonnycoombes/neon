@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 
 namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 {
-    public abstract class RepositoryAwareDbContext : TestBase, IDisposable
+    public abstract class EFCoreTestBase : TestBase, IDisposable
     {
         /// <summary>
         ///     The actual test context
@@ -37,7 +37,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// </summary>
         protected List<ModelGuidKeyedTestEntity> _testEntries = new();
 
-        public RepositoryAwareDbContext(ITestOutputHelper outputHelperHelper)
+        public EFCoreTestBase(ITestOutputHelper outputHelperHelper)
         {
             _outputHelper = outputHelperHelper;
             CreateContextOptions();

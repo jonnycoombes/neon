@@ -15,8 +15,8 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
     /// <summary>
     ///     Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository" />
     /// </summary>
-    [Trait("Category", "Data")]
-    public class AsyncRepositoryTests : RepositoryAwareDbContext
+    [Trait("Category", "Data:EFCore")]
+    public class AsyncRepositoryTests : EFCoreTestBase
     {
         public AsyncRepositoryTests(ITestOutputHelper outputHelperHelper) : base(outputHelperHelper)
         {
@@ -26,14 +26,14 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         ///     Can we create a valid repository?
         /// </summary>
         [Fact(DisplayName = "Can create a model entity repository")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public void CheckCreateValidRepository()
         {
             Assert.NotNull(_context.CreateRepository<Guid, ModelGuidKeyedTestEntity>());
         }
 
         [Fact(DisplayName = "Can't create a non-model entity repository")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public void CheckCreateInvalidRepository()
         {
             Assert.Throws<AsyncRepositoryAwareDbContextException>(() =>
@@ -43,7 +43,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Count items in the repository")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CountRepositoryItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -53,7 +53,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Count items matching a predicate")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CountMatchingRepositoryItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -62,7 +62,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can check for the existence of known item in repository")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CheckForItemWithKey()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -71,7 +71,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select known repository values based on an expression")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectKnownValues()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -81,7 +81,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can't select an unknown repository value based on an expression")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectUnknownValues()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -91,7 +91,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can enumerate all repository items asynchronously")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CheckAsyncEnumeration()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -105,7 +105,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select a known repository entity based on key value")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectOneByKnownKey()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -115,7 +115,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select multiple known repository entries based on key values")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectManyByKnownKeys()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -125,7 +125,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select multiple repository entries based on an expression")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectManyByExpression()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -135,7 +135,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can create a single new repository item")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CreateSingleItem()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -147,7 +147,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can create multiple new repository items")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void CreateMultipleItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -156,7 +156,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select multiple repository keys")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectMultipleKeyValues()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -166,7 +166,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can delete existing repository item")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void DeleteSingleItem()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -176,7 +176,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can delete multiple repository items")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void DeleteMultipleItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -186,7 +186,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can update an existing repository item")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void UpdateExistingItem()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -199,7 +199,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can update multiple existing repository items")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void UpdateExistingItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
@@ -216,7 +216,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         }
 
         [Fact(DisplayName = "Can select and transform existing repository items to type W")]
-        [Trait("Category", "Data")]
+        [Trait("Category", "Data:EFCore")]
         public async void SelectAndProjectItems()
         {
             var repository = _context.CreateRepository<Guid, ModelGuidKeyedTestEntity>();
