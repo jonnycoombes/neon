@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using JCS.Neon.Glow.Data.Repository.EFCore;
-using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using JCS.Neon.Glow.Types;
 using Xunit;
 using Xunit.Abstractions;

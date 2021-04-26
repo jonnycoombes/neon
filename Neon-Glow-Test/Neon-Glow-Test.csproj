@@ -58,7 +58,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\Repository\Mongo" />
       <Folder Include="Statics" />
     </ItemGroup>
 

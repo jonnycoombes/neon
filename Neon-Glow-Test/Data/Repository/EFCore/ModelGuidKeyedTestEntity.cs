@@ -5,7 +5,7 @@ using JCS.Neon.Glow.Data.Repository.EFCore;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity
+namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 {
     /// <summary>
     ///     Simple entity used for unit testing

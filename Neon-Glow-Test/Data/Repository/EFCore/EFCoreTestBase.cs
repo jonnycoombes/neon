@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using JCS.Neon.Glow.Test.Data.Repository.EFCore.Contexts;
-using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
