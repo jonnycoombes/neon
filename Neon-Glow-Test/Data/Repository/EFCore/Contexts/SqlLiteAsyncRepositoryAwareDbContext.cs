@@ -1,6 +1,5 @@
 #region
 
-using System;
 using JCS.Neon.Glow.Data.Repository.EFCore;
 using JCS.Neon.Glow.Test.Data.Repository.EFCore.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,7 @@ using NodaTime;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data.Contexts
+namespace JCS.Neon.Glow.Test.Data.Repository.EFCore.Contexts
 {
     public class SqlLiteAsyncRepositoryAwareDbContext : AsyncRepositoryAwareDbContext
     {

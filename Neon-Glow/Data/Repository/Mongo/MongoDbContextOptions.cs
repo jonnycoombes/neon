@@ -17,6 +17,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     public enum MongoAuthenticationType
     {
         /// <summary>
+        ///     No authentication.  Will only work against unprotected instances of Mongo - useful for test?
+        /// </summary>
+        Anonymous,
+
+        /// <summary>
         ///     Basic authentication, using SCRAM (Salted Challenge Response Authentication Mechanism).  Username and password
         ///     required.
         /// </summary>
