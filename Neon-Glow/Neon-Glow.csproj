@@ -4,7 +4,7 @@
         <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>JCS.Neon.Glow</RootNamespace>
         <AssemblyName>JCS.Neon.Glow</AssemblyName>
-        <Nullable>annotations</Nullable>
+        <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>JCS.Neon.Glow</PackageId>
         <Title>JCS Neon Glow</Title>
