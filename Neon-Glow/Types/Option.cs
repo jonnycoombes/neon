@@ -42,8 +42,7 @@ namespace JCS.Neon.Glow.Types
         public readonly bool IsNone => !_some;
 
         /// <summary>
-        ///     Default constructor which just wraps a value of type T, also
-        ///     sets the internal isSome flag
+        ///     Default constructor which just wraps a value of type T, also sets the internal isSome flag
         /// </summary>
         /// <param name="value">The value to wrap</param>
         public Option(T? value)
