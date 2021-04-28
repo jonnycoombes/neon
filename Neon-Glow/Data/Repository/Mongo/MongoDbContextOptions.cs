@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System.Collections.Generic;
@@ -104,6 +93,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An optional application name
         /// </summary>
         public string ApplicationName { get; set; } = DefaultApplicationName;
+
+        /// <summary>
+        ///     The database that the context will mount to
+        /// </summary>
+        public string? DatabaseName { get; set; }
 
         /// <summary>
         ///     An optional replica set name, which may be used to construct a valid connection string
@@ -275,6 +269,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoDbContextOptionsBuilder SetServerPort(int port)
         {
             _options.ServerPort = port;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="MongoDbContextOptions.DatabaseName" /> property.
+        /// </summary>
+        /// <param name="databaseName">The name of the database to mount.  Will be created if it doesn't already exist</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder SetDatabaseName(string databaseName)
+        {
+            _options.DatabaseName = databaseName;
             return this;
         }
 
