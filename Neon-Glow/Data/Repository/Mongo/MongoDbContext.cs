@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -30,7 +19,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static ILogger _log = Log.ForContext<MongoDbContext>();
+        private static readonly ILogger _log = Log.ForContext<MongoDbContext>();
+
+        /// <summary>
+        ///     Default constructor which just utilises all the defaults within <see cref="MongoDbContextOptions" />
+        /// </summary>
+        protected MongoDbContext()
+        {
+            Logging.MethodCall(_log);
+            _options = new MongoDbContextOptionsBuilder().Build();
+        }
 
         /// <summary>
         ///     Constructor that takes an instance of <see cref="MongoDbContextOptions" />
