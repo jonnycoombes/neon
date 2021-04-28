@@ -19,7 +19,6 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// </summary>
         protected SqlLiteAsyncRepositoryAwareDbContext _context;
 
-
         /// <summary>
         ///     The context options
         /// </summary>

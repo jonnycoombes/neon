@@ -60,6 +60,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     public class MongoDbContextOptions
     {
         /// <summary>
+        ///     The default port used to connect through to a Mongo DB instance
+        /// </summary>
+        public const int DefaultServerPort = 27017;
+
+        /// <summary>
+        ///     The default host name used to connect through to a Mongo DB instance
+        /// </summary>
+        public const string DefaultServerHost = "localhost";
+
+        /// <summary>
         ///     The default application name value
         /// </summary>
         public static readonly string DefaultApplicationName = $"neon-glow-{Assemblies.GetApplicationAssemblyVersion()}";
@@ -72,12 +82,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The server host name (defaults to localhost)
         /// </summary>
-        public string ServerHost { get; set; } = "localhost";
+        public string ServerHost { get; set; } = DefaultServerHost;
 
         /// <summary>
         ///     The server port (defaults to 27017)
         /// </summary>
-        public int ServerPort { get; set; } = 27017;
+        public int ServerPort { get; set; } = DefaultServerPort;
 
         /// <summary>
         ///     An optional application name
@@ -92,7 +102,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The <see cref="MongoAuthenticationType" /> to use
         /// </summary>
-        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Basic;
+        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Anonymous;
 
         /// <summary>
         ///     The <see cref="MongoChannelType" /> to use
