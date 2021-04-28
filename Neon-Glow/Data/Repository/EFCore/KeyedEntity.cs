@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -27,7 +38,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public T Id { get; set; }
+        public T Id { get; set; } = default!;
 
         /// <summary>
         ///     The creation time instant for the entity

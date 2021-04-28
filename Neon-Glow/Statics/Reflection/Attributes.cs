@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -29,7 +40,14 @@ namespace JCS.Neon.Glow.Statics.Reflection
         {
             Logging.MethodCall(_log);
             var attribute = Attribute.GetCustomAttribute(t, typeof(T));
-            return new Option<Attribute>(attribute);
+            if (attribute != null)
+            {
+                return new Option<Attribute>(attribute);
+            }
+            else
+            {
+                return Option<Attribute>.None;
+            }
         }
 
         /// <summary>

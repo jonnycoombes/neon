@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -97,7 +108,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         /// <typeparam name="W">The projection/map type</typeparam>
         /// <returns></returns>
         public Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken = default) where W : notnull;
 
         /// <summary>
         ///     Reads zero of more items from the repository given a collection of

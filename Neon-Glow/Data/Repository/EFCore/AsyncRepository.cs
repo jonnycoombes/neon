@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -123,12 +134,12 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectOne{W}" />
         public async Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default) where W : notnull
         {
             Logging.MethodCall(_log);
             var selection = await SelectOne(expression, cancellationToken);
             return selection.Fold(
-                v => Option<W>.Some(f(v)),
+                v => Option<W>.Some(f(v!)),
                 () => Option<W>.None);
         }
 

@@ -1,4 +1,15 @@
-﻿using JCS.Neon.Glow.Statics.DateTime;
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
+using JCS.Neon.Glow.Statics.DateTime;
 using JCS.Neon.Glow.Statics.Parsing;
 using JCS.Neon.Glow.Types;
 using NodaTime;

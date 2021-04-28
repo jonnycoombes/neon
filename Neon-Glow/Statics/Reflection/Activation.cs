@@ -1,9 +1,19 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using JCS.Neon.Glow.Types;
 using Serilog;
 
@@ -12,7 +22,7 @@ using Serilog;
 namespace JCS.Neon.Glow.Statics.Reflection
 {
     /// <summary>
-    ///  Static class containing utilites relating to the activation of types
+    ///     Static class containing utilites relating to the activation of types
     /// </summary>
     public static class Activation
     {
@@ -43,13 +53,20 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <typeparam name="T">The type to create</typeparam>
         /// <returns></returns>
         public static Option<T> CreateInstance<T>(params object?[] args)
+            where T : notnull
         {
             Logging.MethodCall(_log);
             try
             {
                 if (!typeof(T).IsInterface)
                 {
-                    return new Option<T>((T) Activator.CreateInstance(typeof(T), args));
+                    var instance = Activator.CreateInstance(typeof(T), args);
+                    if (instance != null)
+                    {
+                        return new Option<T>((T) instance);
+                    }
+
+                    return Option<T>.None;
                 }
 
                 Logging.Warning(_log, "Specified type T is an interface - cannot directly instantiate");
@@ -70,13 +87,20 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <typeparam name="T">The type to cast into</typeparam>
         /// <returns></returns>
         public static Option<T> CreateAndCastInstance<T>(Type baseType, params object?[] args)
+            where T : notnull
         {
             Logging.MethodCall(_log);
             try
             {
                 if (baseType.IsAssignableTo(typeof(T)))
                 {
-                    return new Option<T>((T) Activator.CreateInstance(baseType, args));
+                    var instance = Activator.CreateInstance(baseType, args);
+                    if (instance != null)
+                    {
+                        return new Option<T>((T) instance);
+                    }
+
+                    return Option<T>.None;
                 }
 
                 Logging.Warning(_log, "The specified type is not assignable to required type T");
@@ -107,7 +131,5 @@ namespace JCS.Neon.Glow.Statics.Reflection
 
             return new InvalidOperationException($"Unable to raise the requested exception of type {typeof(E)}");
         }
-
- 
     }
 }

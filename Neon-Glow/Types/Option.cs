@@ -1,6 +1,18 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
 
 #endregion
 
@@ -11,7 +23,7 @@ namespace JCS.Neon.Glow.Types
     ///     or may not have a value. Very loosely based on similar functional types
     ///     such as F# Option, Scala Option or Haskell Maybe
     /// </summary>
-    public struct Option<T>
+    public readonly struct Option<T>
         where T : notnull
     {
         /// <summary>
@@ -45,7 +57,9 @@ namespace JCS.Neon.Glow.Types
         ///     Default constructor which just wraps a value of type T, also sets the internal isSome flag
         /// </summary>
         /// <param name="value">The value to wrap</param>
-        public Option(T? value)
+        #pragma warning disable 8618
+        public Option(T value) 
+            #pragma warning restore 8618
         {
             _value = value;
             _some = _value is { };
@@ -90,7 +104,7 @@ namespace JCS.Neon.Glow.Types
         /// <typeparam name="V">The target type</typeparam>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static Option<V> Map<T, V>(this Option<T> option, Func<T, V> f)
+        public static Option<V> Map<T, V>(this Option<T> option, Func<T?, V> f)
             where T : notnull where V : notnull
         {
             return option.Bind(value => Option<V>.Some(f(value)));
@@ -106,7 +120,7 @@ namespace JCS.Neon.Glow.Types
         /// <typeparam name="T">The wrapped type for the option</typeparam>
         /// <typeparam name="V">The target type</typeparam>
         /// <returns></returns>
-        public static V Fold<T, V>(this Option<T> option, Func<T, V> onSome, Func<V> onNone)
+        public static V Fold<T, V>(this Option<T> option, Func<T?, V> onSome, Func<V> onNone)
             where T : notnull where V : notnull
         {
             return option.IsSome(out var value) ? onSome(value) : onNone();
@@ -121,7 +135,8 @@ namespace JCS.Neon.Glow.Types
         /// <typeparam name="T">The source option contained type</typeparam>
         /// <typeparam name="V">The target option contained type</typeparam>
         /// <returns></returns>
-        public static Option<V> Bind<T, V>(this Option<T> option, Func<T, Option<V>> binder)
+        public static Option<V> Bind<T, V>(this Option<T> option, Func<T?, Option<V>> binder)
+        where V : notnull where T : notnull
         {
             return option.Fold(
                 binder,
@@ -138,7 +153,8 @@ namespace JCS.Neon.Glow.Types
         /// <param name="f">A lambda which can provide a default value</param>
         /// <typeparam name="T">The wrapped type</typeparam>
         /// <returns></returns>
-        public static T GetOrElse<T>(this Option<T> option, Func<T?> f)
+        public static T? GetOrElse<T>(this Option<T> option, Func<T?> f)
+        where T : notnull
         {
             return option.IsSome(out var value) ? value : f();
         }
