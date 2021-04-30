@@ -36,9 +36,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             var context = new MongoTestContext(builder =>
             {
-                builder.SetServerHost(MongoDbContextOptions.DefaultServerHost);
-                builder.SetServerPort(MongoDbContextOptions.DefaultServerPort);
+                builder.SetHost(MongoDbContextOptions.DefaultServerHost);
+                builder.SetPort(MongoDbContextOptions.DefaultServerPort);
                 builder.SetScheme(ConnectionStringScheme.MongoDB);
+                builder.SetDatabase("neon-glow-test");
             });
             Assert.True(false);
         }
