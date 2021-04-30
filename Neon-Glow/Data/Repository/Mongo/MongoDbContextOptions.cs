@@ -93,22 +93,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The server host name (defaults to localhost)
         /// </summary>
-        public string ServerHost { get; set; } = DefaultServerHost;
+        public string Host { get; set; } = DefaultServerHost;
 
         /// <summary>
         ///     The server port (defaults to 27017)
         /// </summary>
-        public int ServerPort { get; set; } = DefaultServerPort;
+        public int Port { get; set; } = DefaultServerPort;
 
         /// <summary>
         ///     An optional application name
         /// </summary>
-        public string ApplicationName { get; set; } = DefaultApplicationName;
+        public string Application { get; set; } = DefaultApplicationName;
 
         /// <summary>
         ///     The database that the context will mount to
         /// </summary>
-        public string? DatabaseName { get; set; }
+        public string? Database { get; set; }
 
         /// <summary>
         ///     An optional replica set name, which may be used to construct a valid connection string
@@ -166,7 +166,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     and a password also needs to be provided.  If X509Certificate authentication is selected, then this username needs
         ///     to match the FQN present in the selected certificate.
         /// </summary>
-        public string? Username { get; set; }
+        public string? User { get; set; }
 
         /// <summary>
         ///     An optional password to use for SCRAM authentication.
@@ -184,13 +184,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///     Builds a single <see cref="MongoServerAddress" /> based on the <see cref="ServerHost" /> and
-        ///     <see cref="ServerPort" /> property values
+        ///     Builds a single <see cref="MongoServerAddress" /> based on the <see cref="Host" /> and
+        ///     <see cref="Port" /> property values
         /// </summary>
         /// <returns>A new <see cref="MongoServerAddress" /> instance</returns>
         private MongoServerAddress BuildServerAddress()
         {
-            return new(ServerHost, ServerPort);
+            return new(Host, Port);
         }
 
         /// <summary>
@@ -229,6 +229,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             _serverAddresses.Add(new MongoServerAddress(host));
         }
+
     }
 
     /// <summary>
@@ -262,46 +263,46 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.ServerHost" /> property.  The default is 'localhost'
+        ///     Sets the <see cref="MongoDbContextOptions.Host" /> property.  The default is 'localhost'
         /// </summary>
         /// <param name="host">A host name (note that this isn't checked for validity</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetServerHost(string host)
+        public MongoDbContextOptionsBuilder SetHost(string host)
         {
-            _options.ServerHost = host;
+            _options.Host = host;
             return this;
         }
 
         /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.ServerPort" /> property.  The default Mongo DB port is 27017.
+        ///     Sets the <see cref="MongoDbContextOptions.Port" /> property.  The default Mongo DB port is 27017.
         /// </summary>
         /// <param name="port">A port number</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetServerPort(int port)
+        public MongoDbContextOptionsBuilder SetPort(int port)
         {
-            _options.ServerPort = port;
+            _options.Port = port;
             return this;
         }
 
         /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.DatabaseName" /> property.
+        ///     Sets the <see cref="MongoDbContextOptions.Database" /> property.
         /// </summary>
         /// <param name="databaseName">The name of the database to mount.  Will be created if it doesn't already exist</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetDatabaseName(string databaseName)
+        public MongoDbContextOptionsBuilder SetDatabase(string databaseName)
         {
-            _options.DatabaseName = databaseName;
+            _options.Database = databaseName;
             return this;
         }
 
         /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.ApplicationName" /> property
+        ///     Sets the <see cref="MongoDbContextOptions.Application" /> property
         /// </summary>
         /// <param name="name">A string containing the required application name</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetApplicationName(string name)
+        public MongoDbContextOptionsBuilder SetApplication(string name)
         {
-            _options.ApplicationName = name;
+            _options.Application = name;
             return this;
         }
 
@@ -355,9 +356,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="username">A user name</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetUsername(string username)
+        public MongoDbContextOptionsBuilder SetUser(string username)
         {
-            _options.Username = username;
+            _options.User = username;
             return this;
         }
 

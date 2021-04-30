@@ -10,8 +10,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 {
     /// <summary>
     ///     Abstract base class for Mongo DB contexts.  Takes care of all the clever stuff relating to lifecycle, session
-    ///     management etc...Derived classes can add automatic support for repository-style access to collections and related functionality
-    ///     through generic virtual methods and properties.
+    ///     management etc...Derived classes can add automatic support for repository-style access to collections and related
+    ///     functionality through generic virtual methods and properties.
     /// </summary>
     public abstract class MongoDbContext
     {
@@ -21,12 +21,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private static readonly ILogger _log = Log.ForContext<MongoDbContext>();
 
         /// <summary>
-        ///     Default constructor which just utilises all the defaults within <see cref="MongoDbContextOptions" />
+        ///     Simple constructor that allows a host and database to be specified, along with a username and password
         /// </summary>
-        protected MongoDbContext()
+        /// <param name="hostName">The mongo host name</param>
+        /// <param name="databaseName">The database name</param>
+        /// <param name="user">The user to be used for authentication</param>
+        /// <param name="password">The password to be used for authentication</param>
+        protected MongoDbContext(string hostName, string databaseName, string user, string password)
         {
             Logging.MethodCall(_log);
-            _options = new MongoDbContextOptionsBuilder().Build();
+            _options = new MongoDbContextOptionsBuilder()
+                .SetHost(hostName)
+                .SetDatabase(databaseName)
+                .SetAuthenticationType(MongoAuthenticationType.Basic)
+                .SetUser(user)
+                .SetPassword(password)
+                .Build();
         }
 
         /// <summary>
