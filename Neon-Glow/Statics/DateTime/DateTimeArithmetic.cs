@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -112,7 +112,6 @@ namespace JCS.Neon.Glow.Statics.DateTime
                 throw new ArgumentOutOfRangeException(nameof(startDay), @"You must specify a valid starting day for the buckets");
             }
 
-            var dayPeriod = Period.FromDays(1);
             var bucketStart = start;
             while (bucketStart.DayOfWeek != startDay)
             {
@@ -120,7 +119,6 @@ namespace JCS.Neon.Glow.Statics.DateTime
             }
             
             var done = false;
-            var dateCursor = bucketStart;
             while (!done)
             {
                 var interval = new DateInterval(bucketStart, bucketStart.PlusDays(6));
