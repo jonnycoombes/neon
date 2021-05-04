@@ -27,6 +27,7 @@ namespace JCS.Neon.Glow.Test.Statics.Network
     {
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
 
         [Fact(DisplayName = "Must be able to resolve the current host name")]

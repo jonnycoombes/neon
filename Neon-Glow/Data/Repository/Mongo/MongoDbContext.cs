@@ -85,7 +85,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Constructor that takes an <see cref="Action" /> that can take a <see cref="MongoDbContextOptionsBuilder" />
         ///     instance and configure the context options through the builder
         /// </summary>
-        /// <param name="configureAction"></param>
+        /// <param name="configureAction">An <see cref="Action"/> which modifies an instance of <see cref="MongoDbContextOptionsBuilder"/> in order to arrive at a good configuration</param>
         protected MongoDbContext(Action<MongoDbContextOptionsBuilder> configureAction)
         {
             Logging.MethodCall(_log);

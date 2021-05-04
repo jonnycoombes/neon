@@ -28,6 +28,7 @@ namespace JCS.Neon.Glow.Test.Statics.OS
     {
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
 
         [Fact(DisplayName = "OS should be correctly identified")]
