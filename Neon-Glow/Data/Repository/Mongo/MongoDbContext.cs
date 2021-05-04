@@ -22,19 +22,35 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private static readonly ILogger _log = Log.ForContext<MongoDbContext>();
 
         /// <summary>
-        ///     The <see cref="MongoDbContextOptions" /> instance for this context
+        ///     The <see cref="MongoClient" /> instance, available to subclasses
         /// </summary>
-        protected readonly MongoDbContextOptions? _options;
+        protected MongoClient Client => BuildClient();
+
+        /// <summary>
+        ///     The <see cref="MongoClientSettings" /> instance, available to subclasses
+        /// </summary>
+        protected MongoClientSettings ClientSettings => BuildClientSettings();
+
+        /// <summary>
+        ///     Returns the <see cref="MongoDbContextOptions" /> currently in use
+        /// </summary>
+        protected MongoDbContextOptions DbContextOptions => BuildDbContextOptions();
 
         /// <summary>
         ///     The underlying <see cref="MongoClient" />
         /// </summary>
-        protected MongoClient? _client;
+        private MongoClient? _client;
 
         /// <summary>
         ///     The <see cref="MongoClientSettings" /> to use within this context
         /// </summary>
-        protected MongoClientSettings? _clientSettings;
+        private MongoClientSettings? _clientSettings;
+
+        /// <summary>
+        ///     The <see cref="MongoDbContextOptions" /> instance for this context
+        /// </summary>
+        private MongoDbContextOptions? _options;
+
 
         /// <summary>
         ///     Simple constructor that allows a host and database to be specified, along with a username and password
@@ -53,7 +69,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 .SetUser(user)
                 .SetPassword(password)
                 .Build();
-            BuildClientSettings();
         }
 
         /// <summary>
@@ -64,7 +79,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             _options = options;
-            BuildClientSettings();
         }
 
         /// <summary>
@@ -78,50 +92,89 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var builder = new MongoDbContextOptionsBuilder();
             configureAction(builder);
             _options = builder.Build();
-            BuildClientSettings();
+        }
+
+        /// <summary>
+        ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object
+        /// </summary>
+        /// <returns>An instance of <see cref="MongoClient" /></returns>
+        private MongoClient BuildClient()
+        {
+            lock (this)
+            {
+                return _client ??= new MongoClient(ClientSettings);
+            }
+        }
+
+        /// <summary>
+        ///     Checks whether we have a current instance of <see cref="MongoDbContextOptions" />, and if not (shouldn't happen)
+        ///     just creates one based on the default provided by <see cref="MongoDbContextOptionsBuilder" />
+        /// </summary>
+        /// <returns>An instance of <see cref="MongoDbContextOptions" /></returns>
+        private MongoDbContextOptions BuildDbContextOptions()
+        {
+            lock (this)
+            {
+                return _options ??= new MongoDbContextOptionsBuilder().Build();
+            }
         }
 
         /// <summary>
         ///     Takes the currently configured <see cref="MongoDbContextOptions" /> instance and uses them to create an instance of
         ///     <see cref="MongoClientSettings" /> which can then be used to access Mongo
         /// </summary>
-        protected void BuildClientSettings()
+        private MongoClientSettings BuildClientSettings()
         {
             Logging.MethodCall(_log);
-            Assertions.Checked<MongoDbContextException>(_options != null, "No context options have been set");
-            Logging.Verbose(_log, $"Building new client settings object from options: {_options}");
 
-            if (!ValidateContextOptions())
+            lock (this)
             {
-                throw Exceptions.LoggedException<MongoDbContextException>(_log, "Failed to validate context options - check log entries");
-            }
+                if (_clientSettings is not null)
+                {
+                    return _clientSettings;
+                }
 
-            _clientSettings ??= new MongoClientSettings();
+                Assertions.Checked<MongoDbContextException>(_options != null, "No context options have been set");
 
-            Logging.Verbose(_log, $"Setting client authentication type to {_options?.AuthenticationType}");
-            _clientSettings.Credential = _options?.AuthenticationType switch
-            {
-                MongoAuthenticationType.Basic => MongoCredential.CreateCredential(_options.AuthenticationDatabase, _options.User,
-                    _options.Password),
-                MongoAuthenticationType.X509Certificate => _options.User != null
-                    ? MongoCredential.CreateMongoX509Credential(_options.User)
-                    : MongoCredential.CreateMongoX509Credential(),
-                _ => _clientSettings.Credential
-            };
+                Logging.Verbose(_log, $"Building new client settings object from options: {_options}");
+                if (!ValidateContextOptions())
+                {
+                    throw Exceptions.LoggedException<MongoDbContextException>(_log,
+                        "Failed to validate context options - check log entries");
+                }
 
-            Logging.Verbose(_log, $"Setting the channel type to {_options?.ChannelType}");
-            if (_options?.ChannelType is MongoChannelType.Secure or MongoChannelType.SecureNoRevocationChecks)
-            {
-                _clientSettings.UseTls = true;
-                _clientSettings.SslSettings.ClientCertificates = _options?.ClientCertificates;
-                _clientSettings.SslSettings.CheckCertificateRevocation = _options?.ChannelType != MongoChannelType.SecureNoRevocationChecks;
-                _clientSettings.AllowInsecureTls = _options?.AllowSelfSignedCertificates ?? true;
-            }
+                _clientSettings ??= new MongoClientSettings();
 
-            if (_options?.ReplicaSet != null)
-            {
+                Logging.Verbose(_log, $"Setting client authentication type to {_options?.AuthenticationType}");
+                _clientSettings.Credential = _options?.AuthenticationType switch
+                {
+                    MongoAuthenticationType.Basic => MongoCredential.CreateCredential(_options.AuthenticationDatabase, _options.User,
+                        _options.Password),
+                    MongoAuthenticationType.X509Certificate => _options.User != null
+                        ? MongoCredential.CreateMongoX509Credential(_options.User)
+                        : MongoCredential.CreateMongoX509Credential(),
+                    _ => _clientSettings.Credential
+                };
+
+                Logging.Verbose(_log, $"Setting the channel type to {_options?.ChannelType}");
+                if (_options?.ChannelType is MongoChannelType.Secure or MongoChannelType.SecureNoRevocationChecks)
+                {
+                    _clientSettings.UseTls = true;
+                    _clientSettings.SslSettings.ClientCertificates = _options?.ClientCertificates;
+                    _clientSettings.SslSettings.CheckCertificateRevocation =
+                        _options?.ChannelType != MongoChannelType.SecureNoRevocationChecks;
+                    _clientSettings.AllowInsecureTls = _options?.AllowSelfSignedCertificates ?? true;
+                }
+
+                if (_options?.ReplicaSet is null)
+                {
+                    return _clientSettings;
+                }
+
                 Logging.Verbose(_log, $"Setting the replica set name is {_options.ReplicaSet}");
                 _clientSettings.ReplicaSetName = _options.ReplicaSet;
+
+                return _clientSettings;
             }
         }
 
@@ -129,7 +182,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Checks/validates the currently configured set of <see cref="MongoDbContextOptions" />
         /// </summary>
         /// <returns><code>true</code> if the options are OK, <code>false</code> otherwise, logging the details</returns>
-        protected bool ValidateContextOptions()
+        private bool ValidateContextOptions()
         {
             Logging.MethodCall(_log);
 
@@ -144,50 +197,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 Logging.Warning(_log, "No explicit authentication database specified, will used the configured URI database instead");
             }
 
-            if (_options?.AuthenticationType == MongoAuthenticationType.X509Certificate
-                && _options?.AuthenticationCertificate == null)
+            switch (_options?.AuthenticationType)
             {
-                Logging.Error(_log, "Certificate authentication selected, but no certificate provided");
-                return false;
+                case MongoAuthenticationType.X509Certificate when _options?.AuthenticationCertificate == null:
+                    Logging.Error(_log, "Certificate authentication selected, but no certificate provided");
+                    return false;
+                case MongoAuthenticationType.Basic when _options?.User == null || _options.Password == null:
+                    Logging.Warning(_log, "Basic authentication selected, but missing username or password");
+                    return false;
+                default:
+                    return true;
             }
-
-            if (_options?.AuthenticationType == MongoAuthenticationType.Basic
-                && (_options?.User == null || _options.Password == null))
-            {
-                Logging.Warning(_log, "Basic authentication selected, but missing username or password");
-                return false;
-            }
-
-            return true;
-        }
-
-    }
-
-    #region Exceptions
-
-    /// <summary>
-    ///     A general exception class which may be thrown during various failure modes within the <see cref="MongoDbContext" />
-    ///     class logic
-    /// </summary>
-    public class MongoDbContextException : Exception
-    {
-        /// <summary>
-        ///     Overridden constructor, just calls base
-        /// </summary>
-        /// <param name="message">The message for the exception</param>
-        public MongoDbContextException(string? message) : base(message)
-        {
-        }
-
-        /// <summary>
-        ///     Overridden constructor, just calls base
-        /// </summary>
-        /// <param name="message">An optional message for the exception</param>
-        /// <param name="innerException">An optional nested exception</param>
-        public MongoDbContextException(string? message, Exception? innerException) : base(message, innerException)
-        {
         }
     }
-
-    #endregion
 }

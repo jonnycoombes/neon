@@ -1,20 +1,8 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Types;
@@ -23,34 +11,12 @@ using JCS.Neon.Glow.Types;
 
 namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
-    #region Exceptions
-
-    public class AsyncRepositoryException : Exception
-    {
-        public AsyncRepositoryException()
-        {
-        }
-
-        protected AsyncRepositoryException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        public AsyncRepositoryException(string? message) : base(message)
-        {
-        }
-
-        public AsyncRepositoryException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-    }
-
-    #endregion
-
     // TODO Add repository configuration enums, options and options builder
 
 
     /// <summary>
-    ///     General repository interface for storing and manipulating items of type V which derive from <see cref="KeyedEntity{T}" />
+    ///     General repository interface for storing and manipulating items of type V which derive from
+    ///     <see cref="KeyedEntity{T}" />
     ///     with key type K.
     /// </summary>
     /// <typeparam name="K">Key type</typeparam>

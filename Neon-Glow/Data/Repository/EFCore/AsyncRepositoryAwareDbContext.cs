@@ -1,18 +1,6 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
-using System.Runtime.Serialization;
 using JCS.Neon.Glow.Statics;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -22,38 +10,16 @@ using Serilog;
 namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
-    ///     Exception type specific to <see cref="IAsyncRepository{K,V}" /> aware contexts
-    /// </summary>
-
-    #region Exceptions
-
-    public class AsyncRepositoryAwareDbContextException : System.Exception
-    {
-        public AsyncRepositoryAwareDbContextException()
-        {
-        }
-
-        protected AsyncRepositoryAwareDbContextException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        public AsyncRepositoryAwareDbContextException(string? message) : base(message)
-        {
-        }
-
-        public AsyncRepositoryAwareDbContextException(string? message, System.Exception? innerException) : base(message, innerException)
-        {
-        }
-    }
-
-    #endregion
-
-    /// <summary>
     ///     A <see cref="DbContext" /> that understands how to create instances of <see cref="IAsyncRepository{K,V}" />
     ///     based on its model elements
     /// </summary>
     public abstract class AsyncRepositoryAwareDbContext : DbContext
     {
+        /// <summary>
+        ///     <see cref="ILogger" /> instance
+        /// </summary>
+        private static ILogger _log => Log.ForContext(typeof(AsyncRepositoryAwareDbContext));
+
         /// <summary>
         ///     Default protected constructor which just
         /// </summary>
@@ -62,11 +28,6 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         {
             Logging.MethodCall(_log);
         }
-
-        /// <summary>
-        ///     <see cref="ILogger" /> instance
-        /// </summary>
-        private static ILogger _log => Log.ForContext(typeof(AsyncRepositoryAwareDbContext));
 
 
         /// <summary>

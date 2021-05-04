@@ -9,12 +9,11 @@
     All rights reserved.
 
  */
-﻿#region
 
+#region
 using System;
 using System.Net;
 using Serilog;
-
 #endregion
 
 namespace JCS.Neon.Glow.Statics.Network

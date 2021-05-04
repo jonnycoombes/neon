@@ -14,6 +14,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
 using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 
@@ -35,7 +36,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Trait("Category", "Cryptography")]
         public void LoadFromInvalidPath()
         {
-            Assert.Throws<X509Certificate.X509CertificateHelperException>(() =>
+            Assert.Throws<X509CertificateException>(() =>
             {
                 var cert = X509Certificate.ImportFromFile("non-sense path", () => "whatever");
             });
@@ -55,14 +56,14 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Trait("Category", "Cryptography")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            Assert.Throws<X509Certificate.X509CertificateHelperException>(() => { LoadTestCertificate("bollocks"); });
+            Assert.Throws<X509CertificateException>(() => { LoadTestCertificate("bollocks"); });
         }
 
         [Fact(DisplayName = "Import from an empty byte array must fail with an exception")]
         [Trait("Category", "Cryptography")]
         public void LoadFromInvalidByteArray()
         {
-            Assert.Throws<X509Certificate.X509CertificateHelperException>(() =>
+            Assert.Throws<X509CertificateException>(() =>
             {
                 X509Certificate.ImportFromByteArray(new byte[] { }, () => "whatever");
             });

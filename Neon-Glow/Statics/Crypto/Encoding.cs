@@ -18,20 +18,6 @@ using Serilog;
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
-    #region Exceptions
-
-    public class EncodingException : System.Exception
-    {
-        public EncodingException(string? message) : base(message)
-        {
-        }
-
-        public EncodingException(string? message, System.Exception? innerException) : base(message, innerException)
-        {
-        }
-    }
-
-    #endregion
 
     /// <summary>
     ///     An enumeration of encodings used to transcode between strings and byte arrays

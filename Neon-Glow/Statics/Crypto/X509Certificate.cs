@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing methods for dealing with X509 certificates
     /// </summary>
-    public static class X509Certificate
+    public static partial class X509Certificate
     {
         /// <summary>
         ///     Static logger
@@ -39,7 +39,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <param name="exportable"></param>
         /// <returns>A valid <see cref="X509Certificate2" /></returns>
-        /// <exception cref="X509CertificateHelperException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
+        /// <exception cref="X509CertificateException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
         public static X509Certificate2 ImportFromFile(string source, Func<string> pf, bool exportable = true)
         {
             Logging.MethodCall(_log);
@@ -47,7 +47,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             if (!File.Exists(source))
             {
                 Logging.Warning(_log, "Specified source for x509 certificate doesn't exist, or can't be accessed");
-                throw Exceptions.LoggedException<X509CertificateHelperException>(_log,
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
                     $"Specified source PKCS12 file doesn't exist, or isn't accessible: {source}");
             }
 
@@ -66,7 +66,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exceptions.LoggedException<X509CertificateHelperException>(_log,
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Import failed, see inner exception", ex);
             }
         }
@@ -93,7 +93,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="pf">A lambda which returns a passphrase which will be used to decrypt any private key material</param>
         /// <param name="exportable">Whether or not the private key should be exportable or not</param>
         /// <returns></returns>
-        /// <exception cref="X509CertificateHelperException">Thrown if the import fails</exception>
+        /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
         public static X509Certificate2 ImportFromByteArray(byte[] source, Func<string> pf, bool exportable = true)
         {
             Logging.MethodCall(_log);
@@ -103,7 +103,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exceptions.LoggedException<X509CertificateHelperException>(_log,
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Import failed, see inner exception", ex);
             }
         }
@@ -116,7 +116,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="passphrase">The passphrase to be used to decrypt any private key material</param>
         /// <param name="exportable">Whether the private key should be marked as exportable</param>
         /// <returns></returns>
-        /// <exception cref="X509CertificateHelperException">Thrown if the import fails</exception>
+        /// <exception cref="X509CertificateException">Thrown if the import fails</exception>
         public static X509Certificate2 ImportFromByteArray(byte[] source, string passphrase, bool exportable = true)
         {
             Logging.MethodCall(_log);
@@ -129,7 +129,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="certificate">The certificate to export</param>
         /// <param name="pf">Function that will return a passphrase to use during the export</param>
         /// <returns></returns>
-        /// <exception cref="X509CertificateHelperException">If an error occurs during the export</exception>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
         public static byte[] ExportToByteArray(X509Certificate2 certificate, Func<string> pf)
         {
             Logging.MethodCall(_log);
@@ -139,7 +139,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exceptions.LoggedException<X509CertificateHelperException>(_log,
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Export failed, see inner exception", ex);
             }
         }
@@ -151,7 +151,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="certificate">The certificate to export</param>
         /// <param name="passphrase">The passphrase to use</param>
         /// <returns>A byte array which contains the PKCS12 encoding of the certificate and key material</returns>
-        /// <exception cref="X509CertificateHelperException">If an error occurs during the export</exception>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
         public static byte[] ExportToByteArray(X509Certificate2 certificate, string passphrase)
         {
             Logging.MethodCall(_log);
@@ -164,7 +164,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="path">The path to export to (e.g. certificate.pkcs12, certificate.pks)</param>
         /// <param name="certificate">The certificate to export</param>
         /// <param name="pf">Function that returns a passphrase</param>
-        /// <exception cref="X509CertificateHelperException">If an error occurs during the export</exception>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
         public static async Task ExportToFile(string path, X509Certificate2 certificate, Func<string> pf)
         {
             Logging.MethodCall(_log);
@@ -177,7 +177,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             }
             catch (System.Exception ex)
             {
-                throw Exceptions.LoggedException<X509CertificateHelperException>(_log,
+                throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Export failed, see inner exception", ex);
             }
         }
@@ -189,7 +189,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="path">The path to export to</param>
         /// <param name="certificate">The certificate to export</param>
         /// <param name="passphrase">The passphrase to use in order to secure key material</param>
-        /// <exception cref="X509CertificateHelperException">If an error occurs during the export</exception>
+        /// <exception cref="X509CertificateException">If an error occurs during the export</exception>
         public static Task ExportToFile(string path, X509Certificate2 certificate, string passphrase)
         {
             Logging.MethodCall(_log);
@@ -203,19 +203,5 @@ namespace JCS.Neon.Glow.Statics.Crypto
         {
         }
 
-        #region Exceptions
-
-        public class X509CertificateHelperException : System.Exception
-        {
-            public X509CertificateHelperException(string? message) : base(message)
-            {
-            }
-
-            public X509CertificateHelperException(string? message, System.Exception? innerException) : base(message, innerException)
-            {
-            }
-        }
-
-        #endregion
     }
 }

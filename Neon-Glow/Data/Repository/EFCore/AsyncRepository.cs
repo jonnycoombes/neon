@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -38,6 +27,11 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         where V : KeyedEntity<K>
     {
         /// <summary>
+        ///     <see cref="ILogger" /> instance
+        /// </summary>
+        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
+
+        /// <summary>
         ///     The underlying context instance
         /// </summary>
         private readonly AsyncRepositoryAwareDbContext _context;
@@ -52,11 +46,6 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             _context = context;
         }
 
-        /// <summary>
-        ///     <see cref="ILogger" /> instance
-        /// </summary>
-        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
-
         /// <inheritdoc cref="IAsyncRepository{K,V}.Count" />
         public async Task<int> Count(CancellationToken cancellationToken = default)
         {
@@ -65,7 +54,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             {
                 return await _context.Set<V>().CountAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -79,7 +68,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             {
                 return await _context.Set<V>().Where(expression).CountAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -93,7 +82,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             {
                 return !(await SelectOne(v => v.Id.Equals(key), cancellationToken)).IsNone;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -153,7 +142,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 return await _context.Set<V>()
                     .Where(v => keys.Contains(v.Id)).ToArrayAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -171,7 +160,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 return await _context.Set<V>()
                     .Where(expression).ToArrayAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -194,7 +183,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             {
                 return _context.Set<V>().AsAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -210,7 +199,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 await _context.SaveChangesAsync(cancellationToken);
                 return entityEntry.Entity;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -231,7 +220,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 await _context.SaveChangesAsync(cancellationToken);
                 return newItems;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -255,7 +244,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 await _context.SaveChangesAsync(cancellationToken);
                 return item;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -271,7 +260,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 await _context.SaveChangesAsync(cancellationToken);
                 return items;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -286,7 +275,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 _context.Set<V>().Remove(item);
                 await _context.SaveChangesAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -301,7 +290,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 _context.Set<V>().RemoveRange(items);
                 await _context.SaveChangesAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw DbSpecificException(ex);
             }
@@ -313,7 +302,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         /// </summary>
         /// <param name="ex"></param>
         /// <exception cref="AsyncRepositoryException"></exception>
-        protected System.Exception DbSpecificException(System.Exception ex)
+        protected Exception DbSpecificException(Exception ex)
         {
             Logging.MethodCall(_log);
             switch (ex.InnerException)

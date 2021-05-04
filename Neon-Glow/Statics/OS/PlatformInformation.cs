@@ -9,12 +9,8 @@
     All rights reserved.
 
  */
-﻿#region
-
+#region
 using System.Runtime.InteropServices;
-
-// ReSharper disable InconsistentNaming
-
 #endregion
 
 namespace JCS.Neon.Glow.Statics.OS

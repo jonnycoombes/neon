@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing a bunch of methods for dealing with AES-based symmetric encryption
     /// </summary>
-    public static class SymmetricEncryption  
+    public static partial class SymmetricEncryption  
     {
         /// <summary>
         ///     Static logger for this class
@@ -304,20 +304,5 @@ namespace JCS.Neon.Glow.Statics.Crypto
                 throw Exceptions.LoggedException<SymmetricEncryptionException>(_log, "Stream-based encryption failed", ex);
             }
         }
-
-        #region Exceptions
-
-        public class SymmetricEncryptionException : Exception
-        {
-            public SymmetricEncryptionException(string? message) : base(message)
-            {
-            }
-
-            public SymmetricEncryptionException(string? message, Exception? innerException) : base(message, innerException)
-            {
-            }
-        }
-
-        #endregion
     }
 }
