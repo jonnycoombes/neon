@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing a bunch of methods for dealing with AES-based symmetric encryption
     /// </summary>
-    public static class SymmetricEncryption
+    public static class SymmetricEncryption  
     {
         /// <summary>
         ///     Static logger for this class

@@ -1,18 +1,8 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
@@ -27,11 +17,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// </summary>
     public enum MongoAuthenticationType
     {
-        /// <summary>
-        ///     No authentication.  Will only work against unprotected instances of Mongo - useful for test?
-        /// </summary>
-        Anonymous,
-
         /// <summary>
         ///     Basic authentication, using SCRAM (Salted Challenge Response Authentication Mechanism).  Username and password
         ///     required.
@@ -118,7 +103,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The <see cref="MongoAuthenticationType" /> to use
         /// </summary>
-        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Anonymous;
+        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Basic;
 
         /// <summary>
         ///     The <see cref="MongoChannelType" /> to use
@@ -129,6 +114,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Accesses a <see cref="MongoServerAddress" /> instance based on the current options
         /// </summary>
         public MongoServerAddress ServerAddress => BuildServerAddress();
+
+        /// <summary>
+        ///     Whether or not we allow self-signed certificates within the SSL layer
+        /// </summary>
+        public bool AllowSelfSignedCertificates { get; set; } = true;
 
         /// <summary>
         ///     A list of <see cref="MongoServerAddress" /> instances.  If this list is non-empty, then it is used to construct
@@ -230,6 +220,14 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _serverAddresses.Add(new MongoServerAddress(host));
         }
 
+        /// <summary>
+        ///     Overridden formatting member, just dumps the current options object as a JSON string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"{JsonSerializer.Serialize(this)}";
+        }
     }
 
     /// <summary>
@@ -403,6 +401,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoDbContextOptionsBuilder AddClientCertificate(X509Certificate certificate)
         {
             _options.AddClientCertificate(certificate);
+            return this;
+        }
+
+        /// <summary>
+        ///     Whether or not self-signed certificates are allowed within the SSL layer
+        /// </summary>
+        /// <param name="allow">A boolean</param>
+        /// <returns>The current <see cref="MongoDbContextOptionsBuilder" /> instance</returns>
+        public MongoDbContextOptionsBuilder SetAllowSelfSignedCertificates(bool allow)
+        {
+            _options.AllowSelfSignedCertificates = allow;
             return this;
         }
 
