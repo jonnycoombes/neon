@@ -41,10 +41,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -53,9 +53,9 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var decryptionResult = SymmetricEncryption.UnwrapAndDecrypt(encryptionResult, cert,
                 builder =>
                 {
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -73,18 +73,18 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             SymmetricAlgorithmOption algorithm)
         {
             var source = Passphrase.GenerateRandomPassphrase(
-                builder => { builder.SetRequiredLength(size); });
+                builder => { builder.RequiredLength(size); });
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetSymmetricAlgorithm(SymmetricAlgorithmOption.Aes);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.SymmetricAlgorithm(SymmetricAlgorithmOption.Aes);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -93,9 +93,9 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var decryptionResult = SymmetricEncryption.UnwrapAndDecrypt(encryptionResult, cert,
                 builder =>
                 {
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -117,10 +117,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -129,10 +129,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var decryptionResult = SymmetricEncryption.UnwrapAndDecrypt(encryptionResult, cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
@@ -149,17 +149,17 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             SymmetricAlgorithmOption algorithm)
         {
             var source = Passphrase.GenerateRandomPassphrase(
-                builder => { builder.SetRequiredLength(size); });
+                builder => { builder.RequiredLength(size); });
             var cert = LoadTestCertificate();
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyWrappingOption(KeyWrappingOption.WrapWithPublicKey);
                 });
 
             // things shouldn't get smaller when encrypting
@@ -168,10 +168,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var decryptionResult = SymmetricEncryption.UnwrapAndDecrypt(encryptionResult, cert,
                 builder =>
                 {
-                    builder.SetSymmetricAlgorithm(algorithm);
-                    builder.SetCipherMode(CipherMode.CBC);
-                    builder.SetKeySize(keySize);
-                    builder.SetKeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
+                    builder.SymmetricAlgorithm(algorithm);
+                    builder.CipherMode(CipherMode.CBC);
+                    builder.KeySize(keySize);
+                    builder.KeyUnwrappingOption(KeyUnwrappingOption.UnwrapWithPrivateKey);
                 });
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);

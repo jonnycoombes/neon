@@ -40,13 +40,13 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var options = new PassphraseGenerationOptions {RequiredLength = length};
             if (length >= PassphraseGenerationOptions.MinimumPasswordLength)
             {
-                var passphrase = Passphrase.GenerateRandomPassphrase(builder => { builder.SetRequiredLength(length); });
+                var passphrase = Passphrase.GenerateRandomPassphrase(builder => { builder.RequiredLength(length); });
                 Assert.Equal(length, passphrase.Length);
             }
             else
             {
                 Assert.Throws<PassphraseException>(() => Passphrase.GenerateRandomPassphrase(
-                    builder => { builder.SetRequiredLength(length); }));
+                    builder => { builder.RequiredLength(length); }));
             }
         }
 
@@ -66,7 +66,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             for (var i = 0; i < sampleCount; i++)
             {
                 var passphrase = Passphrase.GenerateRandomPassphrase(
-                    builder => { builder.SetRequiredLength(passphraseLength); });
+                    builder => { builder.RequiredLength(passphraseLength); });
                 Assert.DoesNotContain(cache.Keys, k => k.Equals(passphrase));
                 cache.Add(passphrase, null);
             }

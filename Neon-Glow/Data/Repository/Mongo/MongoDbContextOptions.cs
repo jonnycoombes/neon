@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -348,7 +359,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="scheme">A value from the <see cref="ConnectionStringScheme" /> enumeration</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetScheme(ConnectionStringScheme scheme)
+        public MongoDbContextOptionsBuilder Scheme(ConnectionStringScheme scheme)
         {
             _options.ServerScheme = scheme;
             return this;
@@ -359,7 +370,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="host">A host name (note that this isn't checked for validity</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetHost(string host)
+        public MongoDbContextOptionsBuilder Host(string host)
         {
             _options.Host = host;
             return this;
@@ -370,7 +381,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="port">A port number</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetPort(int port)
+        public MongoDbContextOptionsBuilder Port(int port)
         {
             _options.Port = port;
             return this;
@@ -381,7 +392,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="databaseName">The name of the database to mount.  Will be created if it doesn't already exist</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetDatabase(string databaseName)
+        public MongoDbContextOptionsBuilder Database(string databaseName)
         {
             _options.Database = databaseName;
             return this;
@@ -392,7 +403,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="name">A string containing the required application name</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetApplication(string name)
+        public MongoDbContextOptionsBuilder Application(string name)
         {
             _options.Application = name;
             return this;
@@ -404,7 +415,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="host">The hostname of the server</param>
         /// <param name="port">The port number of the server</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder AddServerAddress(string host, int port)
+        public MongoDbContextOptionsBuilder ServerAddress(string host, int port)
         {
             _options.AddServerAddress(host, port);
             return this;
@@ -415,7 +426,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="host">The hostname of the server</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder AddServerAddress(string host)
+        public MongoDbContextOptionsBuilder ServerAddress(string host)
         {
             _options.AddServerAddress(host);
             return this;
@@ -426,7 +437,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="authenticationType">A value from the <see cref="MongoAuthenticationType" /> enumeration</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetAuthenticationType(MongoAuthenticationType authenticationType)
+        public MongoDbContextOptionsBuilder AuthenticationType(MongoAuthenticationType authenticationType)
         {
             _options.AuthenticationType = authenticationType;
             return this;
@@ -437,7 +448,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="channelType">A valid value from the <see cref="MongoChannelType" /> enumeration</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetChannelType(MongoChannelType channelType)
+        public MongoDbContextOptionsBuilder ChannelType(MongoChannelType channelType)
         {
             _options.ChannelType = channelType;
             return this;
@@ -448,7 +459,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="username">A user name</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetUser(string username)
+        public MongoDbContextOptionsBuilder User(string username)
         {
             _options.User = username;
             return this;
@@ -459,7 +470,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="password">A password</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetPassword(string password)
+        public MongoDbContextOptionsBuilder Password(string password)
         {
             _options.Password = password;
             return this;
@@ -470,7 +481,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="authenticationDatabase">A database name to use for authentication</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetAuthenticationDatabase(string authenticationDatabase)
+        public MongoDbContextOptionsBuilder AuthenticationDatabase(string authenticationDatabase)
         {
             _options.AuthenticationDatabase = authenticationDatabase;
             return this;
@@ -481,9 +492,23 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="certificate">A <see cref="X509Certificate" /></param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder AddClientCertificate(X509Certificate certificate)
+        public MongoDbContextOptionsBuilder ClientCertificate(X509Certificate certificate)
         {
             _options.AddClientCertificate(certificate);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a sequence of client certificates to the options
+        /// </summary>
+        /// <param name="certificates">An series of <see cref="X509Certificate"/> instances to add</param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder ClientCertificates(IEnumerable<X509Certificate> certificates)
+        {
+            foreach (var certificate in certificates)
+            {
+                _options.AddClientCertificate(certificate);
+            }
             return this;
         }
 
@@ -492,7 +517,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="allow">A boolean</param>
         /// <returns>The current <see cref="MongoDbContextOptionsBuilder" /> instance</returns>
-        public MongoDbContextOptionsBuilder SetAllowSelfSignedCertificates(bool allow)
+        public MongoDbContextOptionsBuilder AllowSelfSignedCertificates(bool allow)
         {
             _options.AllowSelfSignedCertificates = allow;
             return this;
@@ -503,7 +528,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="replicaSetName">The name of a replica set</param>
         /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetReplicaSet(string replicaSetName)
+        public MongoDbContextOptionsBuilder ReplicaSet(string replicaSetName)
         {
             _options.ReplicaSet = replicaSetName;
             return this;

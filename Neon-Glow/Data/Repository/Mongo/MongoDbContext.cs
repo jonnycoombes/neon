@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -42,11 +53,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             Options = new MongoDbContextOptionsBuilder()
-                .SetHost(hostName)
-                .SetDatabase(databaseName)
-                .SetAuthenticationType(MongoAuthenticationType.Basic)
-                .SetUser(user)
-                .SetPassword(password)
+                .Host(hostName)
+                .Database(databaseName)
+                .AuthenticationType(MongoAuthenticationType.Basic)
+                .User(user)
+                .Password(password)
                 .Build();
         }
 

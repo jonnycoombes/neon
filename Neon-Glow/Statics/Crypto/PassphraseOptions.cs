@@ -85,7 +85,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// </summary>
         /// <param name="length">A non-zero length</param>
         /// <returns>The current builder instance</returns>
-        public PassphraseGenerationOptionsBuilder SetRequiredLength(int length)
+        public PassphraseGenerationOptionsBuilder RequiredLength(int length)
         {
             _options.RequiredLength = length;
             return this;
@@ -96,7 +96,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// </summary>
         /// <param name="b"><code>true</code> if passphrases should be base64 encoded, <code>false</code> otherwise</param>
         /// <returns>The current builder instance</returns>
-        public PassphraseGenerationOptionsBuilder SetBase64Encoding(bool b)
+        public PassphraseGenerationOptionsBuilder Base64Encoding(bool b)
         {
             _options.EncodeBase64 = b;
             return this;
