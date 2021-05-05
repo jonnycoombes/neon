@@ -1,23 +1,16 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
+using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
+using Serilog;
 
 #endregion
 
@@ -75,6 +68,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The default host name used to connect through to a Mongo DB instance
         /// </summary>
         public const string DefaultServerHost = "localhost";
+
+        /// <summary>
+        ///     Static logger for this class
+        /// </summary>
+        private static readonly ILogger _log = Log.ForContext<MongoDbContextOptions>();
 
         /// <summary>
         ///     The default application name value
@@ -150,12 +148,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Returns the currently configured list of possible client certificates
         /// </summary>
         public IEnumerable<X509Certificate> ClientCertificates => BuildClientCertificates();
-
-        /// <summary>
-        ///     An optional <see cref="X509Certificate" /> instance to use when the selected authentication type is
-        ///     <see cref="MongoAuthenticationType.X509Certificate" />
-        /// </summary>
-        public X509Certificate? AuthenticationCertificate { get; set; }
 
         /// <summary>
         ///     An optional authentication database name
@@ -238,6 +230,97 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public override string ToString()
         {
             return $"{JsonSerializer.Serialize(this)}";
+        }
+
+        /// <summary>
+        ///     Takes a validation function, and will then attempt to convert the current <see cref="MongoDbContextOptions" />
+        ///     instance to an instance of <see cref="MongoClientSettings" />
+        /// </summary>
+        /// <param name="validationFunc">
+        ///     A function that will be passed the current instance of <see cref="MongoDbContextOptions" /> and should return true
+        ///     or false
+        /// </param>
+        /// <returns>A new instance of <see cref="MongoClientSettings" /></returns>
+        /// <exception cref="MongoDbContextException">Thrown if validation of the current options fails</exception>
+        public MongoClientSettings BuildClientSettings(Func<MongoDbContextOptions, bool>? validationFunc = null)
+        {
+            Logging.MethodCall(_log);
+
+            var clientSettings = new MongoClientSettings();
+            validationFunc ??= ValidateOptions;
+            if (validationFunc(this))
+            {
+                if (ReplicaSet is not null)
+                {
+                    clientSettings.ReplicaSetName = ReplicaSet;
+                }
+
+                if (AuthenticationType == MongoAuthenticationType.Basic)
+                {
+                    clientSettings.Credential = MongoCredential.CreateCredential(AuthenticationDatabase, User, Password);
+                }
+                else
+                {
+                    clientSettings.Credential = User is not null
+                        ? MongoCredential.CreateMongoX509Credential(User)
+                        : MongoCredential.CreateMongoX509Credential();
+                }
+
+                if (ChannelType is MongoChannelType.Secure or MongoChannelType.SecureNoRevocationChecks)
+                {
+                    clientSettings.UseTls = true;
+                    clientSettings.SslSettings.ClientCertificates = ClientCertificates;
+                    clientSettings.SslSettings.CheckCertificateRevocation = ChannelType is not MongoChannelType.SecureNoRevocationChecks;
+                    clientSettings.AllowInsecureTls = AllowSelfSignedCertificates;
+                }
+            }
+            else
+            {
+                throw Exceptions.LoggedException<MongoDbContextException>(_log, $"An invalid set of options have been specified: {this}");
+            }
+
+            return clientSettings;
+        }
+
+        /// <summary>
+        ///     Static function used in order to validate the current <see cref="MongoDbContextOptions" />
+        /// </summary>
+        /// <param name="options">The <see cref="MongoDbContextOptions" /> instance to be validated</param>
+        /// <returns><code>true</code> or <code>false</code> depending on whether the options look to be valid</returns>
+        private static bool ValidateOptions(MongoDbContextOptions options)
+        {
+            Logging.MethodCall(_log);
+            if (options.Database is null)
+            {
+                Logging.Error(_log, "A valid database hasn't been specified");
+                return false;
+            }
+
+            if (options.AuthenticationDatabase is null)
+            {
+                Logging.Warning(_log, "No explicit authentication database specified");
+            }
+
+            switch (options.AuthenticationType)
+            {
+                case MongoAuthenticationType.Basic:
+                    if (options.User is null || options.Password is null)
+                    {
+                        Logging.Error(_log, "Null usernames or passwords are not allowed");
+                        return false;
+                    }
+
+                    break;
+                default:
+                    if (!options.ClientCertificates.Any())
+                    {
+                        Logging.Warning(_log, "x509 authentication selected, but no client certificates supplied");
+                    }
+
+                    break;
+            }
+
+            return true;
         }
     }
 
@@ -390,17 +473,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoDbContextOptionsBuilder SetAuthenticationDatabase(string authenticationDatabase)
         {
             _options.AuthenticationDatabase = authenticationDatabase;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the X509 certificate to be used for authentication
-        /// </summary>
-        /// <param name="certificate">A <see cref="X509Certificate" /> instance</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder SetAuthenticationCertificate(X509Certificate certificate)
-        {
-            _options.AuthenticationCertificate = certificate;
             return this;
         }
 

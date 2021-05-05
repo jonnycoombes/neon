@@ -1,14 +1,9 @@
-/*
+#region
 
-    Copyright 2013-2021 © JCS Software Limited
+using MongoDB.Driver;
 
-    Author: Jonny Coombes
+#endregion
 
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 namespace JCS.Neon.Glow.Data.Repository.Mongo
 {
     /// <summary>
@@ -16,5 +11,19 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// </summary>
     public interface IMongoDbContext
     {
+        /// <summary>
+        ///     The <see cref="MongoClient" /> currently being used by the context
+        /// </summary>
+        public MongoClient Client { get; }
+
+        /// <summary>
+        ///     The currently configured set of <see cref="MongoDbContextOptions" /> being used by the context
+        /// </summary>
+        public MongoDbContextOptions Options { get; }
+
+        /// <summary>
+        ///     The bound <see cref="IMongoDatabase" /> being used by the context
+        /// </summary>
+        public IMongoDatabase Database { get; }
     }
 }
