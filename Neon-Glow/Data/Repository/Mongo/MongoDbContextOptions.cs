@@ -230,7 +230,14 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{JsonSerializer.Serialize(this)}";
+            if (Password is not null)
+            {
+                return $"{JsonSerializer.Serialize(this)}".Replace(Password, "XXXXXXXXX");
+            }
+            else
+            {
+                return $"{JsonSerializer.Serialize(this)}";
+            }
         }
 
         /// <summary>
