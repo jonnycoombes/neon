@@ -41,6 +41,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                     .Scheme(ConnectionStringScheme.MongoDB)
                     .Database("neon-glow-test")
                     .AuthenticationDatabase("admin")
+                    .Application("neon-glow")
                     .User("root")
                     .Password("root");
             });
