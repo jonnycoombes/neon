@@ -73,7 +73,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Builder for configuration options
     /// </summary>
-    public class PassphraseGenerationOptionsBuilder : Builder<PassphraseGenerationOptions>
+    public class PassphraseGenerationOptionsBuilder : IBuilder<PassphraseGenerationOptions>
     {
         /// <summary>
         ///     The actual <see cref="PassphraseGenerationOptions" /> instance

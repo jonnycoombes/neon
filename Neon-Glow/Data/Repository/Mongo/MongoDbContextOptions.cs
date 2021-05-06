@@ -338,7 +338,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Builder class for <see cref="MongoDbContextOptions" />
     /// </summary>
-    public class MongoDbContextOptionsBuilder : Builder<MongoDbContextOptions>
+    public class MongoDbContextOptionsBuilder : IBuilder<MongoDbContextOptions>
     {
         /// <summary>
         ///     The actual <see cref="MongoDbContextOptions" /> instance

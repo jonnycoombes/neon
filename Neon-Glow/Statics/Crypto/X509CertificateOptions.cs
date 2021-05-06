@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Builder class for <see cref="X509CertificateGenerationOptions" />
     /// </summary>
-    public class X509CertificateGenerationOptionsBuilder : Builder<X509CertificateGenerationOptions>
+    public class X509CertificateGenerationOptionsBuilder : IBuilder<X509CertificateGenerationOptions>
     {
         /// <summary>
         ///     Builds a new <see cref="X509CertificateGenerationOptions" /> instance

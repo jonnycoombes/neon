@@ -137,7 +137,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Builder for encryption options
     /// </summary>
-    public class SymmetricEncryptionOptionsBuilder : Builder<SymmetricEncryptionOptions>
+    public class SymmetricEncryptionOptionsBuilder : IBuilder<SymmetricEncryptionOptions>
     {
         /// <summary>
         ///     The actual options

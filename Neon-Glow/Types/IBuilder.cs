@@ -14,7 +14,7 @@ namespace JCS.Neon.Glow.Types
     /// <summary>
     /// Simple interface which should be defined for classes implementing the builder pattern
     /// </summary>
-    public interface Builder<out T>
+    public interface IBuilder<out T>
     {
         /// <summary>
         /// Builds the target type
