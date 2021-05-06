@@ -9,17 +9,20 @@
     All rights reserved.
 
  */
-﻿#region
+ #region
 
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using JCS.Neon.Glow.Console;
 using JCS.Neon.Glow.Types;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Events;
 using File = JCS.Neon.Glow.Statics.IO.File;
 using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
+using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -40,20 +43,21 @@ namespace JCS.Neon.Glow.Test
         /// <summary>
         ///     Default constructor
         /// </summary>
-        protected TestBase()
+        public TestBase(ITestOutputHelper output)
         {
             LoadConfiguration();
-            ConfigureLogging();
+            ConfigureLogging(output);
         }
 
         /// <summary>
         ///     Configures the logging for tests, based on the current test configuration
         /// </summary>
-        private void ConfigureLogging()
+        private void ConfigureLogging(ITestOutputHelper output)
         {
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(_configuration)
+                .MinimumLevel.Verbose() 
                 .Enrich.WithMachineName()
+                .WriteTo.TestOutput(output, LogEventLevel.Verbose)
                 .CreateLogger();
             _log = Log.ForContext(typeof(TestBase));
         }

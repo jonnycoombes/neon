@@ -17,6 +17,7 @@ using JCS.Neon.Glow.Data.Repository.EFCore;
 using JCS.Neon.Glow.Types;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
     [Trait("Category", "Data:EFCore")]
     public class AsyncRepositoryTests : EFCoreTestBase
     {
-        public AsyncRepositoryTests(ITestOutputHelper outputHelperHelper) : base(outputHelperHelper)
+        public AsyncRepositoryTests(ITestOutputHelper output) : base(output)
         {
         }
 

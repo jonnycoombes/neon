@@ -14,6 +14,8 @@
 using JCS.Neon.Glow.Statics.Crypto;
 using JCS.Neon.Glow.Types.Extensions;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -89,6 +91,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             var encoded = s.Base64UrlEncode(encoding);
             var decoded = encoded.Base64UrlDecode(encoding);
             Assert.Equal(original, decoded);
+        }
+
+        public EncodingTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

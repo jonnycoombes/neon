@@ -14,6 +14,8 @@
 using System.Text;
 using JCS.Neon.Glow.Types.Extensions;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -70,6 +72,10 @@ namespace JCS.Neon.Glow.Test.Types.Extensions
                 Assert.Null(tail);
             else
                 Assert.NotNull(tail);
+        }
+
+        public ByteArrayTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

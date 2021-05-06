@@ -14,6 +14,8 @@
 using System;
 using JCS.Neon.Glow.Data.Repository.Mongo;
 using MongoDB.Driver;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -41,6 +43,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         ///     Nothing here to currently dispose...
         /// </summary>
         public void Dispose()
+        {
+        }
+
+        protected MongoTestBase(ITestOutputHelper output) : base(output)
         {
         }
     }

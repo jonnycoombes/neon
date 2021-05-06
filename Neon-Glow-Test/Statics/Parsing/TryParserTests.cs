@@ -14,6 +14,8 @@
 using System;
 using JCS.Neon.Glow.Statics.Parsing;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -86,6 +88,10 @@ namespace JCS.Neon.Glow.Test.Statics.Parsing
         public void ParseInvalidGuids(string src)
         {
             Assert.True(TryParsers.TryParseGuid(src).IsNone);
+        }
+
+        public DateAndTimeTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

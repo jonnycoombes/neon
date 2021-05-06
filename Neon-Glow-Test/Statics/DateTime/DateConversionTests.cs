@@ -15,6 +15,8 @@ using JCS.Neon.Glow.Types;
 using NodaTime;
 using NodaTime.Extensions;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace JCS.Neon.Glow.Test.Statics.DateTime
 {
@@ -52,6 +54,10 @@ namespace JCS.Neon.Glow.Test.Statics.DateTime
                 time => time,
                 () => new LocalDateTime());
             Assert.True(parsed.Date.Equals(localDateTime.Date));
-        } 
+        }
+
+        public DateConversionTests(ITestOutputHelper output) : base(output)
+        {
+        }
     }
 }

@@ -15,6 +15,8 @@ using System;
 using System.Runtime.InteropServices;
 using JCS.Neon.Glow.Statics.OS;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -39,6 +41,10 @@ namespace JCS.Neon.Glow.Test.Statics.OS
             if (PlatformInformation.IsWindows) Assert.True(RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
             if (PlatformInformation.IsOSX) Assert.True(RuntimeInformation.IsOSPlatform(OSPlatform.OSX));
             if (PlatformInformation.IsFreeBSD) Assert.True(RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD));
+        }
+
+        public PlatformInformationTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

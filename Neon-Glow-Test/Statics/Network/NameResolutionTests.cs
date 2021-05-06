@@ -14,6 +14,8 @@
 using System;
 using JCS.Neon.Glow.Statics.Network;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -36,6 +38,10 @@ namespace JCS.Neon.Glow.Test.Statics.Network
         {
             var hostName = NameResolution.GetCurrentHostName();
             Assert.NotNull(hostName);
+        }
+
+        public NameResolutionTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

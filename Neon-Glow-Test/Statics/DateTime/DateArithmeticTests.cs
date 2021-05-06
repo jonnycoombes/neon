@@ -15,6 +15,8 @@ using System;
 using JCS.Neon.Glow.Statics.DateTime;
 using NodaTime;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -89,6 +91,9 @@ namespace JCS.Neon.Glow.Test.Statics.DateTime
             var count = intervals.Length;
             Assert.Equal(3, count);
         }
-        
+
+        public DateArithmeticTests(ITestOutputHelper output) : base(output)
+        {
+        }
     }
 }

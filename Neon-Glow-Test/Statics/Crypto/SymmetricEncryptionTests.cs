@@ -14,6 +14,8 @@
 using System.Security.Cryptography;
 using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 using Encoding = System.Text.Encoding;
 
 #endregion
@@ -176,6 +178,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
 
             var decodedResult = Encoding.UTF8.GetString(decryptionResult);
             Assert.Equal(decodedResult, source);
+        }
+
+        public SymmetricEncryptionTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

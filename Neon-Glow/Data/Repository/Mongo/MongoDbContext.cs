@@ -1,17 +1,8 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using JCS.Neon.Glow.Statics;
 using MongoDB.Driver;
 using Serilog;
@@ -87,13 +78,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Options = builder.Build();
         }
 
-        /// <inheritdoc cref="IMongoDbContext.Client"/>
+        /// <inheritdoc cref="IMongoDbContext.Client" />
         public MongoClient Client => ResolveClient();
 
-        /// <inheritdoc cref="IMongoDbContext.Options"/>
+        /// <inheritdoc cref="IMongoDbContext.Options" />
         public MongoDbContextOptions Options { get; }
-        
-        /// <inheritdoc cref="IMongoDbContext.Database"/>
+
+        /// <inheritdoc cref="IMongoDbContext.Database" />
         public IMongoDatabase Database => ResolveDatabase();
 
         /// <summary>
@@ -109,14 +100,49 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///     Checks whether we currently have a database reference, and if not performs the necessary setup and binding
-        ///     operations in order
-        ///     to get a valid reference
+        ///     Function which checks whether a given database currently exists
+        /// </summary>
+        /// <param name="databaseName">The name of the database to check for</param>
+        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        private bool DatabaseExists(string databaseName)
+        {
+            return Client
+                .ListDatabaseNames()
+                .ToList()
+                .Any(s => s == databaseName);
+        }
+
+        /// <summary>
+        ///     Function which checks whether a given collection currently exists
+        /// </summary>
+        /// <param name="collectionName">The name of the collection</param>
+        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        private bool CollectionExists(string collectionName)
+        {
+            return Database.ListCollectionNames()
+                .ToList()
+                .Any(s => s == collectionName);
+        }
+
+        /// <summary>
+        ///     Checks whether we currently have a database reference, and if not performs the necessary setup and bind operations
+        ///     in order to get a valid reference
         /// </summary>
         /// <returns>A bound instance of <see cref="IMongoDatabase" /></returns>
-        private IMongoDatabase ResolveDatabase()
+        private  IMongoDatabase ResolveDatabase()
         {
-            return null;
+            Logging.MethodCall(_log);
+            Assertions.Checked<MongoDbContextException>(Options.Database != null,
+                "No database name has been specified");
+            if (!DatabaseExists(Options.Database!))
+            {
+                Logging.Verbose(_log,
+                    $"Required database \"{Options.Database}\" doesn't currently exist, performing creation actions");
+                return null;
+            }
+
+            Logging.Verbose(_log, $"Located specified database \"{Options.Database}\"");
+            return Client.GetDatabase(Options.Database);
         }
     }
 }

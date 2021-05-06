@@ -18,6 +18,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -45,9 +46,9 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// </summary>
         protected List<ModelGuidKeyedTestEntity> _testEntries = new();
 
-        public EFCoreTestBase(ITestOutputHelper outputHelperHelper)
+        public EFCoreTestBase(ITestOutputHelper output) : base(output)
         {
-            _outputHelper = outputHelperHelper;
+            _outputHelper = output;
             CreateContextOptions();
             CreateContext();
             GenerateTestEntities();

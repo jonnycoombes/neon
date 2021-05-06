@@ -16,6 +16,8 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 
 #endregion
@@ -85,6 +87,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             recovered.Dispose();
             recoveredFromFile.Dispose();
             File.Delete(exportPath);
+        }
+
+        public X509CertificateTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }

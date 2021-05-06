@@ -14,6 +14,8 @@
 using System.Collections.Generic;
 using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 #endregion
 
@@ -70,6 +72,10 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
                 Assert.DoesNotContain(cache.Keys, k => k.Equals(passphrase));
                 cache.Add(passphrase, null);
             }
+        }
+
+        public PassphraseTests(ITestOutputHelper output) : base(output)
+        {
         }
     }
 }
