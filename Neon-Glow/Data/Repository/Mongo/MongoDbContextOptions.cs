@@ -244,19 +244,19 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Takes a validation function, and will then attempt to convert the current <see cref="MongoDbContextOptions" />
         ///     instance to an instance of <see cref="MongoClientSettings" />
         /// </summary>
-        /// <param name="validationFunc">
+        /// <param name="optionsValidationFunc">
         ///     A function that will be passed the current instance of <see cref="MongoDbContextOptions" /> and should return true
         ///     or false
         /// </param>
         /// <returns>A new instance of <see cref="MongoClientSettings" /></returns>
         /// <exception cref="MongoDbContextException">Thrown if validation of the current options fails</exception>
-        public MongoClientSettings BuildClientSettings(Func<MongoDbContextOptions, bool>? validationFunc = null)
+        public MongoClientSettings BuildClientSettings(Func<MongoDbContextOptions, bool>? optionsValidationFunc = null)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Build a new client settings based on {this}");
             var clientSettings = new MongoClientSettings();
-            validationFunc ??= DefaultOptionsValidation;
-            if (validationFunc(this))
+            optionsValidationFunc ??= DefaultOptionsValidationFunction;
+            if (optionsValidationFunc(this))
             {
                 if (ReplicaSet is not null)
                 {
@@ -313,7 +313,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="options">The <see cref="MongoDbContextOptions" /> instance to be validated</param>
         /// <returns><code>true</code> or <code>false</code> depending on whether the options look to be valid</returns>
-        private static bool DefaultOptionsValidation(MongoDbContextOptions options)
+        private static bool DefaultOptionsValidationFunction(MongoDbContextOptions options)
         {
             Logging.MethodCall(_log);
             if (options.Database is null)
