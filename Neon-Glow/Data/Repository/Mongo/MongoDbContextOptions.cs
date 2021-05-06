@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -88,7 +77,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The default application name value
         /// </summary>
-        public static readonly string DefaultApplicationName = $"neon-glow-{Assemblies.GetApplicationAssemblyVersion()}";
+        public static readonly string DefaultApplicationName =
+            $"neon-glow-{Assemblies.GetApplicationAssemblyVersion()}";
 
         /// <summary>
         ///     The connection scheme, depends on whether you are connecting to a standalone instance/RS or an Atlas instance
@@ -256,22 +246,26 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoClientSettings BuildClientSettings(Func<MongoDbContextOptions, bool>? validationFunc = null)
         {
             Logging.MethodCall(_log);
-
+            Logging.Verbose(_log, $"Build a new client settings based on {this}");
             var clientSettings = new MongoClientSettings();
-            validationFunc ??= ValidateOptions;
+            validationFunc ??= DefaultOptionsValidation;
             if (validationFunc(this))
             {
                 if (ReplicaSet is not null)
                 {
+                    Logging.Verbose(_log, $"Setting replica set to {ReplicaSet}");
                     clientSettings.ReplicaSetName = ReplicaSet;
                 }
 
                 if (AuthenticationType == MongoAuthenticationType.Basic)
                 {
-                    clientSettings.Credential = MongoCredential.CreateCredential(AuthenticationDatabase, User, Password);
+                    Logging.Verbose(_log, "Configuring for basic authentication");
+                    clientSettings.Credential =
+                        MongoCredential.CreateCredential(AuthenticationDatabase, User, Password);
                 }
                 else
                 {
+                    Logging.Verbose(_log, "Configuring for X509 authentication");
                     clientSettings.Credential = User is not null
                         ? MongoCredential.CreateMongoX509Credential(User)
                         : MongoCredential.CreateMongoX509Credential();
@@ -279,15 +273,29 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
                 if (ChannelType is MongoChannelType.Secure or MongoChannelType.SecureNoRevocationChecks)
                 {
+                    Logging.Verbose(_log, "Using TLS over-the-wire for Mongo connection(s)");
                     clientSettings.UseTls = true;
                     clientSettings.SslSettings.ClientCertificates = ClientCertificates;
-                    clientSettings.SslSettings.CheckCertificateRevocation = ChannelType is not MongoChannelType.SecureNoRevocationChecks;
+                    clientSettings.SslSettings.CheckCertificateRevocation =
+                        ChannelType is not MongoChannelType.SecureNoRevocationChecks;
+                    if (AllowSelfSignedCertificates)
+                    {
+                        Logging.Warning(_log,
+                            "Allowing the use of self-signed certificates. Not recommanded for production systems");
+                    }
+
                     clientSettings.AllowInsecureTls = AllowSelfSignedCertificates;
+                }
+                else
+                {
+                    Logging.Warning(_log,
+                        "Running with non-TLS connection through to Mongo.  Not recommended for production systems");
                 }
             }
             else
             {
-                throw Exceptions.LoggedException<MongoDbContextException>(_log, $"An invalid set of options have been specified: {this}");
+                throw Exceptions.LoggedException<MongoDbContextException>(_log,
+                    $"An invalid set of options have been specified: {this}");
             }
 
             return clientSettings;
@@ -298,7 +306,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="options">The <see cref="MongoDbContextOptions" /> instance to be validated</param>
         /// <returns><code>true</code> or <code>false</code> depending on whether the options look to be valid</returns>
-        private static bool ValidateOptions(MongoDbContextOptions options)
+        private static bool DefaultOptionsValidation(MongoDbContextOptions options)
         {
             Logging.MethodCall(_log);
             if (options.Database is null)
@@ -499,9 +507,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// Adds a sequence of client certificates to the options
+        ///     Adds a sequence of client certificates to the options
         /// </summary>
-        /// <param name="certificates">An series of <see cref="X509Certificate"/> instances to add</param>
+        /// <param name="certificates">An series of <see cref="X509Certificate" /> instances to add</param>
         /// <returns>The current builder instance</returns>
         public MongoDbContextOptionsBuilder ClientCertificates(IEnumerable<X509Certificate> certificates)
         {
@@ -509,6 +517,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 _options.AddClientCertificate(certificate);
             }
+
             return this;
         }
 
