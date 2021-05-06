@@ -255,7 +255,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Build a new client settings based on {this}");
             var clientSettings = new MongoClientSettings();
-            optionsValidationFunc ??= DefaultOptionsValidation;
+            optionsValidationFunc ??= DefaultOptionsValidationFunction;
             if (optionsValidationFunc(this))
             {
                 if (ReplicaSet is not null)
@@ -313,7 +313,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="options">The <see cref="MongoDbContextOptions" /> instance to be validated</param>
         /// <returns><code>true</code> or <code>false</code> depending on whether the options look to be valid</returns>
-        private static bool DefaultOptionsValidation(MongoDbContextOptions options)
+        private static bool DefaultOptionsValidationFunction(MongoDbContextOptions options)
         {
             Logging.MethodCall(_log);
             if (options.Database is null)
