@@ -20,6 +20,8 @@ package-lock.json
 .idea/**/contentModel.xml
 **/**contentModel.xml
 
+test.out
+
 .vscode
 .vscode/**
 
