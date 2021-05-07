@@ -1,23 +1,18 @@
-/*
+#region
 
-    Copyright 2013-2021 © JCS Software Limited
+using System;
 
-    Author: Jonny Coombes
+#endregion
 
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 namespace JCS.Neon.Glow.Statics.Crypto
 {
-    public class EncodingException : System.Exception
+    public class EncodingException : Exception
     {
         public EncodingException(string? message) : base(message)
         {
         }
 
-        public EncodingException(string? message, System.Exception? innerException) : base(message, innerException)
+        public EncodingException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }

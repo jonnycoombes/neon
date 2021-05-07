@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System.Collections.Generic;
@@ -221,7 +210,8 @@ namespace JCS.Neon.Glow.Console
         public static readonly string CHA = $"{CSI}G";
 
         /// <summary>
-        ///     Cursor position - corresponding dynamic functions are <see cref="CursorPosition(int,int)" />, <see cref="CursorPositionRow(int)" /> and
+        ///     Cursor position - corresponding dynamic functions are <see cref="CursorPosition(int,int)" />,
+        ///     <see cref="CursorPositionRow(int)" /> and
         ///     <see cref="CursorPositionColumn(int)" />
         /// </summary>
         public static readonly string CUP = $"{CSI}H";
@@ -486,7 +476,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Generates a control code for setting the current graphic rendition mode, based on an array of different mode parameters
+        ///     Generates a control code for setting the current graphic rendition mode, based on an array of different mode
+        ///     parameters
         /// </summary>
         /// <param name="modes">An array of modes which will be converted into a ';' delimited string</param>
         /// <returns>An ANSI control code</returns>
@@ -547,7 +538,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Generates a control code for setting the cursor position at coordinates (<paramref name="row" />, <paramref name="column" />)
+        ///     Generates a control code for setting the cursor position at coordinates (<paramref name="row" />,
+        ///     <paramref name="column" />)
         /// </summary>
         /// <param name="row">The row index for the cursor position.  The values should be 1-based.</param>
         /// <param name="column">
@@ -560,7 +552,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Generates a control code for setting cursor position at coordinates given by a <see cref="Point" />.  The X-coord is sets
+        ///     Generates a control code for setting cursor position at coordinates given by a <see cref="Point" />.  The X-coord
+        ///     is sets
         ///     the column number, the Y-coord sets the row number
         /// </summary>
         /// <param name="position"></param>
@@ -662,7 +655,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Generates a control code for erasing a number of characters at the current cursor location and replacing them with space characters
+        ///     Generates a control code for erasing a number of characters at the current cursor location and replacing them with
+        ///     space characters
         /// </summary>
         /// <param name="count">The number of characters to erase</param>
         /// <returns>An ANSI control code</returns>

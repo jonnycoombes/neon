@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -22,7 +11,8 @@ using Serilog;
 namespace JCS.Neon.Glow.Statics.Parsing
 {
     /// <summary>
-    ///     Contains a bunch of static methods which will attempt ("try") to parse various types and return an <see cref="Option{T}" />
+    ///     Contains a bunch of static methods which will attempt ("try") to parse various types and return an
+    ///     <see cref="Option{T}" />
     /// </summary>
     public static class TryParsers
     {

@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -179,6 +168,26 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public string? Password { get; set; }
 
         /// <summary>
+        ///     The default read concern to use for database binding operations
+        /// </summary>
+        public ReadConcern DatabaseReadConcern { get; set; } = ReadConcern.Default;
+
+        /// <summary>
+        ///     The default write concern to use for database binding operations
+        /// </summary>
+        public WriteConcern DatabaseWriteConcern { get; set; } = WriteConcern.Unacknowledged;
+
+        /// <summary>
+        ///     The default read concern to use for collection binding operations
+        /// </summary>
+        public ReadConcern CollectionReadConcern { get; set; } = ReadConcern.Default;
+
+        /// <summary>
+        ///     The default write concern to use for collection binding operations
+        /// </summary>
+        public WriteConcern CollectionWriteConcern { get; set; } = WriteConcern.Unacknowledged;
+
+        /// <summary>
         ///     Returns the internal list of client <see cref="X509Certificate" /> instances to be used when SSL is selected as the
         ///     channel type
         /// </summary>
@@ -245,10 +254,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 return $"{JsonSerializer.Serialize(this)}".Replace(Password, "XXXXXXXXX");
             }
-            else
-            {
-                return $"{JsonSerializer.Serialize(this)}";
-            }
+
+            return $"{JsonSerializer.Serialize(this)}";
         }
 
         /// <summary>
@@ -558,6 +565,50 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoDbContextOptionsBuilder ReplicaSet(string replicaSetName)
         {
             _options.ReplicaSet = replicaSetName;
+            return this;
+        }
+
+        /// <summary>
+        ///     The default <see cref="ReadConcern" /> to use for database binding operations
+        /// </summary>
+        /// <param name="readConcern">A member of <see cref="ReadConcern" /></param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder DatabaseReadConcern(ReadConcern readConcern)
+        {
+            _options.DatabaseReadConcern = readConcern;
+            return this;
+        }
+
+        /// <summary>
+        ///     The default <see cref="WriteConcern" /> to use for database binding operations
+        /// </summary>
+        /// <param name="writeConcern">A member of <see cref="WriteConcern" /></param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder DatabaseWriteConcern(WriteConcern writeConcern)
+        {
+            _options.DatabaseWriteConcern = writeConcern;
+            return this;
+        }
+
+        /// <summary>
+        ///     The default <see cref="ReadConcern" /> to use for collection binding operations
+        /// </summary>
+        /// <param name="readConcern">A member of <see cref="ReadConcern" /></param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder CollectionReadConcern(ReadConcern readConcern)
+        {
+            _options.CollectionReadConcern = readConcern;
+            return this;
+        }
+
+        /// <summary>
+        ///     The default <see cref="WriteConcern" /> to use for collection binding operations
+        /// </summary>
+        /// <param name="writeConcern">A member of <see cref="WriteConcern" /></param>
+        /// <returns>The current builder instance</returns>
+        public MongoDbContextOptionsBuilder CollectionWriteConcern(WriteConcern writeConcern)
+        {
+            _options.CollectionWriteConcern = writeConcern;
             return this;
         }
     }

@@ -1,18 +1,6 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
-﻿#region
+#region
 
 using JCS.Neon.Glow.Statics.Crypto;
-using static JCS.Neon.Glow.Statics.Crypto.Encodings;
 
 #endregion
 

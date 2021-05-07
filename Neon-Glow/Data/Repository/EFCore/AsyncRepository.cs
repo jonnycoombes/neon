@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -38,11 +27,6 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         where V : KeyedEntity<K>
     {
         /// <summary>
-        ///     <see cref="ILogger" /> instance
-        /// </summary>
-        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
-
-        /// <summary>
         ///     The underlying context instance
         /// </summary>
         private readonly AsyncRepositoryAwareDbContext _context;
@@ -56,6 +40,11 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             Logging.MethodCall(_log);
             _context = context;
         }
+
+        /// <summary>
+        ///     <see cref="ILogger" /> instance
+        /// </summary>
+        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
 
         /// <inheritdoc cref="IAsyncRepository{K,V}.Count" />
         public async Task<int> Count(CancellationToken cancellationToken = default)

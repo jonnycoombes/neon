@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using JCS.Neon.Glow.Types;
@@ -54,7 +43,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
         }
 
         /// <summary>
-        /// Creates a local date interval based on two (possibly non-local) <see cref="DateTime"/> instances
+        ///     Creates a local date interval based on two (possibly non-local) <see cref="DateTime" /> instances
         /// </summary>
         /// <param name="start">The starting point of the interval</param>
         /// <param name="end">The end point of the interval</param>
@@ -65,6 +54,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
             {
                 throw new ArgumentOutOfRangeException(nameof(start), @"The start date must be less than or equal to the end date");
             }
+
             return new DateInterval(LocalDate.FromDateTime(start), LocalDate.FromDateTime(end));
         }
     }

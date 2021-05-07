@@ -1,16 +1,6 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
+using System;
 using JCS.Neon.Glow.Statics.Reflection;
 using Serilog;
 
@@ -33,8 +23,8 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="inner">An optional inner exception</param>
         /// <typeparam name="E">The type of exception to be generated</typeparam>
         /// <returns>A new instance of type <see cref="E" />, derived from <see cref="System.Exception" /></returns>
-        public static E LoggedException<E>(ILogger log, string message, System.Exception inner)
-            where E : System.Exception
+        public static E LoggedException<E>(ILogger log, string message, Exception inner)
+            where E : Exception
         {
             Logging.Error(log, message);
             return (E) Activation.CreateException<E>(message, inner);
@@ -49,7 +39,7 @@ namespace JCS.Neon.Glow.Statics
         /// <typeparam name="E">The type of the exception to be generated and returned</typeparam>
         /// <returns>A new instance of type <see cref="E" />, derived from <see cref="System.Exception" /></returns>
         public static E LoggedException<E>(ILogger log, string message)
-            where E : System.Exception
+            where E : Exception
         {
             Logging.Error(log, message);
             return (E) Activation.CreateException<E>(message);

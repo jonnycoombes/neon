@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -28,7 +17,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing a bunch of methods for dealing with AES-based symmetric encryption
     /// </summary>
-    public static partial class SymmetricEncryption  
+    public static class SymmetricEncryption
     {
         /// <summary>
         ///     Static logger for this class

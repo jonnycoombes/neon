@@ -1,17 +1,7 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
+using System.Threading;
 
 #endregion
 
@@ -28,7 +18,7 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="seconds">The number of seconds to suspend for</param>
         public static void SleepCurrentThread(uint seconds)
         {
-            System.Threading.Thread.Sleep((int) seconds * 1000);
+            Thread.Sleep((int) seconds * 1000);
         }
 
         /// <summary>
@@ -37,7 +27,7 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="span">A <see cref="TimeSpan" /> defining the duration of the sleep</param>
         public static void SleepCurrentThread(TimeSpan span)
         {
-            System.Threading.Thread.Sleep(span.Milliseconds);
+            Thread.Sleep(span.Milliseconds);
         }
     }
 }

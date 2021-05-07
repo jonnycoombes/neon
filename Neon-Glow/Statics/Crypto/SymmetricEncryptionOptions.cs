@@ -1,16 +1,9 @@
-/*
+#region
 
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 using System.Security.Cryptography;
 using JCS.Neon.Glow.Types;
+
+#endregion
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
@@ -145,6 +138,15 @@ namespace JCS.Neon.Glow.Statics.Crypto
         private readonly SymmetricEncryptionOptions _options = new();
 
         /// <summary>
+        ///     Builds a new <see cref="SymmetricEncryptionOptions" /> instance
+        /// </summary>
+        /// <returns></returns>
+        public SymmetricEncryptionOptions Build()
+        {
+            return _options;
+        }
+
+        /// <summary>
         ///     Sets the encryption algorithm to use
         /// </summary>
         /// <param name="option">A value from the <see cref="SymmetricAlgorithmOption" /> enumeration</param>
@@ -219,15 +221,6 @@ namespace JCS.Neon.Glow.Statics.Crypto
         {
             _options.InputEncodingOption = encodingOption;
             return this;
-        }
-
-        /// <summary>
-        /// Builds a new <see cref="SymmetricEncryptionOptions"/> instance
-        /// </summary>
-        /// <returns></returns>
-        public SymmetricEncryptionOptions Build()
-        {
-            return _options;
         }
     }
 }

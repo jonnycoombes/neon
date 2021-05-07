@@ -1,17 +1,7 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
+
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
 #endregion
@@ -58,7 +48,7 @@ namespace JCS.Neon.Glow.Types
         /// </summary>
         /// <param name="value">The value to wrap</param>
         #pragma warning disable 8618
-        public Option(T value) 
+        public Option(T value)
             #pragma warning restore 8618
         {
             _value = value;
@@ -136,7 +126,7 @@ namespace JCS.Neon.Glow.Types
         /// <typeparam name="V">The target option contained type</typeparam>
         /// <returns></returns>
         public static Option<V> Bind<T, V>(this Option<T> option, Func<T?, Option<V>> binder)
-        where V : notnull where T : notnull
+            where V : notnull where T : notnull
         {
             return option.Fold(
                 binder,
@@ -154,7 +144,7 @@ namespace JCS.Neon.Glow.Types
         /// <typeparam name="T">The wrapped type</typeparam>
         /// <returns></returns>
         public static T? GetOrElse<T>(this Option<T> option, Func<T?> f)
-        where T : notnull
+            where T : notnull
         {
             return option.IsSome(out var value) ? value : f();
         }
