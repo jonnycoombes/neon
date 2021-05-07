@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -23,10 +34,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Builds the actual <see cref="MongoDatbaseSettings" /> instance
         /// </summary>
         /// <returns>A new <see cref="MongoDatabaseSettings" /> instance</returns>
-        /// <exception cref="NotImplementedException"></exception>
         public MongoDatabaseSettings Build()
         {
-            throw new NotImplementedException();
+            return _settings;
         }
 
         /// <summary>

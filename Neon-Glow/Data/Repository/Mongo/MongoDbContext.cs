@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -125,6 +136,15 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="builder"></param>
+        protected virtual void OnDatabaseConfiguring(MongoDatabaseSettingsBuilder builder)
+        {
+            Logging.MethodCall(_log);
+        }
+
+        /// <summary>
         ///     Checks whether we currently have a database reference, and if not performs the necessary setup and bind operations
         ///     in order to get a valid reference
         /// </summary>
@@ -138,7 +158,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 Logging.Verbose(_log,
                     $"Required database \"{Options.Database}\" doesn't currently exist, performing creation actions");
-                return null;
+                var builder = new MongoDatabaseSettingsBuilder();
+                OnDatabaseConfiguring(builder);    
+                return Client.GetDatabase(Options.Database, builder.Build());
             }
 
             Logging.Verbose(_log, $"Located specified database \"{Options.Database}\"");
