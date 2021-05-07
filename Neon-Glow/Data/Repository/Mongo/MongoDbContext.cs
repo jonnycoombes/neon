@@ -151,16 +151,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, MongoDatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
-            switch (bindingType)
-            {
-                case DatabaseBindingType.Create:
-                    Logging.Verbose(_log, "Binding to non-existent database");
-                    break;
-                case DatabaseBindingType.Existing:
-                    Logging.Verbose(_log, "Binding to existing database");
-                    break;
-            }
-
             builder
                 .ReadConcern(Options.DatabaseReadConcern)
                 .WriteConcern(Options.DatabaseWriteConcern);
