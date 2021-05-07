@@ -9,21 +9,25 @@
     All rights reserved.
 
  */
-﻿using System.Reflection;
+#region
+
+using System.Reflection;
 using Serilog;
+
+#endregion
 
 namespace JCS.Neon.Glow.Statics.Reflection
 {
     /// <summary>
-    /// Static containing utilities and helpers relating to assemblies
+    ///     Static containing utilities and helpers relating to assemblies
     /// </summary>
     public static class Assemblies
     {
         /// <summary>
-        /// Static logger
+        ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(Activation));
-        
+
         /// <summary>
         ///     Returns a string containing the version of the currently executing assembly
         /// </summary>

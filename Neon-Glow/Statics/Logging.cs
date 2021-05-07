@@ -32,7 +32,9 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="log"></param>
         /// <param name="memberName"></param>
         /// <param name="filePath"></param>
-        public static void MethodCall(ILogger log, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "")
+        public static void MethodCall(ILogger log, [CallerMemberName]
+            string memberName = "", [CallerFilePath]
+            string filePath = "")
         {
             var fileName = Path.GetFileName(filePath);
             LogAtLevel(log, $"[Invoke: {memberName},{fileName}]", LogEventLevel.Verbose);
@@ -64,7 +66,8 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
-        public static void Verbose(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Verbose(ILogger log, string message, [CallerMemberName]
+            string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Verbose);
         }
@@ -75,7 +78,8 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
-        public static void Warning(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Warning(ILogger log, string message, [CallerMemberName]
+            string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Warning);
         }
@@ -87,8 +91,10 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="ex">The exception to log</param>
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
-        public static void ExceptionWarning(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int lineNumber = 0)
+        public static void ExceptionWarning(ILogger log, Exception ex, [CallerMemberName]
+            string memberName = "",
+            [CallerLineNumber]
+            int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
             LogAtLevel(log, message, LogEventLevel.Warning);
@@ -101,8 +107,10 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="ex">The exception to log</param>
         /// <param name="memberName">Injected by runtime</param>
         /// <param name="lineNumber">Injected by runtime</param>
-        public static void ExceptionError(ILogger log, Exception ex, [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int lineNumber = 0)
+        public static void ExceptionError(ILogger log, Exception ex, [CallerMemberName]
+            string memberName = "",
+            [CallerLineNumber]
+            int lineNumber = 0)
         {
             var message = $"[{memberName}:{lineNumber}] Exception caught! [{ex.GetType().Name}] \"{ex.Message}\"";
             LogAtLevel(log, message, LogEventLevel.Error);
@@ -114,7 +122,8 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
         /// <param name="memberName"></param>
-        public static void Error(ILogger log, string message, [CallerMemberName] string memberName = "")
+        public static void Error(ILogger log, string message, [CallerMemberName]
+            string memberName = "")
         {
             LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Error);
         }

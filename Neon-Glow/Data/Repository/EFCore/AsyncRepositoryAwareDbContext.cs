@@ -27,11 +27,6 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
     public abstract class AsyncRepositoryAwareDbContext : DbContext
     {
         /// <summary>
-        ///     <see cref="ILogger" /> instance
-        /// </summary>
-        private static ILogger _log => Log.ForContext(typeof(AsyncRepositoryAwareDbContext));
-
-        /// <summary>
         ///     Default protected constructor which just
         /// </summary>
         /// <param name="options"></param>
@@ -39,6 +34,11 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         {
             Logging.MethodCall(_log);
         }
+
+        /// <summary>
+        ///     <see cref="ILogger" /> instance
+        /// </summary>
+        private static ILogger _log => Log.ForContext(typeof(AsyncRepositoryAwareDbContext));
 
 
         /// <summary>

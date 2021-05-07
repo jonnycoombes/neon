@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using System;
 using System.Security.Cryptography;

@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using System.Collections.Generic;
 using System.Drawing;

@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
     /// <summary>
     ///     Static class containing methods for dealing with X509 certificates
     /// </summary>
-    public static partial class X509Certificate
+    public static class X509Certificate
     {
         /// <summary>
         ///     Static logger
@@ -39,7 +39,10 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="pf">A function which will produce a passphrase for the pfx file</param>
         /// <param name="exportable"></param>
         /// <returns>A valid <see cref="X509Certificate2" /></returns>
-        /// <exception cref="X509CertificateException">Thrown in the event of something going wrong.  Will contain an inner exception</exception>
+        /// <exception cref="X509CertificateException">
+        ///     Thrown in the event of something going wrong.  Will contain an inner
+        ///     exception
+        /// </exception>
         public static X509Certificate2 ImportFromFile(string source, Func<string> pf, bool exportable = true)
         {
             Logging.MethodCall(_log);
@@ -64,7 +67,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
                     return cert;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Import failed, see inner exception", ex);
@@ -101,7 +104,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             {
                 return exportable ? new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable) : new X509Certificate2(source, pf());
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Import failed, see inner exception", ex);
@@ -137,7 +140,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             {
                 return certificate.Export(X509ContentType.Pkcs12, pf());
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Export failed, see inner exception", ex);
@@ -175,7 +178,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
                 await outFile.WriteAsync(export);
                 await outFile.FlushAsync();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<X509CertificateException>(_log,
                     "Export failed, see inner exception", ex);
@@ -202,6 +205,5 @@ namespace JCS.Neon.Glow.Statics.Crypto
         public class X509CertificateGenerationOptions
         {
         }
-
     }
 }

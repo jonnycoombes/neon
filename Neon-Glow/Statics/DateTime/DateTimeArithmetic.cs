@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using NodaTime;
 
 #endregion
@@ -54,7 +53,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
         /// </summary>
         private static Period SingleYear = Period.FromYears(1);
 
-        
+
         /// <summary>
         ///     This method will create a list of 7 day date interval buckets starting on a given <see cref="startDay" />, so that
         ///     the intervals combined are *inclusive* of both the <see cref="start" /> and <see cref="end" /> dates.
@@ -117,7 +116,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
             {
                 bucketStart = bucketStart.Minus(SingleDay);
             }
-            
+
             var done = false;
             while (!done)
             {
@@ -129,7 +128,7 @@ namespace JCS.Neon.Glow.Statics.DateTime
                     bucketStart = bucketStart.PlusDays(7);
                 }
             }
-            
+
             return intervals.ToArray();
         }
     }

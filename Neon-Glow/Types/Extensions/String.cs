@@ -9,10 +9,9 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using JCS.Neon.Glow.Statics.Crypto;
-using static JCS.Neon.Glow.Statics.Crypto.Encodings;
 
 #endregion
 

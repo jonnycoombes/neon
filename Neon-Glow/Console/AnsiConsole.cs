@@ -166,7 +166,8 @@ namespace JCS.Neon.Glow.Console
         }
 
         /// <summary>
-        ///     Internal method which checks whether or not the console is currently enabled.   If it isn't then any operations associated with
+        ///     Internal method which checks whether or not the console is currently enabled.   If it isn't then any operations
+        ///     associated with
         ///     the console (escpecially if the underlying platform is windows) will fail with an exception
         /// </summary>
         /// <exception cref="AnsiConsoleException">Thrown if the console is not currently enabled</exception>

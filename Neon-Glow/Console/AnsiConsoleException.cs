@@ -9,7 +9,11 @@
     All rights reserved.
 
  */
+#region
+
 using System;
+
+#endregion
 
 namespace JCS.Neon.Glow.Console
 {

@@ -12,13 +12,13 @@
 #region
 
 using System;
+using System.Text;
 using Serilog;
 
 #endregion
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
-
     /// <summary>
     ///     An enumeration of encodings used to transcode between strings and byte arrays
     /// </summary>
@@ -84,16 +84,16 @@ namespace JCS.Neon.Glow.Statics.Crypto
             {
                 return encoding switch
                 {
-                    ByteEncoding.Ascii => System.Text.Encoding.ASCII.GetBytes(source),
-                    ByteEncoding.Utf8 => System.Text.Encoding.UTF8.GetBytes(source),
-                    ByteEncoding.Utf32 => System.Text.Encoding.UTF32.GetBytes(source),
-                    ByteEncoding.Unicode => System.Text.Encoding.Unicode.GetBytes(source),
-                    ByteEncoding.BigEndianUnicode => System.Text.Encoding.BigEndianUnicode.GetBytes(source),
-                    ByteEncoding.Latin1 => System.Text.Encoding.Latin1.GetBytes(source),
-                    _ => System.Text.Encoding.UTF8.GetBytes(source)
+                    ByteEncoding.Ascii => Encoding.ASCII.GetBytes(source),
+                    ByteEncoding.Utf8 => Encoding.UTF8.GetBytes(source),
+                    ByteEncoding.Utf32 => Encoding.UTF32.GetBytes(source),
+                    ByteEncoding.Unicode => Encoding.Unicode.GetBytes(source),
+                    ByteEncoding.BigEndianUnicode => Encoding.BigEndianUnicode.GetBytes(source),
+                    ByteEncoding.Latin1 => Encoding.Latin1.GetBytes(source),
+                    _ => Encoding.UTF8.GetBytes(source)
                 };
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<EncodingException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);
@@ -113,16 +113,16 @@ namespace JCS.Neon.Glow.Statics.Crypto
             {
                 return encoding switch
                 {
-                    ByteEncoding.Ascii => System.Text.Encoding.ASCII.GetString(source),
-                    ByteEncoding.Utf8 => System.Text.Encoding.UTF8.GetString(source),
-                    ByteEncoding.Utf32 => System.Text.Encoding.UTF32.GetString(source),
-                    ByteEncoding.Unicode => System.Text.Encoding.Unicode.GetString(source),
-                    ByteEncoding.BigEndianUnicode => System.Text.Encoding.BigEndianUnicode.GetString(source),
-                    ByteEncoding.Latin1 => System.Text.Encoding.Latin1.GetString(source),
-                    _ => System.Text.Encoding.UTF8.GetString(source)
+                    ByteEncoding.Ascii => Encoding.ASCII.GetString(source),
+                    ByteEncoding.Utf8 => Encoding.UTF8.GetString(source),
+                    ByteEncoding.Utf32 => Encoding.UTF32.GetString(source),
+                    ByteEncoding.Unicode => Encoding.Unicode.GetString(source),
+                    ByteEncoding.BigEndianUnicode => Encoding.BigEndianUnicode.GetString(source),
+                    ByteEncoding.Latin1 => Encoding.Latin1.GetString(source),
+                    _ => Encoding.UTF8.GetString(source)
                 };
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw Exceptions.LoggedException<EncodingException>(_log,
                     "Unable to convert a string to bytes given the current encoding", ex);

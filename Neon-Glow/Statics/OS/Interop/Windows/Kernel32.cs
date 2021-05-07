@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using System;
 using System.Runtime.InteropServices;
@@ -99,7 +99,8 @@ namespace JCS.Neon.Glow.Statics.OS.Interop.Windows
             out CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBufferInfo);
 
         /// <summary>
-        ///     This function utilises underlying Win32 console functions to enable virtual terminal capabilities.  (Required in order to
+        ///     This function utilises underlying Win32 console functions to enable virtual terminal capabilities.  (Required in
+        ///     order to
         ///     support ANSI control characters within the default windows terminal
         /// </summary>
         public static void EnableVirtualTerminal()

@@ -10,7 +10,9 @@
 
  */
 #region
+
 using System.Runtime.InteropServices;
+
 #endregion
 
 namespace JCS.Neon.Glow.Statics.OS

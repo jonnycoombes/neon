@@ -9,8 +9,12 @@
     All rights reserved.
 
  */
+#region
+
 using System.Security.Cryptography;
 using JCS.Neon.Glow.Types;
+
+#endregion
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
@@ -145,6 +149,15 @@ namespace JCS.Neon.Glow.Statics.Crypto
         private readonly SymmetricEncryptionOptions _options = new();
 
         /// <summary>
+        ///     Builds a new <see cref="SymmetricEncryptionOptions" /> instance
+        /// </summary>
+        /// <returns></returns>
+        public SymmetricEncryptionOptions Build()
+        {
+            return _options;
+        }
+
+        /// <summary>
         ///     Sets the encryption algorithm to use
         /// </summary>
         /// <param name="option">A value from the <see cref="SymmetricAlgorithmOption" /> enumeration</param>
@@ -219,15 +232,6 @@ namespace JCS.Neon.Glow.Statics.Crypto
         {
             _options.InputEncodingOption = encodingOption;
             return this;
-        }
-
-        /// <summary>
-        /// Builds a new <see cref="SymmetricEncryptionOptions"/> instance
-        /// </summary>
-        /// <returns></returns>
-        public SymmetricEncryptionOptions Build()
-        {
-            return _options;
         }
     }
 }

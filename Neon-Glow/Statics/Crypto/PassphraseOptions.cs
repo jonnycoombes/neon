@@ -9,7 +9,11 @@
     All rights reserved.
 
  */
+#region
+
 using JCS.Neon.Glow.Types;
+
+#endregion
 
 namespace JCS.Neon.Glow.Statics.Crypto
 {
@@ -81,6 +85,15 @@ namespace JCS.Neon.Glow.Statics.Crypto
         private readonly PassphraseGenerationOptions _options = new();
 
         /// <summary>
+        ///     Builds a new instance of <see cref="PassphraseGenerationOptions" />
+        /// </summary>
+        /// <returns>A new <see cref="PassphraseGenerationOptions" /> instance</returns>
+        public PassphraseGenerationOptions Build()
+        {
+            return _options;
+        }
+
+        /// <summary>
         ///     Sets the required length for new passphrases
         /// </summary>
         /// <param name="length">A non-zero length</param>
@@ -100,15 +113,6 @@ namespace JCS.Neon.Glow.Statics.Crypto
         {
             _options.EncodeBase64 = b;
             return this;
-        }
-
-        /// <summary>
-        /// Builds a new instance of <see cref="PassphraseGenerationOptions"/>
-        /// </summary>
-        /// <returns>A new <see cref="PassphraseGenerationOptions"/> instance</returns>
-        public PassphraseGenerationOptions Build()
-        {
-            return _options;
         }
     }
 }

@@ -10,7 +10,9 @@
 
  */
 #region
+
 using System;
+
 #endregion
 
 namespace JCS.Neon.Glow.Types

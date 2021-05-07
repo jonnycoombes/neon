@@ -11,7 +11,6 @@
  */
 #region
 
-using System;
 using System.Text;
 using JCS.Neon.Glow.Types;
 using MongoDB.Driver;

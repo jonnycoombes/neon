@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿#region
+#region
 
 using System;
 using JCS.Neon.Glow.Statics;

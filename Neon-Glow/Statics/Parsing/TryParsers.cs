@@ -22,7 +22,8 @@ using Serilog;
 namespace JCS.Neon.Glow.Statics.Parsing
 {
     /// <summary>
-    ///     Contains a bunch of static methods which will attempt ("try") to parse various types and return an <see cref="Option{T}" />
+    ///     Contains a bunch of static methods which will attempt ("try") to parse various types and return an
+    ///     <see cref="Option{T}" />
     /// </summary>
     public static class TryParsers
     {

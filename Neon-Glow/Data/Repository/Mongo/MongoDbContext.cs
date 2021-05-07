@@ -13,7 +13,6 @@
 
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using JCS.Neon.Glow.Statics;
 using MongoDB.Driver;
 using Serilog;
@@ -22,6 +21,22 @@ using Serilog;
 
 namespace JCS.Neon.Glow.Data.Repository.Mongo
 {
+    /// <summary>
+    ///     Enumeration that denotes the kind of binding being performed against a database
+    /// </summary>
+    public enum DatabaseBindingType
+    {
+        /// <summary>
+        ///     The bind operation relates to a new database being created
+        /// </summary>
+        Create,
+
+        /// <summary>
+        ///     The bind operation relates to an existing database
+        /// </summary>
+        Existing
+    }
+
     /// <summary>
     ///     Abstract base class for Mongo DB contexts.  Takes care of all the clever stuff relating to lifecycle, session
     ///     management etc...Derived classes can add automatic support for repository-style access to collections and related
@@ -38,11 +53,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The underlying <see cref="MongoClient" />
         /// </summary>
         private MongoClient? _client;
-
-        /// <summary>
-        ///     The currently bound instance of <see cref="IMongoDatabase" />
-        /// </summary>
-        private IMongoDatabase? _database;
 
         /// <summary>
         ///     Simple constructor that allows a host and database to be specified, along with a username and password
@@ -90,19 +100,19 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <inheritdoc cref="IMongoDbContext.Client" />
-        public MongoClient Client => ResolveClient();
+        public MongoClient Client => BindClient();
 
         /// <inheritdoc cref="IMongoDbContext.Options" />
         public MongoDbContextOptions Options { get; }
 
         /// <inheritdoc cref="IMongoDbContext.Database" />
-        public IMongoDatabase Database => ResolveDatabase();
+        public IMongoDatabase Database => BindDatabase();
 
         /// <summary>
         ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object.
         /// </summary>
         /// <returns>An instance of <see cref="MongoClient" /></returns>
-        private MongoClient ResolveClient()
+        private MongoClient BindClient()
         {
             lock (this)
             {
@@ -136,12 +146,24 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///  
         /// </summary>
         /// <param name="builder"></param>
-        protected virtual void OnDatabaseConfiguring(MongoDatabaseSettingsBuilder builder)
+        protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, MongoDatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
+            switch (bindingType)
+            {
+                case DatabaseBindingType.Create:
+                    Logging.Verbose(_log, "Binding to non-existent database");
+                    break;
+                case DatabaseBindingType.Existing:
+                    Logging.Verbose(_log, "Binding to existing database");
+                    break;
+            }
+
+            builder
+                .ReadConcern(Options.DatabaseReadConcern)
+                .WriteConcern(Options.DatabaseWriteConcern);
         }
 
         /// <summary>
@@ -149,22 +171,15 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     in order to get a valid reference
         /// </summary>
         /// <returns>A bound instance of <see cref="IMongoDatabase" /></returns>
-        private  IMongoDatabase ResolveDatabase()
+        private IMongoDatabase BindDatabase()
         {
             Logging.MethodCall(_log);
             Assertions.Checked<MongoDbContextException>(Options.Database != null,
                 "No database name has been specified");
-            if (!DatabaseExists(Options.Database!))
-            {
-                Logging.Verbose(_log,
-                    $"Required database \"{Options.Database}\" doesn't currently exist, performing creation actions");
-                var builder = new MongoDatabaseSettingsBuilder();
-                OnDatabaseConfiguring(builder);    
-                return Client.GetDatabase(Options.Database, builder.Build());
-            }
 
-            Logging.Verbose(_log, $"Located specified database \"{Options.Database}\"");
-            return Client.GetDatabase(Options.Database);
+            var builder = new MongoDatabaseSettingsBuilder();
+            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? DatabaseBindingType.Create : DatabaseBindingType.Existing, builder);
+            return Client.GetDatabase(Options.Database, builder.Build());
         }
     }
 }

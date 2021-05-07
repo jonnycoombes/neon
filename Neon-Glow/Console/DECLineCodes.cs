@@ -9,7 +9,7 @@
     All rights reserved.
 
  */
-﻿namespace JCS.Neon.Glow.Console
+namespace JCS.Neon.Glow.Console
 {
     /// <summary>
     ///     An enumeration of DEC line drawing elements used when a console is switched to DEC line drawing mode

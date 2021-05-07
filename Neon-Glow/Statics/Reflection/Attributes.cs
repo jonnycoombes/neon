@@ -44,10 +44,8 @@ namespace JCS.Neon.Glow.Statics.Reflection
             {
                 return new Option<Attribute>(attribute);
             }
-            else
-            {
-                return Option<Attribute>.None;
-            }
+
+            return Option<Attribute>.None;
         }
 
         /// <summary>
