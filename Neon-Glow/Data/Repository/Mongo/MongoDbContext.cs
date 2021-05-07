@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -156,7 +145,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, MongoDatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
-            switch(bindingType)
+            switch (bindingType)
             {
                 case DatabaseBindingType.Create:
                     Logging.Verbose(_log, "Binding to non-existent database");
@@ -165,6 +154,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     Logging.Verbose(_log, "Binding to existing database");
                     break;
             }
+
+            builder
+                .ReadConcern(Options.DatabaseReadConcern)
+                .WriteConcern(Options.DatabaseWriteConcern);
         }
 
         /// <summary>
@@ -180,7 +173,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
             var builder = new MongoDatabaseSettingsBuilder();
             OnDatabaseBinding(!DatabaseExists(Options.Database!) ? DatabaseBindingType.Create : DatabaseBindingType.Existing, builder);
-            return Client.GetDatabase(Options.Database);
+            return Client.GetDatabase(Options.Database, builder.Build());
         }
     }
 }

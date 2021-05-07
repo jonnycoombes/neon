@@ -36,12 +36,12 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
         }
 
-        protected void ConfigureContextOptions(MongoDbContextOptionsBuilder builder)
+        protected Action<MongoDbContextOptionsBuilder> ConfigureContextOptions(string databaseName)
         {
-            builder.Host(MongoDbContextOptions.DefaultServerHost)
+            return builder => builder.Host(MongoDbContextOptions.DefaultServerHost)
                 .Port(MongoDbContextOptions.DefaultServerPort)
                 .Scheme(ConnectionStringScheme.MongoDB)
-                .Database("neon-glow-test")
+                .Database(databaseName)
                 .AuthenticationDatabase("admin")
                 .Application("neon-glow")
                 .User("root")
