@@ -1,21 +1,9 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
 using JCS.Neon.Glow.Data.Repository.Mongo;
-using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 #endregion
 
@@ -26,19 +14,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// </summary>
     public abstract class MongoTestBase : TestBase, IDisposable
     {
-
-        /// <summary>
-        /// Used to delegate the build of a <see cref="MongoDbContextOptions"/> instance
-        /// </summary>
-        /// <param name="configAction">An action which configures the current options</param>
-        /// <returns>A freshly minted instance of <see cref="MongoDbContextOptions"/> instance</returns>
-        protected MongoDbContextOptions BuildOptions(Action<MongoDbContextOptionsBuilder> configAction)
+        protected MongoTestBase(ITestOutputHelper output) : base(output)
         {
-            var builder = new MongoDbContextOptionsBuilder();
-            configAction(builder);
-            return builder.Build();
         }
-        
+
         /// <summary>
         ///     Nothing here to currently dispose...
         /// </summary>
@@ -46,8 +25,16 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
         }
 
-        protected MongoTestBase(ITestOutputHelper output) : base(output)
+        protected void ConfigureContextOptions(MongoDbContextOptionsBuilder builder)
         {
+            builder.Host(MongoDbContextOptions.DefaultServerHost)
+                .Port(MongoDbContextOptions.DefaultServerPort)
+                .Scheme(ConnectionStringScheme.MongoDB)
+                .Database("neon-glow-test")
+                .AuthenticationDatabase("admin")
+                .Application("neon-glow")
+                .User("root")
+                .Password("root");
         }
     }
 }

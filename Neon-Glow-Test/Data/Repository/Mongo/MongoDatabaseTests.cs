@@ -29,6 +29,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// </summary>
     public class MongoDatabaseTests : MongoTestBase
     {
+        
         /// <summary>
         /// Check whether we can create a context using all the defaults
         /// </summary>
@@ -36,18 +37,15 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public void CheckDatabaseCreation()
         {
-            var context = new MongoTestContext(builder =>
-            {
-                builder.Host(MongoDbContextOptions.DefaultServerHost)
-                    .Port(MongoDbContextOptions.DefaultServerPort)
-                    .Scheme(ConnectionStringScheme.MongoDB)
-                    .Database("neon-glow-test")
-                    .AuthenticationDatabase("admin")
-                    .Application("neon-glow")
-                    .User("root")
-                    .Password("root");
-            });
-            var datbase = context.Database;
+            var context = new MongoTestContext(ConfigureContextOptions);
+            var database = context.Database;
+            Assert.True(false);
+        }
+
+        [Fact(DisplayName = "Required database is dynamically generated with the correct settings overridden by a context subclass")]
+        [Trait("Category", "Data:Mongo")]
+        public void CheckDatabaseSettings()
+        {
             Assert.True(false);
         }
 
