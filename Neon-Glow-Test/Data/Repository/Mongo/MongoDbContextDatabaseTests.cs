@@ -23,9 +23,9 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     Series of connection-related unit tests.  Check various different configuration options, depending on the test
     ///     environment
     /// </summary>
-    public class MongoContextDatabaseTests : MongoTestBase
+    public class MongoDbContextDatabaseTests : MongoTestBase
     {
-        public MongoContextDatabaseTests(ITestOutputHelper output) : base(output)
+        public MongoDbContextDatabaseTests(ITestOutputHelper output) : base(output)
         {
         }
 
