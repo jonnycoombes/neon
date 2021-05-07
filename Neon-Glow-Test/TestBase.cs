@@ -55,7 +55,7 @@ namespace JCS.Neon.Glow.Test
         private void ConfigureLogging(ITestOutputHelper output)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose() 
+                .MinimumLevel.Warning()
                 .Enrich.WithMachineName()
                 .WriteTo.TestOutput(output, LogEventLevel.Verbose)
                 .CreateLogger();
