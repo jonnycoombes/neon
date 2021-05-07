@@ -44,11 +44,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private MongoClient? _client;
 
         /// <summary>
-        ///     The currently bound instance of <see cref="IMongoDatabase" />
-        /// </summary>
-        private IMongoDatabase? _database;
-
-        /// <summary>
         ///     Simple constructor that allows a host and database to be specified, along with a username and password
         /// </summary>
         /// <param name="hostName">The mongo host name</param>
