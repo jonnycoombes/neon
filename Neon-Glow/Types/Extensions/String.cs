@@ -11,6 +11,7 @@
  */
 #region
 
+using System.Globalization;
 using JCS.Neon.Glow.Statics.Crypto;
 
 #endregion
@@ -89,6 +90,16 @@ namespace JCS.Neon.Glow.Types.Extensions
         public static string? Tail(this string s)
         {
             return s.Length == 0 ? null : s[1..];
+        }
+
+        /// <summary>
+        ///     Converts a string to camel case using the current culture
+        /// </summary>
+        /// <param name="s">The string</param>
+        /// <returns>A camel case version of the string</returns>
+        public static string ToCamelCase(this string s)
+        {
+            return $"{s.Head()}".ToLower() + s.Tail();
         }
     }
 }
