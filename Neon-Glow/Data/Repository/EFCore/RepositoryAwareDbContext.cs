@@ -21,16 +21,16 @@ using Serilog;
 namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
-    ///     A <see cref="DbContext" /> that understands how to create instances of <see cref="IAsyncRepository{K,V}" />
+    ///     A <see cref="DbContext" /> that understands how to create instances of <see cref="IRepository{K,V}" />
     ///     based on its model elements
     /// </summary>
-    public abstract class AsyncRepositoryAwareDbContext : DbContext
+    public abstract class RepositoryAwareDbContext : DbContext
     {
         /// <summary>
         ///     Default protected constructor which just
         /// </summary>
         /// <param name="options"></param>
-        protected AsyncRepositoryAwareDbContext(DbContextOptions options) : base(options)
+        protected RepositoryAwareDbContext(DbContextOptions options) : base(options)
         {
             Logging.MethodCall(_log);
         }
@@ -38,41 +38,41 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         /// <summary>
         ///     <see cref="ILogger" /> instance
         /// </summary>
-        private static ILogger _log => Log.ForContext(typeof(AsyncRepositoryAwareDbContext));
+        private static ILogger _log => Log.ForContext(typeof(RepositoryAwareDbContext));
 
 
         /// <summary>
-        ///     Attempts to instantiate an instance of <see cref="IAsyncRepository{K,V}" /> which satifies
+        ///     Attempts to instantiate an instance of <see cref="IRepository{K,V}" /> which satifies
         ///     the type parameters.  Contexts which want to support this functionality should derive their
-        ///     model elements from <see cref="KeyedEntity{T}" /> in order to ensure uniformity and consistency
+        ///     model elements from <see cref="RepositoryEntity{T}" /> in order to ensure uniformity and consistency
         ///     in repository behaviour.
         /// </summary>
         /// <typeparam name="K">The key type of the underlying model entity type</typeparam>
         /// <typeparam name="V">
-        ///     The actual type of the underlying model entity type, derived from <see cref="KeyedEntity{T}" />
+        ///     The actual type of the underlying model entity type, derived from <see cref="RepositoryEntity{T}" />
         /// </typeparam>
         /// <returns></returns>
-        public IAsyncRepository<K, V> CreateRepository<K, V>()
+        public IRepository<K, V> CreateRepository<K, V>()
             where K : IComparable<K>, IEquatable<K>
-            where V : KeyedEntity<K>
+            where V : RepositoryEntity<K>
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var fullName = typeof(V).FullName;
             if (string.IsNullOrEmpty(fullName))
             {
-                throw Exceptions.LoggedException<AsyncRepositoryAwareDbContextException>(_log, "Failed to locate value type name");
+                throw Exceptions.LoggedException<RepositoryAwareDbContextException>(_log, "Failed to locate value type name");
             }
 
             var entityType = Model.FindEntityType(typeof(V).FullName!);
             if (entityType != null)
             {
-                return new AsyncRepository<K, V>(this);
+                return new Repository<K, V>(this);
             }
 
             var message = $"Context doesn't appear to include type ({typeof(V).Name}) within model";
             Logging.Error(_log, message);
-            throw Exceptions.LoggedException<AsyncRepositoryAwareDbContextException>(_log, message);
+            throw Exceptions.LoggedException<RepositoryAwareDbContextException>(_log, message);
         }
     }
 }

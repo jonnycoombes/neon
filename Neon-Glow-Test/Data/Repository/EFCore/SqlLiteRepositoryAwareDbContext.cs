@@ -20,14 +20,14 @@ using NodaTime;
 
 namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 {
-    public class SqlLiteAsyncRepositoryAwareDbContext : AsyncRepositoryAwareDbContext
+    public class SqlLiteRepositoryAwareDbContext : RepositoryAwareDbContext
     {
-        public SqlLiteAsyncRepositoryAwareDbContext(DbContextOptions<SqlLiteAsyncRepositoryAwareDbContext> options)
+        public SqlLiteRepositoryAwareDbContext(DbContextOptions<SqlLiteRepositoryAwareDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<ModelGuidKeyedTestEntity> GuidEntries { get; set; }
+        public DbSet<ModelGuidRepositoryTestEntity> GuidEntries { get; set; }
 
         /// <summary>
         ///     Various tweaks and overrides to the default mappings happen here - for example,
@@ -42,10 +42,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
                         v.ToDateTimeUtc(),
                     v => Instant.FromDateTimeUtc(v));
 
-            modelBuilder.Entity<ModelGuidKeyedTestEntity>()
+            modelBuilder.Entity<ModelGuidRepositoryTestEntity>()
                 .Property(g => g.Id)
                 .ValueGeneratedOnAdd();
-            modelBuilder.Entity<ModelGuidKeyedTestEntity>()
+            modelBuilder.Entity<ModelGuidRepositoryTestEntity>()
                 .Property(g => g.CreationTime)
                 .HasConversion(instantConverter);
 

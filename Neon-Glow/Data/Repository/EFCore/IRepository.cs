@@ -27,14 +27,14 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
 
     /// <summary>
     ///     General repository interface for storing and manipulating items of type V which derive from
-    ///     <see cref="KeyedEntity{T}" />
+    ///     <see cref="RepositoryEntity{T}" />
     ///     with key type K.
     /// </summary>
     /// <typeparam name="K">Key type</typeparam>
     /// <typeparam name="V">Value type</typeparam>
-    public interface IAsyncRepository<K, V>
+    public interface IRepository<K, V>
         where K : IComparable<K>, IEquatable<K>
-        where V : KeyedEntity<K>
+        where V : RepositoryEntity<K>
     {
         /// <summary>
         ///     Get the total number of items within the repository

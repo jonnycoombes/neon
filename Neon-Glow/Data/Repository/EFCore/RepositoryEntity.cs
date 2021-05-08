@@ -24,7 +24,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
     ///     An abstract base class for keyed entities which may be stored via the EF Core framework.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class KeyedEntity<T>
+    public abstract class RepositoryEntity<T>
         where T : IComparable<T>, IEquatable<T>
     {
         /// <summary>

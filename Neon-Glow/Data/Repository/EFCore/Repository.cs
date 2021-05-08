@@ -28,25 +28,25 @@ using Serilog;
 namespace JCS.Neon.Glow.Data.Repository.EFCore
 {
     /// <summary>
-    ///     Default implementation of <see cref="IAsyncRepository{K,V}" />.  This implementation essentially
-    ///     translates operations to an underlying <see cref="AsyncRepositoryAwareDbContext" /> instance.
+    ///     Default implementation of <see cref="IRepository{K,V}" />.  This implementation essentially
+    ///     translates operations to an underlying <see cref="RepositoryAwareDbContext" /> instance.
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class AsyncRepository<K, V> : IAsyncRepository<K, V>
+    public class Repository<K, V> : IRepository<K, V>
         where K : IComparable<K>, IEquatable<K>
-        where V : KeyedEntity<K>
+        where V : RepositoryEntity<K>
     {
         /// <summary>
         ///     The underlying context instance
         /// </summary>
-        private readonly AsyncRepositoryAwareDbContext _context;
+        private readonly RepositoryAwareDbContext _context;
 
         /// <summary>
-        ///     Constructor which takes a supporting <see cref="AsyncRepositoryAwareDbContext" /> instance
+        ///     Constructor which takes a supporting <see cref="RepositoryAwareDbContext" /> instance
         /// </summary>
         /// <param name="context"></param>
-        public AsyncRepository(AsyncRepositoryAwareDbContext context)
+        public Repository(RepositoryAwareDbContext context)
         {
             Logging.MethodCall(_log);
             _context = context;
@@ -55,9 +55,9 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         /// <summary>
         ///     <see cref="ILogger" /> instance
         /// </summary>
-        private ILogger _log => Log.ForContext(typeof(AsyncRepository<K, V>));
+        private ILogger _log => Log.ForContext(typeof(Repository<K, V>));
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.Count" />
+        /// <inheritdoc cref="IRepository{K,V}.Count" />
         public async Task<int> Count(CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -71,7 +71,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CountWhere" />
+        /// <inheritdoc cref="IRepository{K,V}.CountWhere" />
         public async Task<long> CountWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -85,7 +85,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.HasItemWithKey" />
+        /// <inheritdoc cref="IRepository{K,V}.HasItemWithKey" />
         public async Task<bool> HasItemWithKey(K key, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -99,7 +99,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectOne(K,System.Threading.CancellationToken)" />
+        /// <inheritdoc cref="IRepository{K,V}.SelectOne(K,System.Threading.CancellationToken)" />
         public async Task<Option<V>> SelectOne(K key, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -116,7 +116,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         }
 
         /// <inheritdoc
-        ///     cref="IAsyncRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
+        ///     cref="IRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -132,7 +132,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectOne{W}" />
+        /// <inheritdoc cref="IRepository{K,V}.SelectAndProjectOne{W}" />
         public async Task<Option<W>> SelectAndProjectOne<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default) where W : notnull
         {
@@ -143,7 +143,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
                 () => Option<W>.None);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectMany(K[],System.Threading.CancellationToken)" />
+        /// <inheritdoc cref="IRepository{K,V}.SelectMany(K[],System.Threading.CancellationToken)" />
         /// TODO change to IAsyncEnumerable return types
         public async Task<IEnumerable<V>> SelectMany(K[] keys, CancellationToken cancellationToken = default)
         {
@@ -160,7 +160,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         }
 
         /// <inheritdoc
-        ///     cref="IAsyncRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
+        ///     cref="IRepository{K,V}.SelectMany(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
         /// TODO change to IAsyncEnumerable return types
         public async Task<IEnumerable<V>> SelectMany(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
@@ -177,7 +177,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectAndProjectMany{W}" />
+        /// <inheritdoc cref="IRepository{K,V}.SelectAndProjectMany{W}" />
         public async Task<IEnumerable<W>> SelectAndProjectMany<W>(Expression<Func<V, bool>> expression, Func<V, W> f,
             CancellationToken cancellationToken = default)
         {
@@ -186,7 +186,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             return selection.Select(f);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.GetEnumerator" />
+        /// <inheritdoc cref="IRepository{K,V}.GetEnumerator" />
         public IAsyncEnumerator<V> GetEnumerator(CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -200,7 +200,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateOne" />
+        /// <inheritdoc cref="IRepository{K,V}.CreateOne" />
         public async Task<V> CreateOne(V newItem, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -216,7 +216,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.CreateMany" />
+        /// <inheritdoc cref="IRepository{K,V}.CreateMany" />
         public async Task<IEnumerable<V>> CreateMany(V[] newItems, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -237,7 +237,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.SelectManyKeys" />
+        /// <inheritdoc cref="IRepository{K,V}.SelectManyKeys" />
         public async Task<IEnumerable<K>> SelectManyKeys(Expression<Func<V, bool>> expression,
             CancellationToken cancellationToken = default)
         {
@@ -245,7 +245,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             return await SelectAndProjectMany(expression, v => v.Id, cancellationToken);
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertOne" />
+        /// <inheritdoc cref="IRepository{K,V}.UpsertOne" />
         public async Task<V> UpsertOne(V item, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -261,7 +261,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.UpsertMany" />
+        /// <inheritdoc cref="IRepository{K,V}.UpsertMany" />
         public async Task<IEnumerable<V>> UpsertMany(V[] items, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -277,7 +277,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteOne" />
+        /// <inheritdoc cref="IRepository{K,V}.DeleteOne" />
         public async Task DeleteOne(V item, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -292,7 +292,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             }
         }
 
-        /// <inheritdoc cref="IAsyncRepository{K,V}.DeleteMany" />
+        /// <inheritdoc cref="IRepository{K,V}.DeleteMany" />
         public async Task DeleteMany(V[] items, CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
@@ -312,7 +312,7 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
         ///     the exception, dependent on the database provider
         /// </summary>
         /// <param name="ex"></param>
-        /// <exception cref="AsyncRepositoryException"></exception>
+        /// <exception cref="RepositoryException"></exception>
         protected Exception DbSpecificException(Exception ex)
         {
             Logging.MethodCall(_log);
@@ -320,9 +320,9 @@ namespace JCS.Neon.Glow.Data.Repository.EFCore
             {
                 case PostgresException pex:
                     var message = $"{pex.MessageText}";
-                    return Exceptions.LoggedException<AsyncRepositoryException>(_log, message, pex);
+                    return Exceptions.LoggedException<RepositoryException>(_log, message, pex);
                 default:
-                    return Exceptions.LoggedException<AsyncRepositoryException>(_log,
+                    return Exceptions.LoggedException<RepositoryException>(_log,
                         $"DB Exception caught: \"{ex.Message}\"", ex);
             }
         }

@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
     /// <summary>
     ///     Simple entity used for unit testing
     /// </summary>
-    public class ModelGuidKeyedTestEntity : KeyedEntity<Guid>
+    public class ModelGuidRepositoryTestEntity : RepositoryEntity<Guid>
     {
         /// <summary>
         ///     Sample string property

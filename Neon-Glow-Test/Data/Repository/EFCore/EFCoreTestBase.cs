@@ -29,12 +29,12 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// <summary>
         ///     The actual test context
         /// </summary>
-        protected SqlLiteAsyncRepositoryAwareDbContext _context;
+        protected SqlLiteRepositoryAwareDbContext _context;
 
         /// <summary>
         ///     The context options
         /// </summary>
-        protected DbContextOptions<SqlLiteAsyncRepositoryAwareDbContext> _contextOptions;
+        protected DbContextOptions<SqlLiteRepositoryAwareDbContext> _contextOptions;
 
         /// <summary>
         ///     For logging purposes
@@ -44,7 +44,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// <summary>
         ///     List of test entities
         /// </summary>
-        protected List<ModelGuidKeyedTestEntity> _testEntries = new();
+        protected List<ModelGuidRepositoryTestEntity> _testEntries = new();
 
         public EFCoreTestBase(ITestOutputHelper output) : base(output)
         {
@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 
         protected void CreateContextOptions()
         {
-            _contextOptions = new DbContextOptionsBuilder<SqlLiteAsyncRepositoryAwareDbContext>()
+            _contextOptions = new DbContextOptionsBuilder<SqlLiteRepositoryAwareDbContext>()
                 .UseSqlite(CreateInMemoryDatabase())
                 .EnableSensitiveDataLogging()
                 .Options;
@@ -69,7 +69,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
 
         protected void CreateContext()
         {
-            _context = new SqlLiteAsyncRepositoryAwareDbContext(_contextOptions);
+            _context = new SqlLiteRepositoryAwareDbContext(_contextOptions);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
         }
@@ -97,7 +97,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         {
             for (var i = 0; i < 1000; i++)
             {
-                _testEntries.Add(new ModelGuidKeyedTestEntity
+                _testEntries.Add(new ModelGuidRepositoryTestEntity
                 {
                     StringProperty = $"Sample value {i}"
                 });
