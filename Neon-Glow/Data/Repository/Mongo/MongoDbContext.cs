@@ -1,17 +1,7 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JCS.Neon.Glow.Statics;
 using MongoDB.Driver;
@@ -125,12 +115,21 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="databaseName">The name of the database to check for</param>
         /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private bool DatabaseExists(string databaseName)
         {
-            return Client
-                .ListDatabaseNames()
-                .ToList()
-                .Any(s => s == databaseName);
+            try
+            {
+                return Client
+                    .ListDatabaseNames()
+                    .ToList()
+                    .Any(s => s == databaseName);
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
+                throw Exceptions.LoggedException<MongoDbContextException>(_log, $"Timed out connecting to \"{databaseName}\"", ex);
+            }
         }
 
         /// <summary>
@@ -138,16 +137,40 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="collectionName">The name of the collection</param>
         /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private bool CollectionExists(string collectionName)
         {
-            return Database.ListCollectionNames()
-                .ToList()
-                .Any(s => s == collectionName);
+            try
+            {
+                return Database.ListCollectionNames()
+                    .ToList()
+                    .Any(s => s == collectionName);
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
+                throw Exceptions.LoggedException<MongoDbContextException>(_log,
+                    $"Timed out whilst looking for collection \"{collectionName}\"", ex);
+            }
         }
 
         /// <summary>
+        ///     This member is called during database bind operations, and allows for <see cref="MongoDatabaseSettings" /> to be
+        ///     specified or overridden.  The underlying
+        ///     bind call checks whether the database being bound already exists within the underlying Mongo instance, or is being
+        ///     created dynamically.  If the database already exists, then a <see cref="DatabaseBindingType" /> with value
+        ///     <see cref="DatabaseBindingType.Existing" /> is passed through as part of the call.  Otherwise,
+        ///     <see cref="DatabaseBindingType.Create" /> is passed.
+        ///     <para>
+        ///         Subclasses may override this function in order to tailor their settings.  By default, read and write concern
+        ///         settings are
+        ///         taken from the currently configured <see cref="MongoDbContextOptions" />
+        ///     </para>
         /// </summary>
-        /// <param name="builder"></param>
+        /// <param name="builder">
+        ///     An instance of <see cref="MongoDatabaseSettingsBuilder" /> which is used to construct the
+        ///     database settings.
+        /// </param>
         protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, MongoDatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
@@ -161,6 +184,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     in order to get a valid reference
         /// </summary>
         /// <returns>A bound instance of <see cref="IMongoDatabase" /></returns>
+        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private IMongoDatabase BindDatabase()
         {
             Logging.MethodCall(_log);
