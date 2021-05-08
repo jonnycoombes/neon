@@ -18,13 +18,12 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 {
-    public abstract class EFCoreTestBase : TestBase, IDisposable
+    public abstract class EntityFrameworkTestBase : TestBase, IDisposable
     {
         /// <summary>
         ///     The actual test context
@@ -46,7 +45,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
         /// </summary>
         protected List<ModelGuidRepositoryTestEntity> _testEntries = new();
 
-        public EFCoreTestBase(ITestOutputHelper output) : base(output)
+        public EntityFrameworkTestBase(ITestOutputHelper output) : base(output)
         {
             _outputHelper = output;
             CreateContextOptions();

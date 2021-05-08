@@ -12,11 +12,11 @@
 #region
 
 using System;
-using JCS.Neon.Glow.Data.Repository.EFCore;
+using JCS.Neon.Glow.Data.Repository.EntityFramework;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 {
     /// <summary>
     ///     Keyed entity which isn't mapped to the main test context

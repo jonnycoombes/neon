@@ -28,6 +28,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         private readonly CreateCollectionOptions _options = new();
 
+
         /// <summary>
         ///     Builds and returns a new instance of <see cref="CreateCollectionOptions" />
         /// </summary>
@@ -35,6 +36,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public CreateCollectionOptions Build()
         {
             return _options;
+        }
+
+        /// <summary>
+        ///     Whether or not the collection should be capped
+        /// </summary>
+        /// <param name="value">True if the collection is to be capped</param>
+        /// <returns>The current instance of the builder</returns>
+        public MongoCreateCollectionOptionsBuilder Capped(bool value)
+        {
+            _options.Capped = value;
+            return this;
         }
     }
 }

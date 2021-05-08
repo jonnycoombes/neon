@@ -16,7 +16,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 {
     /// <summary>
     ///     Exception type specific to <see cref="IRepository{K,V}" /> aware contexts

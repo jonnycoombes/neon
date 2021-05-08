@@ -18,7 +18,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 {
     /// <summary>
     ///     A <see cref="DbContext" /> that understands how to create instances of <see cref="IRepository{K,V}" />

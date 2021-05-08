@@ -25,7 +25,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 {
     /// <summary>
     ///     Default implementation of <see cref="IRepository{K,V}" />.  This implementation essentially

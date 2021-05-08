@@ -20,10 +20,8 @@ using JCS.Neon.Glow.Types;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 {
-    // TODO Add repository configuration enums, options and options builder
-
 
     /// <summary>
     ///     General repository interface for storing and manipulating items of type V which derive from

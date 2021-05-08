@@ -11,14 +11,14 @@
  */
 #region
 
-using JCS.Neon.Glow.Data.Repository.EFCore;
+using JCS.Neon.Glow.Data.Repository.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 
 #endregion
 
-namespace JCS.Neon.Glow.Test.Data.Repository.EFCore
+namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 {
     public class SqlLiteRepositoryAwareDbContext : RepositoryAwareDbContext
     {
