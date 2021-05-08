@@ -12,7 +12,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using JCS.Neon.Glow.Statics;
 using MongoDB.Driver;
@@ -23,7 +22,7 @@ using Serilog;
 namespace JCS.Neon.Glow.Data.Repository.Mongo
 {
     /// <summary>
-    ///     Enumeration that denotes the kind of binding being performed against a database
+    ///     Enumeration that denotes the kind of binding being performed against a <see cref="IMongoDatabase" />
     /// </summary>
     public enum DatabaseBindingType
     {
@@ -34,6 +33,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
         /// <summary>
         ///     The bind operation relates to an existing database
+        /// </summary>
+        Existing
+    }
+
+    /// <summary>
+    ///     Enumeration which denotes the kind of binging being performed against a <see cref="IMongoCollection{TDocument}" />
+    /// </summary>
+    public enum CollectionBindingType
+    {
+        /// <summary>
+        ///     The bind operation relates to a new collection being created
+        /// </summary>
+        Create,
+
+        /// <summary>
+        ///     The bind operation relates to an existing collection
         /// </summary>
         Existing
     }
@@ -109,13 +124,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IMongoDbContext.Database" />
         public IMongoDatabase Database => BindDatabase();
 
-        /// <inheritdoc cref="IMongoDbContext.Collection{T}"/> 
+        /// <inheritdoc cref="IMongoDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings)
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc cref="IMongoDbContext.Queryable{T}"/> 
+        /// <inheritdoc cref="IMongoDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings)
         {
             throw new NotImplementedException();
@@ -217,6 +232,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var builder = new MongoDatabaseSettingsBuilder();
             OnDatabaseBinding(!DatabaseExists(Options.Database!) ? DatabaseBindingType.Create : DatabaseBindingType.Existing, builder);
             return Client.GetDatabase(Options.Database, builder.Build());
+        }
+
+        /// <summary>
+        /// Checks whether we currently have a binding into a collection for objects of type <see cref="T"/>, and if not performs any necessary bind operations
+        /// </summary>
+        /// <typeparam name="T">The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}"/></typeparam>
+        /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}"/></returns>
+        private IMongoCollection<T> BindCollection<T>()
+        {
+            return null;
         }
     }
 }
