@@ -109,6 +109,18 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IMongoDbContext.Database" />
         public IMongoDatabase Database => BindDatabase();
 
+        /// <inheritdoc cref="IMongoDbContext.Collection{T}"/> 
+        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc cref="IMongoDbContext.Queryable{T}"/> 
+        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object.
         /// </summary>
