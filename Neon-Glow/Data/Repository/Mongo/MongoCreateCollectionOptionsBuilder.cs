@@ -48,5 +48,71 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _options.Capped = value;
             return this;
         }
+
+        /// <summary>
+        ///     Sets the maximum size for a collection
+        /// </summary>
+        /// <param name="size">The maximum size of a collection in bytes</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder MaxSize(long size)
+        {
+            _options.MaxSize = size;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the maximum number of documents in the collection.  Only applies for capped collections
+        /// </summary>
+        /// <param name="count">The maximum number of documents</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder MaxDocuments(long count)
+        {
+            _options.MaxDocuments = count;
+            return this;
+        }
+
+        /// <summary>
+        ///     Whether the collection should not use padding
+        /// </summary>
+        /// <param name="noPadding">True or false</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder NoPadding(bool noPadding)
+        {
+            _options.NoPadding = noPadding;
+            return this;
+        }
+
+        /// <summary>
+        ///     Whether the collection should use power of 2 sizes
+        /// </summary>
+        /// <param name="usePowerOf2Sizes">True or false</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder UsePowerOf2Sizes(bool usePowerOf2Sizes)
+        {
+            _options.UsePowerOf2Sizes = usePowerOf2Sizes;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the <see cref="DocumentValidationAction" /> for the collection
+        /// </summary>
+        /// <param name="action">A value from the <see cref="DocumentValidationAction" /> enumeration</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder ValidationAction(DocumentValidationAction action)
+        {
+            _options.ValidationAction = action;
+            return this;
+        }
+
+        /// <summary>
+        ///     Sets the validation level for the collection
+        /// </summary>
+        /// <param name="level">A value from the <see cref="DocumentValidationLevel" /> enumeration</param>
+        /// <returns>The current builder instance</returns>
+        public MongoCreateCollectionOptionsBuilder ValidationLevel(DocumentValidationLevel level)
+        {
+            _options.ValidationLevel = level;
+            return this;
+        }
     }
 }
