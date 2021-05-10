@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System.Linq;
@@ -37,6 +26,20 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The bound <see cref="IMongoDatabase" /> being used by the context
         /// </summary>
         public IMongoDatabase Database { get; }
+
+        /// <summary>
+        ///     Checks whether a given database exists, based on the current <see cref="MongoClient" /> settings
+        /// </summary>
+        /// <param name="databaseName">The name of the database to check for</param>
+        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        public bool DatabaseExists(string databaseName);
+
+        /// <summary>
+        ///     Checks whether a given collection exists, based on the current <see cref="MongoClient" /> settings and database
+        /// </summary>
+        /// <param name="collectionName">The name of the collection to check</param>
+        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
+        public bool CollectionExists(string collectionName);
 
         /// <summary>
         ///     Returns a typed collection interface for interacting with objects of type <see cref="T" />

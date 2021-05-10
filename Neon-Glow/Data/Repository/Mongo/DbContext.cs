@@ -148,13 +148,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <summary>
-        ///     Function which checks whether a given database currently exists
-        /// </summary>
-        /// <param name="databaseName">The name of the database to check for</param>
-        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
-        /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
-        private bool DatabaseExists(string databaseName)
+        ///  <inheritdoc cref="IDbContext.DatabaseExists"/>
+        public bool DatabaseExists(string databaseName)
         {
             try
             {
@@ -170,13 +165,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <summary>
-        ///     Function which checks whether a given collection currently exists
-        /// </summary>
-        /// <param name="collectionName">The name of the collection</param>
-        /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
-        /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
-        private bool CollectionExists(string collectionName)
+        /// <inheritdoc cref="IDbContext.CollectionExists"/> 
+        public bool CollectionExists(string collectionName)
         {
             try
             {
