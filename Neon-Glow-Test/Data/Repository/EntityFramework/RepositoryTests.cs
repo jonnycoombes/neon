@@ -26,9 +26,9 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
     ///     Test suite for <see cref="JCS.Neon.Glow.Data.Repository.IAsyncRepository" />
     /// </summary>
     [Trait("Category", "Data:EntityFramework")]
-    public class EntityFrameworkRepositoryTests : EntityFrameworkTestBase
+    public class RepositoryTests : EntityFrameworkTestBase
     {
-        public EntityFrameworkRepositoryTests(ITestOutputHelper output) : base(output)
+        public RepositoryTests(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -39,16 +39,16 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public void CheckCreateValidRepository()
         {
-            Assert.NotNull(_context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>());
+            Assert.NotNull(_context.CreateRepository<Guid, ModelGuidTestEntity>());
         }
 
         [Fact(DisplayName = "Can't create a non-model entity repository")]
         [Trait("Category", "Data:EntityFramework")]
         public void CheckCreateInvalidRepository()
         {
-            Assert.Throws<RepositoryAwareDbContextException>(() =>
+            Assert.Throws<DbContextException>(() =>
             {
-                var repository = _context.CreateRepository<Guid, NonModelGuidRepositoryEntity>();
+                var repository = _context.CreateRepository<Guid, NonModelGuidEntity>();
             });
         }
 
@@ -56,7 +56,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CountRepositoryItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             var total = await repository.Count();
             AddTestEntries();
             Assert.Equal(total + _testEntries.Count, await repository.Count());
@@ -66,7 +66,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CountMatchingRepositoryItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             Assert.Equal(1, await repository.CountWhere(p => p.StringProperty == "Sample value 1"));
         }
@@ -75,7 +75,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CheckForItemWithKey()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             Assert.True(await repository.HasItemWithKey(_testEntries[0].Id));
         }
@@ -84,7 +84,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectKnownValues()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOne(v => v.StringProperty.Equals("Sample value 3"));
             Assert.False(item.IsNone);
@@ -94,7 +94,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectUnknownValues()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOne(v => v.StringProperty.Equals("Invalid property value"));
             Assert.True(item.IsNone);
@@ -104,13 +104,13 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CheckAsyncEnumeration()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var enumerator = repository.GetEnumerator();
             while (await enumerator.MoveNextAsync())
             {
                 var item = enumerator.Current;
-                Assert.IsType<ModelGuidRepositoryTestEntity>(item);
+                Assert.IsType<ModelGuidTestEntity>(item);
             }
         }
 
@@ -118,7 +118,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectOneByKnownKey()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var item = await repository.SelectOne(_testEntries[0].Id);
             Assert.False(item.IsNone);
@@ -128,7 +128,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectManyByKnownKeys()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var items = await repository.SelectMany(new[] {_testEntries[0].Id, _testEntries[1].Id});
             Assert.Equal(2, items.Count());
@@ -138,7 +138,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectManyByExpression()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var items = await repository.SelectMany(v => v.StringProperty.StartsWith("Sample"));
             Assert.Equal(_testEntries.Count, items.Count());
@@ -148,8 +148,8 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CreateSingleItem()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
-            var item = await repository.CreateOne(new ModelGuidRepositoryTestEntity
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
+            var item = await repository.CreateOne(new ModelGuidTestEntity
             {
                 StringProperty = "Test value"
             });
@@ -160,7 +160,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void CreateMultipleItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             var items = await repository.CreateMany(_testEntries.ToArray());
             Assert.Equal(_testEntries.Count(), await repository.Count());
         }
@@ -169,7 +169,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectMultipleKeyValues()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var keys = await repository.SelectManyKeys(v => v.StringProperty.StartsWith("Sample"));
             Assert.Equal(_testEntries.Count(), keys.Count());
@@ -179,7 +179,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void DeleteSingleItem()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             await repository.DeleteOne(_testEntries[0]);
             Assert.Equal(_testEntries.Count - 1, await repository.Count());
@@ -189,7 +189,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void DeleteMultipleItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             await repository.DeleteMany(_testEntries.ToArray());
             Assert.Equal(0, await repository.Count());
@@ -199,7 +199,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void UpdateExistingItem()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             await repository.UpsertOne(_testEntries[1]);
@@ -212,13 +212,13 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void UpdateExistingItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             _testEntries[1].StringProperty = "Test update";
             _testEntries[2].StringProperty = "Test update";
             await repository.UpsertMany(new[] {_testEntries[1], _testEntries[2]});
-            ModelGuidRepositoryTestEntity r1;
-            ModelGuidRepositoryTestEntity r2;
+            ModelGuidTestEntity r1;
+            ModelGuidTestEntity r2;
             (await repository.SelectOne(v => v.Id.Equals(_testEntries[1].Id))).IsSome(out r1);
             (await repository.SelectOne(v => v.Id.Equals(_testEntries[2].Id))).IsSome(out r2);
             Assert.Equal("Test update", r1.StringProperty);
@@ -229,7 +229,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         [Trait("Category", "Data:EntityFramework")]
         public async void SelectAndProjectItems()
         {
-            var repository = _context.CreateRepository<Guid, ModelGuidRepositoryTestEntity>();
+            var repository = _context.CreateRepository<Guid, ModelGuidTestEntity>();
             AddTestEntries();
             var selected = await repository.SelectAndProjectMany(v => v.StringProperty.StartsWith("Sample"), v => v.StringProperty);
             Assert.Equal(_testEntries.Count, selected.Count());

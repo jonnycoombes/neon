@@ -15,19 +15,20 @@ using JCS.Neon.Glow.Data.Repository.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
+using DbContext = JCS.Neon.Glow.Data.Repository.EntityFramework.DbContext;
 
 #endregion
 
 namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 {
-    public class SqlLiteRepositoryAwareDbContext : RepositoryAwareDbContext
+    public class SqlLiteDbContext : DbContext
     {
-        public SqlLiteRepositoryAwareDbContext(DbContextOptions<SqlLiteRepositoryAwareDbContext> options)
+        public SqlLiteDbContext(DbContextOptions<SqlLiteDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<ModelGuidRepositoryTestEntity> GuidEntries { get; set; }
+        public DbSet<ModelGuidTestEntity> GuidEntries { get; set; }
 
         /// <summary>
         ///     Various tweaks and overrides to the default mappings happen here - for example,
@@ -42,10 +43,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
                         v.ToDateTimeUtc(),
                     v => Instant.FromDateTimeUtc(v));
 
-            modelBuilder.Entity<ModelGuidRepositoryTestEntity>()
+            modelBuilder.Entity<ModelGuidTestEntity>()
                 .Property(g => g.Id)
                 .ValueGeneratedOnAdd();
-            modelBuilder.Entity<ModelGuidRepositoryTestEntity>()
+            modelBuilder.Entity<ModelGuidTestEntity>()
                 .Property(g => g.CreationTime)
                 .HasConversion(instantConverter);
 

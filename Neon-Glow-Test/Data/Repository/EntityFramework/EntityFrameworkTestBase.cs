@@ -28,12 +28,12 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         /// <summary>
         ///     The actual test context
         /// </summary>
-        protected SqlLiteRepositoryAwareDbContext _context;
+        protected SqlLiteDbContext _context;
 
         /// <summary>
         ///     The context options
         /// </summary>
-        protected DbContextOptions<SqlLiteRepositoryAwareDbContext> _contextOptions;
+        protected DbContextOptions<SqlLiteDbContext> _contextOptions;
 
         /// <summary>
         ///     For logging purposes
@@ -43,7 +43,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         /// <summary>
         ///     List of test entities
         /// </summary>
-        protected List<ModelGuidRepositoryTestEntity> _testEntries = new();
+        protected List<ModelGuidTestEntity> _testEntries = new();
 
         public EntityFrameworkTestBase(ITestOutputHelper output) : base(output)
         {
@@ -60,7 +60,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 
         protected void CreateContextOptions()
         {
-            _contextOptions = new DbContextOptionsBuilder<SqlLiteRepositoryAwareDbContext>()
+            _contextOptions = new DbContextOptionsBuilder<SqlLiteDbContext>()
                 .UseSqlite(CreateInMemoryDatabase())
                 .EnableSensitiveDataLogging()
                 .Options;
@@ -68,7 +68,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
 
         protected void CreateContext()
         {
-            _context = new SqlLiteRepositoryAwareDbContext(_contextOptions);
+            _context = new SqlLiteDbContext(_contextOptions);
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
         }
@@ -96,7 +96,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
         {
             for (var i = 0; i < 1000; i++)
             {
-                _testEntries.Add(new ModelGuidRepositoryTestEntity
+                _testEntries.Add(new ModelGuidTestEntity
                 {
                     StringProperty = $"Sample value {i}"
                 });

@@ -22,7 +22,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Build for <see cref="MongoDatabaseSettings" />
     /// </summary>
-    public class MongoDatabaseSettingsBuilder : IBuilder<MongoDatabaseSettings>
+    public class DatabaseSettingsBuilder : IBuilder<MongoDatabaseSettings>
     {
         /// <summary>
         ///     The internal instance of <see cref="MongoDatabaseSettings" />
@@ -43,7 +43,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="concern">A valid <see cref="ReadConcern" /></param>
         /// <returns>The current builder instance</returns>
-        public MongoDatabaseSettingsBuilder ReadConcern(ReadConcern concern)
+        public DatabaseSettingsBuilder ReadConcern(ReadConcern concern)
         {
             _settings.ReadConcern = concern;
             return this;
@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="encoding">An instance of <see cref="UTF8Encoding" /></param>
         /// <returns>The current builder instance</returns>
-        public MongoDatabaseSettingsBuilder ReadEncoding(UTF8Encoding encoding)
+        public DatabaseSettingsBuilder ReadEncoding(UTF8Encoding encoding)
         {
             _settings.ReadEncoding = encoding;
             return this;
@@ -65,7 +65,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="preference">A valid <see cref="ReadPreference" /></param>
         /// <returns>The current builder instance</returns>
-        public MongoDatabaseSettingsBuilder ReadPreference(ReadPreference preference)
+        public DatabaseSettingsBuilder ReadPreference(ReadPreference preference)
         {
             _settings.ReadPreference = preference;
             return this;
@@ -76,7 +76,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="concern">A valid <see cref="WriteConcern" /></param>
         /// <returns>The current builder instance</returns>
-        public MongoDatabaseSettingsBuilder WriteConcern(WriteConcern concern)
+        public DatabaseSettingsBuilder WriteConcern(WriteConcern concern)
         {
             _settings.WriteConcern = concern;
             return this;
@@ -87,7 +87,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="encoding">A valid <see cref="UTF8Encoding" /> instance</param>
         /// <returns>The current builder instance</returns>
-        public MongoDatabaseSettingsBuilder WriteEncoding(UTF8Encoding encoding)
+        public DatabaseSettingsBuilder WriteEncoding(UTF8Encoding encoding)
         {
             _settings.WriteEncoding = encoding;
             return this;

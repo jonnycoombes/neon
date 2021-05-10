@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     A builder for creating new instances of <see cref="CreateCollectionOptions" />
     /// </summary>
-    public class MongoCreateCollectionOptionsBuilder : IBuilder<CreateCollectionOptions>
+    public class CreateCollectionOptionsBuilder : IBuilder<CreateCollectionOptions>
     {
         /// <summary>
         ///     The internal instance of <see cref="CreateCollectionOptions" />
@@ -43,7 +43,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="value">True if the collection is to be capped</param>
         /// <returns>The current instance of the builder</returns>
-        public MongoCreateCollectionOptionsBuilder Capped(bool value)
+        public CreateCollectionOptionsBuilder Capped(bool value)
         {
             _options.Capped = value;
             return this;
@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="size">The maximum size of a collection in bytes</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder MaxSize(long size)
+        public CreateCollectionOptionsBuilder MaxSize(long size)
         {
             _options.MaxSize = size;
             return this;
@@ -65,7 +65,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="count">The maximum number of documents</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder MaxDocuments(long count)
+        public CreateCollectionOptionsBuilder MaxDocuments(long count)
         {
             _options.MaxDocuments = count;
             return this;
@@ -76,7 +76,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="noPadding">True or false</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder NoPadding(bool noPadding)
+        public CreateCollectionOptionsBuilder NoPadding(bool noPadding)
         {
             _options.NoPadding = noPadding;
             return this;
@@ -87,7 +87,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="usePowerOf2Sizes">True or false</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder UsePowerOf2Sizes(bool usePowerOf2Sizes)
+        public CreateCollectionOptionsBuilder UsePowerOf2Sizes(bool usePowerOf2Sizes)
         {
             _options.UsePowerOf2Sizes = usePowerOf2Sizes;
             return this;
@@ -98,7 +98,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="action">A value from the <see cref="DocumentValidationAction" /> enumeration</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder ValidationAction(DocumentValidationAction action)
+        public CreateCollectionOptionsBuilder ValidationAction(DocumentValidationAction action)
         {
             _options.ValidationAction = action;
             return this;
@@ -109,7 +109,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="level">A value from the <see cref="DocumentValidationLevel" /> enumeration</param>
         /// <returns>The current builder instance</returns>
-        public MongoCreateCollectionOptionsBuilder ValidationLevel(DocumentValidationLevel level)
+        public CreateCollectionOptionsBuilder ValidationLevel(DocumentValidationLevel level)
         {
             _options.ValidationLevel = level;
             return this;

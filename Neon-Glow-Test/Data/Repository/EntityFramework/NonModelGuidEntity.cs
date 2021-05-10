@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.EntityFramework
     /// <summary>
     ///     Keyed entity which isn't mapped to the main test context
     /// </summary>
-    public class NonModelGuidRepositoryEntity : RepositoryEntity<Guid>
+    public class NonModelGuidEntity : Entity<Guid>
     {
     
     }

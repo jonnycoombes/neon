@@ -21,7 +21,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Interface definition for a database context backed by Mongo DB
     /// </summary>
-    public interface IMongoDbContext
+    public interface IDbContext
     {
         /// <summary>
         ///     The <see cref="MongoClient" /> currently being used by the context
@@ -29,9 +29,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoClient Client { get; }
 
         /// <summary>
-        ///     The currently configured set of <see cref="MongoDbContextOptions" /> being used by the context
+        ///     The currently configured set of <see cref="DbContextOptions" /> being used by the context
         /// </summary>
-        public MongoDbContextOptions Options { get; }
+        public DbContextOptions Options { get; }
 
         /// <summary>
         ///     The bound <see cref="IMongoDatabase" /> being used by the context

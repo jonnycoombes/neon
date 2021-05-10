@@ -37,7 +37,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [InlineData("neon-test")]
         public void CheckNewDatabaseBind(string databaseName)
         {
-            var context = new MongoTestContext(ConfigureContextOptions(databaseName));
+            var context = new TestContext(ConfigureContextOptions(databaseName));
             var database = context.Database;
             Assert.True(database.Settings.ReadConcern.Equals(ReadConcern.Default));
             Assert.True(database.DatabaseNamespace.DatabaseName == databaseName);
@@ -50,7 +50,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [InlineData("config")]
         public void CheckSystemDatabaseBind(string databaseName)
         {
-            var context = new MongoTestContext(ConfigureContextOptions(databaseName));
+            var context = new TestContext(ConfigureContextOptions(databaseName));
             var database = context.Database;
             Assert.True(database.DatabaseNamespace.DatabaseName == databaseName);
         }

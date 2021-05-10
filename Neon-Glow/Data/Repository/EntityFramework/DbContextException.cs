@@ -21,21 +21,21 @@ namespace JCS.Neon.Glow.Data.Repository.EntityFramework
     /// <summary>
     ///     Exception type specific to <see cref="IRepository{K,V}" /> aware contexts
     /// </summary>
-    public class RepositoryAwareDbContextException : Exception
+    public class DbContextException : Exception
     {
-        public RepositoryAwareDbContextException()
+        public DbContextException()
         {
         }
 
-        protected RepositoryAwareDbContextException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected DbContextException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
-        public RepositoryAwareDbContextException(string? message) : base(message)
+        public DbContextException(string? message) : base(message)
         {
         }
 
-        public RepositoryAwareDbContextException(string? message, Exception? innerException) : base(message, innerException)
+        public DbContextException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
     }

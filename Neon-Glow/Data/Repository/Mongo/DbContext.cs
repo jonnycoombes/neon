@@ -58,12 +58,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     ///     management etc...Derived classes can add automatic support for repository-style access to collections and related
     ///     functionality through generic virtual methods and properties.
     /// </summary>
-    public abstract class MongoDbContext : IMongoDbContext
+    public abstract class DbContext : IDbContext
     {
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<MongoDbContext>();
+        private static readonly ILogger _log = Log.ForContext<DbContext>();
 
         /// <summary>
         ///     The underlying <see cref="MongoClient" />
@@ -77,60 +77,60 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="databaseName">The database name</param>
         /// <param name="user">The user to be used for authentication</param>
         /// <param name="password">The password to be used for authentication</param>
-        protected MongoDbContext(string hostName, string databaseName, string user, string password)
+        protected DbContext(string hostName, string databaseName, string user, string password)
         {
             Logging.MethodCall(_log);
-            Options = new MongoDbContextOptionsBuilder()
+            Options = new DbContextOptionsBuilder()
                 .Host(hostName)
                 .Database(databaseName)
-                .AuthenticationType(MongoAuthenticationType.Basic)
+                .AuthenticationType(AuthenticationType.Basic)
                 .User(user)
                 .Password(password)
                 .Build();
         }
 
         /// <summary>
-        ///     Constructor that takes an instance of <see cref="MongoDbContextOptions" />
+        ///     Constructor that takes an instance of <see cref="DbContextOptions" />
         /// </summary>
-        /// <param name="options">An instance of <see cref="MongoDbContextOptions" /></param>
-        protected MongoDbContext(MongoDbContextOptions options)
+        /// <param name="options">An instance of <see cref="DbContextOptions" /></param>
+        protected DbContext(DbContextOptions options)
         {
             Logging.MethodCall(_log);
             Options = options;
         }
 
         /// <summary>
-        ///     Constructor that takes an <see cref="Action" /> that can take a <see cref="MongoDbContextOptionsBuilder" />
+        ///     Constructor that takes an <see cref="Action" /> that can take a <see cref="DbContextOptionsBuilder" />
         ///     instance and configure the context options through the builder
         /// </summary>
         /// <param name="configureAction">
         ///     An <see cref="Action" /> which modifies an instance of
-        ///     <see cref="MongoDbContextOptionsBuilder" /> in order to arrive at a good configuration
+        ///     <see cref="DbContextOptionsBuilder" /> in order to arrive at a good configuration
         /// </param>
-        protected MongoDbContext(Action<MongoDbContextOptionsBuilder> configureAction)
+        protected DbContext(Action<DbContextOptionsBuilder> configureAction)
         {
             Logging.MethodCall(_log);
-            var builder = new MongoDbContextOptionsBuilder();
+            var builder = new DbContextOptionsBuilder();
             configureAction(builder);
             Options = builder.Build();
         }
 
-        /// <inheritdoc cref="IMongoDbContext.Client" />
+        /// <inheritdoc cref="IDbContext.Client" />
         public MongoClient Client => BindClient();
 
-        /// <inheritdoc cref="IMongoDbContext.Options" />
-        public MongoDbContextOptions Options { get; }
+        /// <inheritdoc cref="IDbContext.Options" />
+        public DbContextOptions Options { get; }
 
-        /// <inheritdoc cref="IMongoDbContext.Database" />
+        /// <inheritdoc cref="IDbContext.Database" />
         public IMongoDatabase Database => BindDatabase();
 
-        /// <inheritdoc cref="IMongoDbContext.Collection{T}" />
+        /// <inheritdoc cref="IDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings)
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc cref="IMongoDbContext.Queryable{T}" />
+        /// <inheritdoc cref="IDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings)
         {
             throw new NotImplementedException();
@@ -153,7 +153,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="databaseName">The name of the database to check for</param>
         /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
-        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
+        /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private bool DatabaseExists(string databaseName)
         {
             try
@@ -166,7 +166,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             catch (Exception ex)
             {
                 Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
-                throw Exceptions.LoggedException<MongoDbContextException>(_log, $"Timed out connecting to \"{databaseName}\"", ex);
+                throw Exceptions.LoggedException<DbContextException>(_log, $"Timed out connecting to \"{databaseName}\"", ex);
             }
         }
 
@@ -175,7 +175,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="collectionName">The name of the collection</param>
         /// <returns><code>true</code> if the database exists, <code>false</code> otherwise</returns>
-        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
+        /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private bool CollectionExists(string collectionName)
         {
             try
@@ -187,7 +187,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             catch (Exception ex)
             {
                 Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
-                throw Exceptions.LoggedException<MongoDbContextException>(_log,
+                throw Exceptions.LoggedException<DbContextException>(_log,
                     $"Timed out whilst looking for collection \"{collectionName}\"", ex);
             }
         }
@@ -202,14 +202,14 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     <para>
         ///         Subclasses may override this function in order to tailor their settings.  By default, read and write concern
         ///         settings are
-        ///         taken from the currently configured <see cref="MongoDbContextOptions" />
+        ///         taken from the currently configured <see cref="DbContextOptions" />
         ///     </para>
         /// </summary>
         /// <param name="builder">
-        ///     An instance of <see cref="MongoDatabaseSettingsBuilder" /> which is used to construct the
+        ///     An instance of <see cref="DatabaseSettingsBuilder" /> which is used to construct the
         ///     database settings.
         /// </param>
-        protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, MongoDatabaseSettingsBuilder builder)
+        protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, DatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
             builder
@@ -222,14 +222,14 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     in order to get a valid reference
         /// </summary>
         /// <returns>A bound instance of <see cref="IMongoDatabase" /></returns>
-        /// <exception cref="MongoDbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
+        /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private IMongoDatabase BindDatabase()
         {
             Logging.MethodCall(_log);
-            Assertions.Checked<MongoDbContextException>(Options.Database != null,
+            Assertions.Checked<DbContextException>(Options.Database != null,
                 "No database name has been specified");
 
-            var builder = new MongoDatabaseSettingsBuilder();
+            var builder = new DatabaseSettingsBuilder();
             OnDatabaseBinding(!DatabaseExists(Options.Database!) ? DatabaseBindingType.Create : DatabaseBindingType.Existing, builder);
             return Client.GetDatabase(Options.Database, builder.Build());
         }

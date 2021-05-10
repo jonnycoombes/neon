@@ -1,14 +1,3 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
@@ -29,24 +18,24 @@ namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 {
     /// <summary>
     ///     Default implementation of <see cref="IRepository{K,V}" />.  This implementation essentially
-    ///     translates operations to an underlying <see cref="RepositoryAwareDbContext" /> instance.
+    ///     translates operations to an underlying <see cref="DbContext" /> instance.
     /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
+    /// <typeparam name="K">The key type for <see cref="Entity" /> instances managed by the repository</typeparam>
+    /// <typeparam name="V">The value type for the <see cref="Entity" /> instances managed by the repository</typeparam>
     public class Repository<K, V> : IRepository<K, V>
         where K : IComparable<K>, IEquatable<K>
-        where V : RepositoryEntity<K>
+        where V : Entity<K>
     {
         /// <summary>
         ///     The underlying context instance
         /// </summary>
-        private readonly RepositoryAwareDbContext _context;
+        private readonly DbContext _context;
 
         /// <summary>
-        ///     Constructor which takes a supporting <see cref="RepositoryAwareDbContext" /> instance
+        ///     Constructor which takes a supporting <see cref="DbContext" /> instance
         /// </summary>
         /// <param name="context"></param>
-        public Repository(RepositoryAwareDbContext context)
+        public Repository(DbContext context)
         {
             Logging.MethodCall(_log);
             _context = context;
@@ -72,7 +61,8 @@ namespace JCS.Neon.Glow.Data.Repository.EntityFramework
         }
 
         /// <inheritdoc cref="IRepository{K,V}.CountWhere" />
-        public async Task<long> CountWhere(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
+        public async Task<long> CountWhere(Expression<Func<V, bool>> expression,
+            CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
             try
@@ -117,7 +107,8 @@ namespace JCS.Neon.Glow.Data.Repository.EntityFramework
 
         /// <inheritdoc
         ///     cref="IRepository{K,V}.SelectOne(System.Linq.Expressions.Expression{System.Func{V,bool}},System.Threading.CancellationToken)" />
-        public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression, CancellationToken cancellationToken = default)
+        public async Task<Option<V>> SelectOne(Expression<Func<V, bool>> expression,
+            CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
             try

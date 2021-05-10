@@ -18,7 +18,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
-using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using Serilog;
@@ -30,7 +29,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Enumeration for denoting the type of authentication to use in order to connect to Mongo
     /// </summary>
-    public enum MongoAuthenticationType
+    public enum AuthenticationType
     {
         /// <summary>
         ///     Basic authentication, using SCRAM (Salted Challenge Response Authentication Mechanism).  Username and password
@@ -47,7 +46,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Enumeration for denoting the type of channel to use in order to connect to Mongo
     /// </summary>
-    public enum MongoChannelType
+    public enum ChannelType
     {
         /// <summary>
         ///     No channel encryption (DO NOT USE IN PRODUCTION)
@@ -68,7 +67,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Class for containing Mongo DB context options
     /// </summary>
-    public class MongoDbContextOptions
+    public class DbContextOptions
     {
         /// <summary>
         ///     The default port used to connect through to a Mongo DB instance
@@ -83,7 +82,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     Static logger for this class
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<MongoDbContextOptions>();
+        private static readonly ILogger _log = Log.ForContext<DbContextOptions>();
 
         /// <summary>
         ///     The default application name value
@@ -122,14 +121,14 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public string? ReplicaSet { get; set; }
 
         /// <summary>
-        ///     The <see cref="MongoAuthenticationType" /> to use
+        ///     The <see cref="Mongo.AuthenticationType" /> to use
         /// </summary>
-        public MongoAuthenticationType AuthenticationType { get; set; } = MongoAuthenticationType.Basic;
+        public AuthenticationType AuthenticationType { get; set; } = AuthenticationType.Basic;
 
         /// <summary>
-        ///     The <see cref="MongoChannelType" /> to use
+        ///     The <see cref="Mongo.ChannelType" /> to use
         /// </summary>
-        public MongoChannelType ChannelType { get; set; } = MongoChannelType.PlainText;
+        public ChannelType ChannelType { get; set; } = ChannelType.PlainText;
 
         /// <summary>
         ///     Accesses a <see cref="MongoServerAddress" /> instance based on the current options
@@ -270,16 +269,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///     Takes a validation function, and will then attempt to convert the current <see cref="MongoDbContextOptions" />
+        ///     Takes a validation function, and will then attempt to convert the current <see cref="DbContextOptions" />
         ///     instance to an instance of <see cref="MongoClientSettings" />
         /// </summary>
         /// <param name="optionsValidationFunc">
-        ///     A function that will be passed the current instance of <see cref="MongoDbContextOptions" /> and should return true
+        ///     A function that will be passed the current instance of <see cref="DbContextOptions" /> and should return true
         ///     or false
         /// </param>
         /// <returns>A new instance of <see cref="MongoClientSettings" /></returns>
-        /// <exception cref="MongoDbContextException">Thrown if validation of the current options fails</exception>
-        public MongoClientSettings BuildClientSettings(Func<MongoDbContextOptions, bool>? optionsValidationFunc = null)
+        /// <exception cref="DbContextException">Thrown if validation of the current options fails</exception>
+        public MongoClientSettings BuildClientSettings(Func<DbContextOptions, bool>? optionsValidationFunc = null)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Build a new client settings based on {this}");
@@ -293,7 +292,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     clientSettings.ReplicaSetName = ReplicaSet;
                 }
 
-                if (AuthenticationType == MongoAuthenticationType.Basic)
+                if (AuthenticationType == AuthenticationType.Basic)
                 {
                     Logging.Verbose(_log, "Configuring for basic authentication");
                     clientSettings.Credential =
@@ -307,13 +306,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                         : MongoCredential.CreateMongoX509Credential();
                 }
 
-                if (ChannelType is MongoChannelType.Secure or MongoChannelType.SecureNoRevocationChecks)
+                if (ChannelType is ChannelType.Secure or ChannelType.SecureNoRevocationChecks)
                 {
                     Logging.Verbose(_log, "Using TLS over-the-wire for Mongo connection(s)");
                     clientSettings.UseTls = true;
                     clientSettings.SslSettings.ClientCertificates = ClientCertificates;
                     clientSettings.SslSettings.CheckCertificateRevocation =
-                        ChannelType is not MongoChannelType.SecureNoRevocationChecks;
+                        ChannelType is not ChannelType.SecureNoRevocationChecks;
                     if (AllowSelfSignedCertificates)
                     {
                         Logging.Warning(_log,
@@ -330,7 +329,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
             else
             {
-                throw Exceptions.LoggedException<MongoDbContextException>(_log,
+                throw Exceptions.LoggedException<DbContextException>(_log,
                     $"An invalid set of options have been specified: {this}");
             }
 
@@ -338,11 +337,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        ///     Static function used in order to validate the current <see cref="MongoDbContextOptions" />
+        ///     Static function used in order to validate the current <see cref="DbContextOptions" />
         /// </summary>
-        /// <param name="options">The <see cref="MongoDbContextOptions" /> instance to be validated</param>
+        /// <param name="options">The <see cref="DbContextOptions" /> instance to be validated</param>
         /// <returns><code>true</code> or <code>false</code> depending on whether the options look to be valid</returns>
-        private static bool DefaultOptionsValidationFunction(MongoDbContextOptions options)
+        private static bool DefaultOptionsValidationFunction(DbContextOptions options)
         {
             Logging.MethodCall(_log);
             if (options.Database is null)
@@ -358,7 +357,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
             switch (options.AuthenticationType)
             {
-                case MongoAuthenticationType.Basic:
+                case AuthenticationType.Basic:
                     if (options.User is null || options.Password is null)
                     {
                         Logging.Error(_log, "Null usernames or passwords are not allowed");
@@ -376,251 +375,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
 
             return true;
-        }
-    }
-
-    /// <summary>
-    ///     Builder class for <see cref="MongoDbContextOptions" />
-    /// </summary>
-    public class MongoDbContextOptionsBuilder : IBuilder<MongoDbContextOptions>
-    {
-        /// <summary>
-        ///     The actual <see cref="MongoDbContextOptions" /> instance
-        /// </summary>
-        private readonly MongoDbContextOptions _options = new();
-
-        /// <summary>
-        ///     Builds a <see cref="MongoDbContextOptions" /> instance
-        /// </summary>
-        /// <returns>A fresh, mint-scented <see cref="MongoDbContextOptions" /> instance</returns>
-        public MongoDbContextOptions Build()
-        {
-            return _options;
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.ServerScheme" /> property
-        /// </summary>
-        /// <param name="scheme">A value from the <see cref="ConnectionStringScheme" /> enumeration</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Scheme(ConnectionStringScheme scheme)
-        {
-            _options.ServerScheme = scheme;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.Host" /> property.  The default is 'localhost'
-        /// </summary>
-        /// <param name="host">A host name (note that this isn't checked for validity</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Host(string host)
-        {
-            _options.Host = host;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.Port" /> property.  The default Mongo DB port is 27017.
-        /// </summary>
-        /// <param name="port">A port number</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Port(int port)
-        {
-            _options.Port = port;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.Database" /> property.
-        /// </summary>
-        /// <param name="databaseName">The name of the database to mount.  Will be created if it doesn't already exist</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Database(string databaseName)
-        {
-            _options.Database = databaseName;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the <see cref="MongoDbContextOptions.Application" /> property
-        /// </summary>
-        /// <param name="name">A string containing the required application name</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Application(string name)
-        {
-            _options.Application = name;
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a server address to the current options instance
-        /// </summary>
-        /// <param name="host">The hostname of the server</param>
-        /// <param name="port">The port number of the server</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ServerAddress(string host, int port)
-        {
-            _options.AddServerAddress(host, port);
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a server address to the current options instance, using the default port
-        /// </summary>
-        /// <param name="host">The hostname of the server</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ServerAddress(string host)
-        {
-            _options.AddServerAddress(host);
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the authentication type to use
-        /// </summary>
-        /// <param name="authenticationType">A value from the <see cref="MongoAuthenticationType" /> enumeration</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder AuthenticationType(MongoAuthenticationType authenticationType)
-        {
-            _options.AuthenticationType = authenticationType;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the channel type to use.
-        /// </summary>
-        /// <param name="channelType">A valid value from the <see cref="MongoChannelType" /> enumeration</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ChannelType(MongoChannelType channelType)
-        {
-            _options.ChannelType = channelType;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the username to be used during authentication
-        /// </summary>
-        /// <param name="username">A user name</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder User(string username)
-        {
-            _options.User = username;
-            return this;
-        }
-
-        /// <summary>
-        ///     A password to be used during SCRAM authentication
-        /// </summary>
-        /// <param name="password">A password</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder Password(string password)
-        {
-            _options.Password = password;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the database to use for authentication.  The default is 'admin'
-        /// </summary>
-        /// <param name="authenticationDatabase">A database name to use for authentication</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder AuthenticationDatabase(string authenticationDatabase)
-        {
-            _options.AuthenticationDatabase = authenticationDatabase;
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a certificate which can be used in order to establish a SSL/TLS tunnel to the Mongo server
-        /// </summary>
-        /// <param name="certificate">A <see cref="X509Certificate" /></param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ClientCertificate(X509Certificate certificate)
-        {
-            _options.AddClientCertificate(certificate);
-            return this;
-        }
-
-        /// <summary>
-        ///     Adds a sequence of client certificates to the options
-        /// </summary>
-        /// <param name="certificates">An series of <see cref="X509Certificate" /> instances to add</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ClientCertificates(IEnumerable<X509Certificate> certificates)
-        {
-            foreach (var certificate in certificates)
-            {
-                _options.AddClientCertificate(certificate);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        ///     Whether or not self-signed certificates are allowed within the SSL layer
-        /// </summary>
-        /// <param name="allow">A boolean</param>
-        /// <returns>The current <see cref="MongoDbContextOptionsBuilder" /> instance</returns>
-        public MongoDbContextOptionsBuilder AllowSelfSignedCertificates(bool allow)
-        {
-            _options.AllowSelfSignedCertificates = allow;
-            return this;
-        }
-
-        /// <summary>
-        ///     Sets the replica set name
-        /// </summary>
-        /// <param name="replicaSetName">The name of a replica set</param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder ReplicaSet(string replicaSetName)
-        {
-            _options.ReplicaSet = replicaSetName;
-            return this;
-        }
-
-        /// <summary>
-        ///     The default <see cref="ReadConcern" /> to use for database binding operations
-        /// </summary>
-        /// <param name="readConcern">A member of <see cref="ReadConcern" /></param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder DatabaseReadConcern(ReadConcern readConcern)
-        {
-            _options.DatabaseReadConcern = readConcern;
-            return this;
-        }
-
-        /// <summary>
-        ///     The default <see cref="WriteConcern" /> to use for database binding operations
-        /// </summary>
-        /// <param name="writeConcern">A member of <see cref="WriteConcern" /></param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder DatabaseWriteConcern(WriteConcern writeConcern)
-        {
-            _options.DatabaseWriteConcern = writeConcern;
-            return this;
-        }
-
-        /// <summary>
-        ///     The default <see cref="ReadConcern" /> to use for collection binding operations
-        /// </summary>
-        /// <param name="readConcern">A member of <see cref="ReadConcern" /></param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder CollectionReadConcern(ReadConcern readConcern)
-        {
-            _options.CollectionReadConcern = readConcern;
-            return this;
-        }
-
-        /// <summary>
-        ///     The default <see cref="WriteConcern" /> to use for collection binding operations
-        /// </summary>
-        /// <param name="writeConcern">A member of <see cref="WriteConcern" /></param>
-        /// <returns>The current builder instance</returns>
-        public MongoDbContextOptionsBuilder CollectionWriteConcern(WriteConcern writeConcern)
-        {
-            _options.CollectionWriteConcern = writeConcern;
-            return this;
         }
     }
 }
