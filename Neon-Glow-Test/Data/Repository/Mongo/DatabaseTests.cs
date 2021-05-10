@@ -49,6 +49,16 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             Assert.True(database.Settings.ReadConcern.Equals(ReadConcern.Default));
             Assert.True(database.DatabaseNamespace.DatabaseName == databaseName);
         }
+
+        [Fact(DisplayName = "Can check database existence")]
+        [Trait("Category", "Data:Mongo")]
+        public void CheckNonExistentDatabase()
+        {
+            Assert.False(Fixtures.DbContext.DatabaseExists("rubbish"));
+            Assert.True(Fixtures.DbContext.DatabaseExists("local"));
+            Assert.True(Fixtures.DbContext.DatabaseExists("admin"));
+            Assert.False(Fixtures.DbContext.DatabaseExists("cheese"));
+        }
         
     }
 }
