@@ -17,7 +17,6 @@ using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Statics.Crypto;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 
 #endregion
@@ -25,11 +24,21 @@ using X509Certificate = JCS.Neon.Glow.Statics.Crypto.X509Certificate;
 namespace JCS.Neon.Glow.Test.Statics.Crypto
 {
     /// <summary>
-    ///     Test suite for <see cref="X509Certificate" />
+    ///     Test suite for <see cref="Glow.Statics.Crypto.X509Certificate" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class X509CertificateTests : TestBase, IDisposable
+    public class X509CertificateTests : TestBase, IClassFixture<Fixtures>, IDisposable
     {
+        public X509CertificateTests(ITestOutputHelper output, Fixtures fixtures) : base(output)
+        {
+            Fixtures = fixtures;
+        }
+
+        /// <summary>
+        ///     The fixtures for the test
+        /// </summary>
+        protected Fixtures Fixtures { get; set; }
+
         public void Dispose()
         {
         }
@@ -48,7 +57,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Trait("Category", "Cryptography")]
         public void LoadPfxFromFile()
         {
-            var result = LoadTestCertificate();
+            var result = Fixtures.Certificate;
             Assert.Equal("neon-glow-test.jcs-software.co.uk", result.GetNameInfo(X509NameType.SimpleName, false));
             Assert.NotNull(result.PublicKey);
             Assert.NotNull(result.PrivateKey);
@@ -58,24 +67,21 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         [Trait("Category", "Cryptography")]
         public void LoadPfxWithInvalidPassphrase()
         {
-            Assert.Throws<X509CertificateException>(() => { LoadTestCertificate("bollocks"); });
+            Assert.Throws<X509CertificateException>(() => { Fixtures.LoadCertificate("bollocks"); });
         }
 
         [Fact(DisplayName = "Import from an empty byte array must fail with an exception")]
         [Trait("Category", "Cryptography")]
         public void LoadFromInvalidByteArray()
         {
-            Assert.Throws<X509CertificateException>(() =>
-            {
-                X509Certificate.ImportFromByteArray(new byte[] { }, () => "whatever");
-            });
+            Assert.Throws<X509CertificateException>(() => { X509Certificate.ImportFromByteArray(new byte[] { }, () => "whatever"); });
         }
 
         [Fact(DisplayName = "Must be able to export, and then reimport a certificate with a given passphrase (byte array)")]
         [Trait("Category", "Cryptography")]
         public async void ExportAndImportPfx()
         {
-            var original = LoadTestCertificate();
+            var original = Fixtures.Certificate;
             var exported = X509Certificate.ExportToByteArray(original, "test");
             var recovered = X509Certificate.ImportFromByteArray(exported, "test");
             Assert.Equal("neon-glow-test.jcs-software.co.uk", recovered.GetNameInfo(X509NameType.SimpleName, false));
@@ -87,10 +93,6 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             recovered.Dispose();
             recoveredFromFile.Dispose();
             File.Delete(exportPath);
-        }
-
-        public X509CertificateTests(ITestOutputHelper output) : base(output)
-        {
         }
     }
 }

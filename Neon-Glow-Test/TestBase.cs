@@ -74,20 +74,7 @@ namespace JCS.Neon.Glow.Test
                 .Build();
         }
 
-        /// <summary>
-        ///     Just loads a test certificate for use during tests
-        /// </summary>
-        /// <returns></returns>
-        protected X509Certificate2 LoadTestCertificate(string passphrase = "test")
-        {
-            var sshOption = File.GetHomeSubdirectoryPath(".config", "neon", "glow", "test.pfx");
-            var result = sshOption.Fold(path =>
-            {
-                var cert = X509Certificate.ImportFromFile(path, () => passphrase);
-                return cert;
-            }, () => new X509Certificate2());
-            return result;
-        }
+        
 
         /// <summary>
         /// Sleeps (suspends) the current thread of execution for a given number of seconds

@@ -23,10 +23,17 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     Series of connection-related unit tests.  Check various different configuration options, depending on the test
     ///     environment
     /// </summary>
-    public class MongoDbContextDatabaseTests : MongoTestBase
+    public class DatabaseTests : TestBase, IClassFixture<Fixtures>
     {
-        public MongoDbContextDatabaseTests(ITestOutputHelper output) : base(output)
+
+        /// <summary>
+        /// The fixtures to be used by this test
+        /// </summary>
+        protected Fixtures Fixtures { get; set; }
+
+        public DatabaseTests(ITestOutputHelper output, Fixtures fixtures) : base(output)
         {
+            Fixtures = fixtures;
         }
 
         /// <summary>
@@ -34,25 +41,14 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         /// </summary>
         [Theory(DisplayName = "Can bind to a new database based on default context options")]
         [Trait("Category", "Data:Mongo")]
-        [InlineData("neon-test")]
+        [InlineData("test")]
         public void CheckNewDatabaseBind(string databaseName)
         {
-            var context = new TestContext(ConfigureContextOptions(databaseName));
+            var context = Fixtures.DbContext; 
             var database = context.Database;
             Assert.True(database.Settings.ReadConcern.Equals(ReadConcern.Default));
             Assert.True(database.DatabaseNamespace.DatabaseName == databaseName);
         }
-
-        [Theory(DisplayName = "Can bind to the system databases")]
-        [Trait("Category", "Data:Mongo")]
-        [InlineData("local")]
-        [InlineData("admin")]
-        [InlineData("config")]
-        public void CheckSystemDatabaseBind(string databaseName)
-        {
-            var context = new TestContext(ConfigureContextOptions(databaseName));
-            var database = context.Database;
-            Assert.True(database.DatabaseNamespace.DatabaseName == databaseName);
-        }
+        
     }
 }

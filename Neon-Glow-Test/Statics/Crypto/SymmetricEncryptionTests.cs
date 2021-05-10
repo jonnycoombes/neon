@@ -26,8 +26,13 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
     ///     Test suite for <see cref="SymmetricEncryption" />
     /// </summary>
     [Trait("Category", "Cryptography")]
-    public class SymmetricEncryptionTests : TestBase
+    public class SymmetricEncryptionTests : TestBase, IClassFixture<Fixtures>
     {
+        /// <summary>
+        /// The test fixtures
+        /// </summary>
+        protected Fixtures Fixtures { get; set; }
+
         [Theory(DisplayName =
             "(AES) Must be able to encrypt/decrypt based on wrapped keys and a valid x509 certificate (public -> private)")]
         [Trait("Category", "Cryptography")]
@@ -37,7 +42,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         public void EncryptAndDecryptWithWrappingSingleBlockAes(int keySize, string source,
             SymmetricAlgorithmOption algorithm)
         {
-            var cert = LoadTestCertificate();
+            var cert = Fixtures.Certificate; 
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
@@ -76,7 +81,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         {
             var source = Passphrase.GenerateRandomPassphrase(
                 builder => { builder.RequiredLength(size); });
-            var cert = LoadTestCertificate();
+            var cert = Fixtures.Certificate; 
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
@@ -113,7 +118,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         public void EncryptAndDecryptWithWrappingSingleBlockTripleDes(int keySize, string source,
             SymmetricAlgorithmOption algorithm)
         {
-            var cert = LoadTestCertificate();
+            var cert = Fixtures.Certificate; 
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
@@ -152,7 +157,7 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
         {
             var source = Passphrase.GenerateRandomPassphrase(
                 builder => { builder.RequiredLength(size); });
-            var cert = LoadTestCertificate();
+            var cert = Fixtures.Certificate; 
 
             // encrypt and wrap the key, IV
             var encryptionResult = SymmetricEncryption.EncryptAndWrap(Encoding.UTF8.GetBytes(source), cert,
@@ -180,8 +185,9 @@ namespace JCS.Neon.Glow.Test.Statics.Crypto
             Assert.Equal(decodedResult, source);
         }
 
-        public SymmetricEncryptionTests(ITestOutputHelper output) : base(output)
+        public SymmetricEncryptionTests(ITestOutputHelper output, Fixtures fixtures) : base(output)
         {
+            Fixtures = fixtures;
         }
     }
 }

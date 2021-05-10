@@ -12,6 +12,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JCS.Neon.Glow.Statics;
 using MongoDB.Driver;
@@ -64,6 +65,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext<DbContext>();
+
+        /// <summary>
+        ///     A cache of currently bound collections
+        /// </summary>
+        private Dictionary<Type, object> _boundCollections = new();
 
         /// <summary>
         ///     The underlying <see cref="MongoClient" />
@@ -136,19 +142,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object.
-        /// </summary>
-        /// <returns>An instance of <see cref="MongoClient" /></returns>
-        private MongoClient BindClient()
-        {
-            lock (this)
-            {
-                return _client ??= new MongoClient(Options.BuildClientSettings());
-            }
-        }
-
-        ///  <inheritdoc cref="IDbContext.DatabaseExists"/>
+        /// <inheritdoc cref="IDbContext.DatabaseExists" />
         public bool DatabaseExists(string databaseName)
         {
             try
@@ -165,7 +159,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <inheritdoc cref="IDbContext.CollectionExists"/> 
+        /// <inheritdoc cref="IDbContext.CollectionExists" />
         public bool CollectionExists(string collectionName)
         {
             try
@@ -179,6 +173,18 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
                 throw Exceptions.LoggedException<DbContextException>(_log,
                     $"Timed out whilst looking for collection \"{collectionName}\"", ex);
+            }
+        }
+
+        /// <summary>
+        ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object.
+        /// </summary>
+        /// <returns>An instance of <see cref="MongoClient" /></returns>
+        private MongoClient BindClient()
+        {
+            lock (this)
+            {
+                return _client ??= new MongoClient(Options.BuildClientSettings());
             }
         }
 
@@ -225,12 +231,19 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// Checks whether we currently have a binding into a collection for objects of type <see cref="T"/>, and if not performs any necessary bind operations
+        ///     Checks whether we currently have a binding into a collection for objects of type <see cref="T" />, and if not
+        ///     performs any necessary bind operations
         /// </summary>
-        /// <typeparam name="T">The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}"/></typeparam>
-        /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}"/></returns>
+        /// <typeparam name="T">
+        ///     The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}" />
+        /// </typeparam>
+        /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}" /></returns>
         private IMongoCollection<T> BindCollection<T>()
         {
+            Logging.MethodCall(_log);
+            Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
+            
+            
             return null;
         }
     }
