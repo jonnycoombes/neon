@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -21,12 +32,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The maximum size in bytes for the collection
         /// </summary>
-        public long MaxSize { get; set; }
+        public long? MaxSize { get; set; }
 
         /// <summary>
         ///     The maximum number of documents within the collection
         /// </summary>
-        public long MaxDocuments { get; set; }
+        public long? MaxDocuments { get; set; }
 
         /// <summary>
         ///     Whether or not the collection is capped
