@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using JCS.Neon.Glow.Types;
