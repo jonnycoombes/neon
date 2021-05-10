@@ -28,7 +28,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         private readonly CreateCollectionOptions _options = new();
 
-
         /// <summary>
         ///     Builds and returns a new instance of <see cref="CreateCollectionOptions" />
         /// </summary>
