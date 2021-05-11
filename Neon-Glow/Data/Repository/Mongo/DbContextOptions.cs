@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types.Extensions;
@@ -202,6 +203,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     A function that can take a collection type name and then apply any naming conventions based on this.  This will be
         ///     used during collection bind operations
         /// </summary>
+        [JsonIgnore]
         public Func<string, string> CollectionNamingConvention { get; set; } = s => s.ToCamelCase();
 
         /// <summary>
@@ -288,7 +290,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoClientSettings BuildClientSettings(Func<DbContextOptions, bool>? optionsValidationFunc = null)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"Build a new client settings based on {this}");
+            Logging.Verbose(_log, $"Build a new client settings based on {this.ToString()}");
             var clientSettings = new MongoClientSettings();
             optionsValidationFunc ??= DefaultOptionsValidationFunction;
             if (optionsValidationFunc(this))
