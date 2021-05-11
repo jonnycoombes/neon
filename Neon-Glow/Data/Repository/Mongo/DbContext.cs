@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JCS.Neon.Glow.Statics;
+using JCS.Neon.Glow.Statics.Reflection;
 using MongoDB.Driver;
 using Serilog;
 
@@ -25,7 +26,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Enumeration that denotes the kind of binding being performed against a <see cref="IMongoDatabase" />
     /// </summary>
-    public enum DatabaseBindingType
+    public enum BindingType
     {
         /// <summary>
         ///     The bind operation relates to a new database being created
@@ -34,22 +35,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
         /// <summary>
         ///     The bind operation relates to an existing database
-        /// </summary>
-        Existing
-    }
-
-    /// <summary>
-    ///     Enumeration which denotes the kind of binging being performed against a <see cref="IMongoCollection{TDocument}" />
-    /// </summary>
-    public enum CollectionBindingType
-    {
-        /// <summary>
-        ///     The bind operation relates to a new collection being created
-        /// </summary>
-        Create,
-
-        /// <summary>
-        ///     The bind operation relates to an existing collection
         /// </summary>
         Existing
     }
@@ -69,7 +54,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     A cache of currently bound collections
         /// </summary>
-        private Dictionary<Type, object> _boundCollections = new();
+        private readonly Dictionary<Type, object> _boundCollections = new();
 
         /// <summary>
         ///     The underlying <see cref="MongoClient" />
@@ -133,13 +118,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings)
         {
-            throw new NotImplementedException();
+            return BindCollection<T>(settings);
         }
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings)
         {
-            throw new NotImplementedException();
+            return BindCollection<T>(settings).AsQueryable();
         }
 
         /// <inheritdoc cref="IDbContext.DatabaseExists" />
@@ -190,11 +175,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
         /// <summary>
         ///     This member is called during database bind operations, and allows for <see cref="MongoDatabaseSettings" /> to be
-        ///     specified or overridden.  The underlying
-        ///     bind call checks whether the database being bound already exists within the underlying Mongo instance, or is being
-        ///     created dynamically.  If the database already exists, then a <see cref="DatabaseBindingType" /> with value
-        ///     <see cref="DatabaseBindingType.Existing" /> is passed through as part of the call.  Otherwise,
-        ///     <see cref="DatabaseBindingType.Create" /> is passed.
+        ///     specified or overridden.  The underlying bind call checks whether the database being bound already exists within the
+        ///     underlying Mongo instance, or is being created dynamically.  If the database already exists, then a
+        ///     <see cref="BindingType" /> with value <see cref="BindingType.Existing" /> is passed through as part of
+        ///     the call.  Otherwise, <see cref="BindingType.Create" /> is passed.
         ///     <para>
         ///         Subclasses may override this function in order to tailor their settings.  By default, read and write concern
         ///         settings are
@@ -205,12 +189,25 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An instance of <see cref="DatabaseSettingsBuilder" /> which is used to construct the
         ///     database settings.
         /// </param>
-        protected virtual void OnDatabaseBinding(DatabaseBindingType bindingType, DatabaseSettingsBuilder builder)
+        protected virtual void OnDatabaseBinding(BindingType bindingType, DatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
             builder
                 .ReadConcern(Options.DatabaseReadConcern)
                 .WriteConcern(Options.DatabaseWriteConcern);
+        }
+
+        /// <summary>
+        ///     This is called during collection binding operations and allows for <see cref="MongoCollectionSettings" /> to be overridden.
+        /// </summary>
+        /// <param name="bindingType">
+        ///     The binding type.  Will either be <see cref="BindingType.Create" /> or <see cref="BindingType.Existing" />
+        /// </param>
+        /// <param name="builder">An instance of <see cref="CollectionSettingsBuilder" /> which can be used to modify collection settings</param>
+        /// <typeparam name="T">The type of the collection being bound</typeparam>
+        protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
+        {
+            Logging.MethodCall(_log);
         }
 
         /// <summary>
@@ -226,7 +223,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 "No database name has been specified");
 
             var builder = new DatabaseSettingsBuilder();
-            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? DatabaseBindingType.Create : DatabaseBindingType.Existing, builder);
+            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, builder);
             return Client.GetDatabase(Options.Database, builder.Build());
         }
 
@@ -234,17 +231,58 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Checks whether we currently have a binding into a collection for objects of type <see cref="T" />, and if not
         ///     performs any necessary bind operations
         /// </summary>
+        /// <param name="settings">
+        ///     An optional set of <see cref="MongoCollectionSettings" /> which may be passed in to influence
+        ///     the bind
+        /// </param>
         /// <typeparam name="T">
         ///     The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}" />
         /// </typeparam>
         /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}" /></returns>
-        private IMongoCollection<T> BindCollection<T>()
+        private IMongoCollection<T> BindCollection<T>(MongoCollectionSettings? settings)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
-            
-            
+
+            var collectionType = typeof(T);
+            if (_boundCollections.ContainsKey(collectionType))
+            {
+                Logging.Verbose(_log, $"Collection for type \"{collectionType}\" already bound, returning existing instance");
+                return (IMongoCollection<T>) _boundCollections[collectionType];
+            }
+
+            Logging.Verbose(_log, $"No bound collection found for type \"{collectionType}\"");
+            var collectionName = DeriveCollectionName<T>(Options.CollectionNamingConvention);
+            Logging.Verbose(_log, $"Derived collection name is given as \"{collectionName}\"");
+
+
             return null;
+        }
+
+        /// <summary>
+        ///     Given a specific collection type, function which determines the name of the collection.  The name is either based
+        ///     on an explicit value entered via attribution (using the <see cref="Attributes.Collection" />) custom attribute or
+        ///     via a currently configured naming convention function
+        /// </summary>
+        /// <param name="namingConvention">The function used to derive the collection name if no valid attribution if present</param>
+        /// <typeparam name="T">The type of the entities to be contained in the collection</typeparam>
+        /// <returns>A name for a given collection</returns>
+        private string DeriveCollectionName<T>(Func<string, string> namingConvention)
+        {
+            Logging.MethodCall(_log);
+            var t = typeof(T);
+            if (Attributes.HasCustomClassAttribute<Collection>(t))
+            {
+                var option = Attributes.GetCustomClassAttribute<Collection>(t);
+                if (option.IsSome(out var attribute))
+                {
+                    return attribute.Name ?? namingConvention(t.Name);
+                }
+
+                return namingConvention(t.Name);
+            }
+
+            return namingConvention(t.Name);
         }
     }
 }

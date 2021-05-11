@@ -9,23 +9,22 @@
     All rights reserved.
 
  */
+#region
+
 using Xunit;
 using Xunit.Abstractions;
+
+#endregion
 
 namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
 {
     /// <summary>
-    /// Tests covering basic collection functionality such as binding, checking CRUD operations etc...
+    ///     Tests covering basic collection functionality such as binding, checking CRUD operations etc...
     /// </summary>
     public class CollectionTests : TestBase, IClassFixture<Fixtures>
     {
         /// <summary>
-        /// The fixtures to be used by this test
-        /// </summary>
-        protected Fixtures Fixtures { get; set; }
-        
-        /// <summary>
-        /// Default constructor
+        ///     Default constructor
         /// </summary>
         /// <param name="output"></param>
         /// <param name="fixtures"></param>
@@ -33,7 +32,28 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             Fixtures = fixtures;
         }
-        
-        
+
+        /// <summary>
+        ///     The fixtures to be used by this test
+        /// </summary>
+        protected Fixtures Fixtures { get; set; }
+
+        [Fact(DisplayName = "Can bind to a non-attributed collections")]
+        [Trait("Category", "Data:Mongo")]
+        public void CheckNonAttributedCollectionBind()
+        {
+            var collection = Fixtures.DbContext.Collection<NonAttributedEntity>();
+            var queryablecollection = Fixtures.DbContext.Queryable<NonAttributedEntity>();
+            Assert.True(false);
+        }
+
+        [Fact(DisplayName = "Can bind to a attributed collections")]
+        [Trait("Category", "Data:Mongo")]
+        public void CheckAttributedCollectionBind()
+        {
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var queryablecollection = Fixtures.DbContext.Queryable<AttributedEntity>();
+            Assert.True(false);
+        }
     }
 }

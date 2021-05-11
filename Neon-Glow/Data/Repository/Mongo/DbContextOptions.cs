@@ -18,6 +18,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
+using JCS.Neon.Glow.Types.Extensions;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using Serilog;
@@ -196,6 +197,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The default write concern to use for collection binding operations
         /// </summary>
         public WriteConcern CollectionWriteConcern { get; set; } = WriteConcern.Unacknowledged;
+
+        /// <summary>
+        ///     A function that can take a collection type name and then apply any naming conventions based on this.  This will be
+        ///     used during collection bind operations
+        /// </summary>
+        public Func<string, string> CollectionNamingConvention { get; set; } = s => s.ToCamelCase();
 
         /// <summary>
         ///     Returns the internal list of client <see cref="X509Certificate" /> instances to be used when SSL is selected as the

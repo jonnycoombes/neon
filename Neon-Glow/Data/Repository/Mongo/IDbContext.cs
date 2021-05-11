@@ -61,7 +61,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </param>
         /// <typeparam name="T">The type of the entities within the collection</typeparam>
         /// <returns>A <see cref="IMongoCollection{TDocument}" /> instance, bound to an undelrying collection.</returns>
-        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings);
+        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings= null);
 
         /// <summary>
         ///     Returns a <see cref="IQueryable{T}" /> interface for interacting with objects of type <see cref="T" />
@@ -72,6 +72,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </param>
         /// <typeparam name="T">The type of objects stored within the underlying collection</typeparam>
         /// <returns>A <see cref="IQueryable{T}" /> interface bound to an underlying collection.</returns>
-        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings);
+        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings= null);
     }
 }

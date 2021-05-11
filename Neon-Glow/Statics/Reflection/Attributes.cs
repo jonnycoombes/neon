@@ -35,17 +35,17 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <param name="t">The source type to reflect upon</param>
         /// <typeparam name="T">The target type of the custom attribute to retrieve</typeparam>
         /// <returns>An option which may or may contain the custom attribute.</returns>
-        public static Option<Attribute> GetCustomClassAttribute<T>(Type t)
+        public static Option<T> GetCustomClassAttribute<T>(Type t)
             where T : Attribute
         {
             Logging.MethodCall(_log);
             var attribute = Attribute.GetCustomAttribute(t, typeof(T));
             if (attribute != null)
             {
-                return new Option<Attribute>(attribute);
+                return new Option<T>((T)attribute);
             }
 
-            return Option<Attribute>.None;
+            return Option<T>.None;
         }
 
         /// <summary>
