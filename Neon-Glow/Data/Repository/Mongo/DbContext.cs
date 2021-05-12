@@ -1,19 +1,9 @@
-/*
-
-    Copyright 2013-2021 © JCS Software Limited
-
-    Author: Jonny Coombes
-
-    Contact: jcoombes@jcs-software.co.uk
-
-    All rights reserved.
-
- */
 #region
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
 using MongoDB.Driver;
@@ -116,13 +106,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public IMongoDatabase Database => BindDatabase();
 
         /// <inheritdoc cref="IDbContext.Collection{T}" />
-        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings)
+        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
             return BindCollection<T>(settings);
         }
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
-        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings)
+        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
             return BindCollection<T>(settings).AsQueryable();
         }
@@ -140,7 +130,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             catch (Exception ex)
             {
                 Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
-                throw Exceptions.LoggedException<DbContextException>(_log, $"Timed out connecting to \"{databaseName}\"", ex);
+                throw Exceptions.LoggedException<DbContextException>(_log,
+                    $"Timed out connecting to \"{databaseName}\"", ex);
             }
         }
 
@@ -192,6 +183,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnDatabaseBinding(BindingType bindingType, DatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
+            Logging.Verbose(_log, $"{bindingType} database binding event");
             builder
                 .ReadConcern(Options.DatabaseReadConcern)
                 .WriteConcern(Options.DatabaseWriteConcern);
@@ -208,6 +200,23 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
+            Logging.Verbose(_log, $"{bindingType} collection binding event");
+            builder.ReadConcern(Options.CollectionReadConcern)
+                .WriteConcern(Options.CollectionWriteConcern);
+        }
+
+        /// <summary>
+        ///     Called during the creation of a new <see cref="IMongoCollection{TDocument}" />, allows for the chance to reflect on the
+        ///     target type and create any necessary index structures etc...
+        /// </summary>
+        /// <param name="optionsBuilder">An instance of <see cref="CreateCollectionOptionsBuilder" /> to configure the collection</param>
+        /// <param name="indexDefinitions">A list of <see cref="IndexKeysDefinition{TDocument}" />, used to create indexes</param>
+        /// <typeparam name="T">The type to be stored within the collection</typeparam>
+        protected virtual void OnCollectionCreating<T>(CreateCollectionOptionsBuilder optionsBuilder,
+            List<IndexKeysDefinition<T>> indexDefinitions)
+        {
+            Logging.MethodCall(_log);
+            
         }
 
         /// <summary>
@@ -235,11 +244,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An optional set of <see cref="MongoCollectionSettings" /> which may be passed in to influence
         ///     the bind
         /// </param>
+        /// <param name="token">An optional <see cref="CancellationToken" /></param>
         /// <typeparam name="T">
         ///     The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}" />
         /// </typeparam>
         /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}" /></returns>
-        private IMongoCollection<T> BindCollection<T>(MongoCollectionSettings? settings)
+        private IMongoCollection<T> BindCollection<T>(MongoCollectionSettings? settings,
+            CancellationToken token = default)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
@@ -247,14 +258,30 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var collectionType = typeof(T);
             if (_boundCollections.ContainsKey(collectionType))
             {
-                Logging.Verbose(_log, $"Collection for type \"{collectionType}\" already bound, returning existing instance");
+                Logging.Verbose(_log,
+                    $"Collection for type \"{collectionType}\" already bound, returning existing instance");
                 return (IMongoCollection<T>) _boundCollections[collectionType];
             }
 
+            // derive the name for the collection
             Logging.Verbose(_log, $"No bound collection found for type \"{collectionType}\"");
             var collectionName = DeriveCollectionName<T>(Options.CollectionNamingConvention);
             Logging.Verbose(_log, $"Derived collection name is given as \"{collectionName}\"");
 
+            // check if the collection exists already
+            if (CollectionExists(collectionName))
+            {
+                Logging.Verbose(_log, $"Binding to existing collection \"{collectionName}\"");
+                var settingsBuilder = new CollectionSettingsBuilder();
+                OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
+                return Database.GetCollection<T>(collectionName, settingsBuilder.Build());
+            }
+
+            // create a new collection and bind to that
+            Logging.Verbose(_log, $"Creating a new collection for type \"{typeof(T).FullName}\"");
+            var optionsBuilder = new CreateCollectionOptionsBuilder();
+            var indexDefinitions = new List<IndexKeysDefinition<T>>();
+            OnCollectionCreating(optionsBuilder, indexDefinitions);
 
             return null;
         }
