@@ -216,7 +216,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             List<IndexKeysDefinition<T>> indexDefinitions)
         {
             Logging.MethodCall(_log);
-            
         }
 
         /// <summary>
