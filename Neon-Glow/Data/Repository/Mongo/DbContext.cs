@@ -1,3 +1,14 @@
+/*
+
+    Copyright 2013-2021 © JCS Software Limited
+
+    Author: Jonny Coombes
+
+    Contact: jcoombes@jcs-software.co.uk
+
+    All rights reserved.
+
+ */
 #region
 
 using System;
@@ -299,7 +310,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var t = typeof(T);
             if (Attributes.HasCustomClassAttribute<Collection>(t))
             {
-                var option = Attributes.GetCustomClassAttribute<Collection>(t);
+                var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
                 if (option.IsSome(out var attribute))
                 {
                     return attribute.Name ?? namingConvention(t.Name);
