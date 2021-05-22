@@ -58,8 +58,4 @@
         <None Update="appsettings.Test.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Statics" />
-    </ItemGroup>
-
 </Project>
