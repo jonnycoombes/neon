@@ -192,7 +192,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An instance of <see cref="DatabaseSettingsBuilder" /> which is used to construct the
         ///     database settings.
         /// </param>
-        protected virtual void OnDatabaseBinding(BindingType bindingType, DatabaseSettingsBuilder builder)
+        protected virtual void OnDatabaseBinding(BindingType bindingType, ref DatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"{bindingType} database binding event");
@@ -209,7 +209,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </param>
         /// <param name="builder">An instance of <see cref="CollectionSettingsBuilder" /> which can be used to modify collection settings</param>
         /// <typeparam name="T">The type of the collection being bound</typeparam>
-        protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
+        protected virtual void OnCollectionBinding<T>(BindingType bindingType, ref CollectionSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"{bindingType} collection binding event");
@@ -224,8 +224,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="optionsBuilder">An instance of <see cref="CreateCollectionOptionsBuilder" /> to configure the collection</param>
         /// <param name="indexDefinitions">A list of <see cref="IndexKeysDefinition{TDocument}" />, used to create indexes</param>
         /// <typeparam name="T">The type to be stored within the collection</typeparam>
-        protected virtual void OnCollectionCreating<T>(out CreateCollectionOptionsBuilder optionsBuilder,
-            out List<IndexKeysDefinition<T>> indexDefinitions)
+        protected virtual void OnCollectionCreating<T>(ref CreateCollectionOptionsBuilder optionsBuilder,
+            ref List<IndexKeysDefinition<T>> indexDefinitions)
         {
             Logging.MethodCall(_log);
         }
@@ -243,7 +243,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 "No database name has been specified");
 
             var builder = new DatabaseSettingsBuilder();
-            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, builder);
+            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, ref builder);
             return Client.GetDatabase(Options.Database, builder.Build());
         }
 
@@ -284,7 +284,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 Logging.Verbose(_log, $"Binding to existing collection \"{collectionName}\"");
                 var settingsBuilder = new CollectionSettingsBuilder();
-                OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
+                OnCollectionBinding<T>(BindingType.Existing, ref settingsBuilder);
                 return Database.GetCollection<T>(collectionName, settingsBuilder.Build());
             }
 
@@ -292,7 +292,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.Verbose(_log, $"Creating a new collection for type \"{typeof(T).FullName}\"");
             var optionsBuilder = new CreateCollectionOptionsBuilder();
             var indexDefinitions = new List<IndexKeysDefinition<T>>();
-            OnCollectionCreating(optionsBuilder, indexDefinitions);
+            OnCollectionCreating(ref optionsBuilder, ref indexDefinitions);
 
             return null;
         }
