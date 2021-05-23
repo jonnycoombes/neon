@@ -119,13 +119,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
-            return BindCollection<T>(settings);
+            return BindCollection<T>(settings, token);
         }
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
-            return BindCollection<T>(settings).AsQueryable();
+            return BindCollection<T>(settings, token).AsQueryable();
         }
 
         /// <inheritdoc cref="IDbContext.DatabaseExists" />
@@ -187,6 +187,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///         taken from the currently configured <see cref="DbContextOptions" />
         ///     </para>
         /// </summary>
+        /// <param name="bindingType">The type of binding being performed</param>
         /// <param name="builder">
         ///     An instance of <see cref="DatabaseSettingsBuilder" /> which is used to construct the
         ///     database settings.
@@ -304,21 +305,15 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="namingConvention">The function used to derive the collection name if no valid attribution if present</param>
         /// <typeparam name="T">The type of the entities to be contained in the collection</typeparam>
         /// <returns>A name for a given collection</returns>
-        private string DeriveCollectionName<T>(Func<string, string> namingConvention)
+        private static string DeriveCollectionName<T>(Func<string, string> namingConvention)
         {
             Logging.MethodCall(_log);
             var t = typeof(T);
-            if (Attributes.HasCustomClassAttribute<Collection>(t))
+            var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
+            if (option.IsSome(out var attribute))
             {
-                var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
-                if (option.IsSome(out var attribute))
-                {
-                    return attribute.Name ?? namingConvention(t.Name);
-                }
-
-                return namingConvention(t.Name);
+                return attribute.Name ?? namingConvention(t.Name);
             }
-
             return namingConvention(t.Name);
         }
     }
