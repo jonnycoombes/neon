@@ -224,8 +224,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="optionsBuilder">An instance of <see cref="CreateCollectionOptionsBuilder" /> to configure the collection</param>
         /// <param name="indexDefinitions">A list of <see cref="IndexKeysDefinition{TDocument}" />, used to create indexes</param>
         /// <typeparam name="T">The type to be stored within the collection</typeparam>
-        protected virtual void OnCollectionCreating<T>(CreateCollectionOptionsBuilder optionsBuilder,
-            List<IndexKeysDefinition<T>> indexDefinitions)
+        protected virtual void OnCollectionCreating<T>(out CreateCollectionOptionsBuilder optionsBuilder,
+            out List<IndexKeysDefinition<T>> indexDefinitions)
         {
             Logging.MethodCall(_log);
         }
