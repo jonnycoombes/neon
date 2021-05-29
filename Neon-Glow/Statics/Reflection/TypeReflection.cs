@@ -12,7 +12,6 @@
 #region
 
 using System;
-using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 
@@ -38,12 +37,11 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <param name="flags">The <see cref="BindingFlags" /> to use</param>
         /// <returns>An option</returns>
         public static Option<PropertyInfo> GetProperty(Type t, string name,
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public | BindingFlags.NonPublic)
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
         {
             try
             {
-                var property = t.GetProperties(flags).First(p => p.Name.Equals(name));
-                return Option<PropertyInfo>.FromNullable(property);
+                return Option<PropertyInfo>.FromNullable(t.GetProperty(name, flags));
             }
             catch (Exception)
             {
@@ -59,7 +57,7 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <param name="flags">The <see cref="BindingFlags" /> to use</param>
         /// <returns>True if the property is present, false otherwise</returns>
         public static bool HasProperty(Type t, string name,
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public | BindingFlags.NonPublic)
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
         {
             return GetProperty(t, name, flags).IsSome();
         }
@@ -76,8 +74,7 @@ namespace JCS.Neon.Glow.Statics.Reflection
         {
             try
             {
-                var field = t.GetFields(flags).First(f => f.Name.Equals(name));
-                return Option<FieldInfo>.FromNullable(field);
+                return Option<FieldInfo>.FromNullable(t.GetField(name, flags));
             }
             catch (Exception)
             {
@@ -96,6 +93,74 @@ namespace JCS.Neon.Glow.Statics.Reflection
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
         {
             return GetField(t, name, flags).IsSome();
+        }
+
+        /// <summary>
+        ///     Attempts to retrieve the <see cref="MethodInfo" /> associated with a given <paramref name="name" /> and
+        ///     <paramref name="t" />
+        /// </summary>
+        /// <param name="t">The type to inspect</param>
+        /// <param name="name">The name of the method to look for</param>
+        /// <param name="flags">The <see cref="BindingFlags" /> value to use</param>
+        /// <returns></returns>
+        public static Option<MethodInfo> GetMethod(Type t, string name,
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            try
+            {
+                return Option<MethodInfo>.FromNullable(t.GetMethod(name, flags));
+            }
+            catch (Exception)
+            {
+                return Option<MethodInfo>.None;
+            }
+        }
+
+        /// <summary>
+        ///     Checks whether a given method exists on a type <paramref name="t" />
+        /// </summary>
+        /// <param name="t">The <see cref="Type" /> to inspect</param>
+        /// <param name="name">T/he name of the method to check for</param>
+        /// <param name="flags">The <see cref="BindingFlags" /> to use</param>
+        /// <returns></returns>
+        public static bool HasMethod(Type t, string name,
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            return GetMethod(t, name, flags).IsSome();
+        }
+
+        /// <summary>
+        ///     Attempts to retrieve the <see cref="EventInfo" /> associated with a given <paramref name="name" /> and
+        ///     <paramref name="t" />
+        /// </summary>
+        /// <param name="t">The type to inspect</param>
+        /// <param name="name">The name of the method to look for</param>
+        /// <param name="flags">The <see cref="BindingFlags" /> value to use</param>
+        /// <returns></returns>
+        public static Option<EventInfo> GetEvent(Type t, string name,
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            try
+            {
+                return Option<EventInfo>.FromNullable(t.GetEvent(name, flags));
+            }
+            catch (Exception)
+            {
+                return Option<EventInfo>.None;
+            }
+        }
+
+        /// <summary>
+        ///     Checks whether a given method exists on a type <paramref name="t" />
+        /// </summary>
+        /// <param name="t">The <see cref="Type" /> to inspect</param>
+        /// <param name="name">T/he name of the method to check for</param>
+        /// <param name="flags">The <see cref="BindingFlags" /> to use</param>
+        /// <returns></returns>
+        public static bool HasEvent(Type t, string name,
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            return GetEvent(t, name, flags).IsSome();
         }
     }
 }

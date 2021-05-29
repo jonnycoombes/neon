@@ -33,6 +33,23 @@ namespace JCS.Neon.Glow.Types
         public static Option<T> None => default;
 
         /// <summary>
+        /// Converts a nullable type instance to an option
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Option<T> FromNullable(T? value)
+        {
+            if (value != null)
+            {
+                return new Option<T>(value);
+            }
+            else
+            {
+                return None;
+            }
+        }
+
+        /// <summary>
         ///     Construct a Some value - requires a value
         /// </summary>
         /// <param name="value">The value to wrap</param>

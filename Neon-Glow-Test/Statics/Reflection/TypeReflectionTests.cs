@@ -11,6 +11,7 @@
  */
 #region
 
+using System;
 using JCS.Neon.Glow.Statics.Reflection;
 using Xunit;
 using Xunit.Abstractions;
@@ -25,24 +26,51 @@ namespace JCS.Neon.Glow.Test.Statics.Reflection
     public class TestType
     {
         /// <summary>
-        /// Test private field
+        ///     Test private field
         /// </summary>
         private string _privateField;
 
         /// <summary>
-        /// Test public field
+        ///     Test protected field
+        /// </summary>
+        protected string _protectedField;
+
+        /// <summary>
+        ///     Test public field
         /// </summary>
         public string _publicField;
-        
+
         /// <summary>
-        /// Test private property
+        ///     Test private property
         /// </summary>
         private string PrivateProperty { get; set; }
 
         /// <summary>
-        /// Test public property
+        ///     Test public property
         /// </summary>
         public string PublicProperty { get; set; }
+
+        /// <summary>
+        ///     Test protected property
+        /// </summary>
+        protected string ProtectedProperty { get; set; }
+
+        /// <summary>
+        ///     Public event to test purposes
+        /// </summary>
+        public event EventHandler PublicEvent;
+
+        public void PublicMethod()
+        {
+        }
+
+        private void PrivateMethod()
+        {
+        }
+
+        protected void ProtectedMethod()
+        {
+        }
     }
 
     [Trait("Category", "TypeReflection")]
@@ -52,26 +80,38 @@ namespace JCS.Neon.Glow.Test.Statics.Reflection
         {
         }
 
-        [Fact(DisplayName = "Can check for public properties")]
-        public void CheckPublicProperties()
+        [Fact(DisplayName = "Can check for  properties")]
+        public void CheckProperties()
         {
-            var truth = TypeReflection.GetProperty(typeof(TestType), "PublicProperty");
-            var falsity = TypeReflection.GetProperty(typeof(TestType), "Cheese");
-            Assert.True(truth.IsSome());
-            Assert.False(falsity.IsSome());
-            Assert.True(TypeReflection.HasProperty(typeof(TestType), "PublicProperty"));
-            Assert.False(TypeReflection.HasProperty(typeof(TestType), "Cheese"));
+            var t = typeof(TestType);
+            Assert.True(TypeReflection.GetProperty(t, "PublicProperty").IsSome());
+            Assert.True(TypeReflection.GetProperty(t, "PrivateProperty").IsSome());
+            Assert.True(TypeReflection.GetProperty(t, "ProtectedProperty").IsSome());
         }
 
-        [Fact(DisplayName = "Can check for public fields")]
-        public void CheckPublicFields()
+        [Fact(DisplayName = "Can check for fields")]
+        public void CheckFields()
         {
-            var truth = TypeReflection.GetField(typeof(TestType), "_publicField");
-            var falsity = TypeReflection.GetField(typeof(TestType), "Cheese");
-            Assert.True(truth.IsSome());
-            Assert.False(falsity.IsSome());
-            Assert.True(TypeReflection.HasField(typeof(TestType),"_publicField"));
-            Assert.False(TypeReflection.HasField(typeof(TestType),"Cheese"));
+            var t = typeof(TestType);
+            Assert.True(TypeReflection.GetField(t, "_publicField").IsSome());
+            Assert.True(TypeReflection.GetField(t, "_privateField").IsSome());
+            Assert.True(TypeReflection.GetField(t, "_protectedField").IsSome());
+        }
+
+        [Fact(DisplayName = "Can check for public methods")]
+        public void CheckMethods()
+        {
+            var t = typeof(TestType);
+            Assert.True(TypeReflection.GetMethod(t, "PublicMethod").IsSome());
+            Assert.True(TypeReflection.GetMethod(t, "PrivateMethod").IsSome());
+            Assert.True(TypeReflection.GetMethod(t, "ProtectedMethod").IsSome());
+        }
+
+        [Fact(DisplayName = "Can check for events")]
+        public void CheckEvents()
+        {
+            var t = typeof(TestType);
+            Assert.True(TypeReflection.GetEvent(t, "PublicEvent").IsSome());
         }
     }
 }
