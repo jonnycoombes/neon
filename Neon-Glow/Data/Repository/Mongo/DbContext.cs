@@ -120,18 +120,21 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
+            Logging.MethodCall(_log);
             return BindCollection<T>(settings, token);
         }
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings, CancellationToken token)
         {
+            Logging.MethodCall(_log);
             return BindCollection<T>(settings, token).AsQueryable();
         }
 
         /// <inheritdoc cref="IDbContext.DatabaseExists" />
         public bool DatabaseExists(string databaseName)
         {
+            Logging.MethodCall(_log);
             try
             {
                 return Client
@@ -141,7 +144,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
             catch (Exception ex)
             {
-                Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
+                Logging.Error(_log, $"Mongo Exception: \"{ex.Message}\"");
                 throw Exceptions.LoggedException<DbContextException>(_log,
                     $"Timed out connecting to \"{databaseName}\"", ex);
             }
@@ -150,6 +153,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IDbContext.CollectionExists" />
         public bool CollectionExists(string collectionName)
         {
+            Logging.MethodCall(_log);
             try
             {
                 return Database.ListCollectionNames()
@@ -158,7 +162,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
             catch (Exception ex)
             {
-                Logging.Error(_log, "Exception caught whilst attempting to interrogate underlying Mongo instance");
+                Logging.Error(_log, $"Mongo Exception: \"{ex.Message}\"");
                 throw Exceptions.LoggedException<DbContextException>(_log,
                     $"Timed out whilst looking for collection \"{collectionName}\"", ex);
             }
@@ -220,6 +224,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <returns>An instance of <see cref="MongoClient" /></returns>
         private MongoClient BindClient()
         {
+            Logging.MethodCall(_log);
             lock (this)
             {
                 return _client ??= new MongoClient(Options.BuildClientSettings());
@@ -260,7 +265,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </param>
         /// <param name="builder">An instance of <see cref="CollectionSettingsBuilder" /> which can be used to modify collection settings</param>
         /// <typeparam name="T">The type of the collection being bound</typeparam>
-        protected virtual void OnCollectionBinding<T>(BindingType bindingType, ref CollectionSettingsBuilder builder)
+        protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"{bindingType} collection binding event");
@@ -273,12 +278,24 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     target type and create any necessary index structures etc...
         /// </summary>
         /// <param name="optionsBuilder">An instance of <see cref="CreateCollectionOptionsBuilder" /> to configure the collection</param>
-        /// <param name="indexDefinitions">A list of <see cref="IndexKeysDefinition{TDocument}" />, used to create indexes</param>
         /// <typeparam name="T">The type to be stored within the collection</typeparam>
         protected virtual void OnCollectionCreating<T>(ref CreateCollectionOptionsBuilder optionsBuilder,
-            ref List<IndexKeysDefinition<T>> indexDefinitions)
+            CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
+            var runtimeType = typeof(T);
+            Logging.Verbose(_log, $"Creating collection for entity type of \"{runtimeType}\"");
+            if (Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, runtimeType).IsSome(out var collectionAttribute))
+            {
+                Logging.Verbose(_log, "Found a collection attribute, using this to set options");
+                optionsBuilder
+                    .ValidationAction(collectionAttribute.ValidationAction)
+                    .ValidationLevel(collectionAttribute.ValidationLevel)
+                    .Capped(collectionAttribute.Capped)
+                    .MaxDocuments(collectionAttribute.MaxDocuments)
+                    .MaxSize(collectionAttribute.MaxSize)
+                    .UsePowerOf2Sizes(collectionAttribute.PowerOf2Sizes);
+            }
         }
 
         /// <summary>
@@ -299,20 +316,42 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="DbContextException"></exception>
+        private async void NewCollection<T>(string collectionName, CreateCollectionOptions options, CancellationToken cancellationToken)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                await Database.CreateCollectionAsync(collectionName, options, cancellationToken);
+                var collection = Database.GetCollection<T>(collectionName);
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(_log, $"Mongo Exception: \"{ex.Message}\"");
+                throw Exceptions.LoggedException<DbContextException>(_log, "An exception was caught creating a new collection");
+            }
+        }
+
+        /// <summary>
         ///     Checks whether we currently have a binding into a collection for objects of type <see cref="T" />, and if not
         ///     performs any necessary bind operations
         /// </summary>
         /// <param name="settings">
-        ///     An optional set of <see cref="MongoCollectionSettings" /> which may be passed in to influence
-        ///     the bind
+        ///     An optional set of <see cref="MongoCollectionSettings" /> which may be passed in to influence the bind
         /// </param>
-        /// <param name="token">An optional <see cref="CancellationToken" /></param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken" /></param>
         /// <typeparam name="T">
         ///     The type of objects stored within the underlying <see cref="IMongoCollection{TDocument}" />
         /// </typeparam>
         /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}" /></returns>
         private IMongoCollection<T> BindCollection<T>(MongoCollectionSettings? settings,
-            CancellationToken token = default)
+            CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
             Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
@@ -330,24 +369,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var collectionName = DeriveCollectionName<T>(Options.CollectionNamingConvention);
             Logging.Verbose(_log, $"Derived collection name is given as \"{collectionName}\"");
 
-            // check if the collection exists already
-            if (CollectionExists(collectionName))
+            // check to see if we need to create a new collection 
+            if (!CollectionExists(collectionName))
             {
-                Logging.Verbose(_log, $"Binding to existing collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
-                var settingsBuilder = new CollectionSettingsBuilder();
-                OnCollectionBinding<T>(BindingType.Existing, ref settingsBuilder);
-                var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
-                AddBoundCollection(collection);
-                return collection;
+                // create a new collection and bind to that
+                Logging.Verbose(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+                var optionsBuilder = new CreateCollectionOptionsBuilder();
+                OnCollectionCreating<T>(ref optionsBuilder, cancellationToken);
+                NewCollection<T>(collectionName, optionsBuilder.Build(), cancellationToken);
             }
 
-            // create a new collection and bind to that
-            Logging.Verbose(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
-            var optionsBuilder = new CreateCollectionOptionsBuilder();
-            var indexDefinitions = new List<IndexKeysDefinition<T>>();
-            OnCollectionCreating(ref optionsBuilder, ref indexDefinitions);
-
-            return null;
+            Logging.Verbose(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+            var settingsBuilder = new CollectionSettingsBuilder(settings);
+            OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
+            var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
+            AddBoundCollection(collection);
+            return collection;
         }
 
         /// <summary>

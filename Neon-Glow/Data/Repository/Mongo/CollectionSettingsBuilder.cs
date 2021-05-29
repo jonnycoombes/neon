@@ -13,7 +13,6 @@
 
 using System.Text;
 using JCS.Neon.Glow.Types;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 #endregion
@@ -29,6 +28,19 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The acutal settings
         /// </summary>
         private readonly MongoCollectionSettings _settings = new();
+
+        /// <summary>
+        ///     Constructor which allows for the initialisation of the internal <see cref="MongoCollectionSettings" /> instance
+        ///     based on an existing setting
+        /// </summary>
+        /// <param name="existing"></param>
+        public CollectionSettingsBuilder(MongoCollectionSettings? existing)
+        {
+            if (existing != null)
+            {
+                _settings = existing;
+            }
+        }
 
         /// <summary>
         ///     Returns the built <see cref="MongoCollectionSettings" />
@@ -95,7 +107,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// Sets whether an id should be assigned on insertion
+        ///     Sets whether an id should be assigned on insertion
         /// </summary>
         /// <param name="assignId"></param>
         /// <returns></returns>
@@ -104,6 +116,5 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _settings.AssignIdOnInsert = assignId;
             return this;
         }
-
     }
 }

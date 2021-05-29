@@ -53,7 +53,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="size">The maximum size of a collection in bytes</param>
         /// <returns>The current builder instance</returns>
-        public CreateCollectionOptionsBuilder MaxSize(long size)
+        public CreateCollectionOptionsBuilder MaxSize(long? size)
         {
             _options.MaxSize = size;
             return this;
@@ -64,7 +64,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         /// <param name="count">The maximum number of documents</param>
         /// <returns>The current builder instance</returns>
-        public CreateCollectionOptionsBuilder MaxDocuments(long count)
+        public CreateCollectionOptionsBuilder MaxDocuments(long? count)
         {
             _options.MaxDocuments = count;
             return this;

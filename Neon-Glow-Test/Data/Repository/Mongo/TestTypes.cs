@@ -12,6 +12,7 @@
 #region
 using JCS.Neon.Glow.Data.Repository.Mongo;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 #endregion
 
@@ -57,7 +58,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     A test entity which has been attributed using <see cref="Collection" /> and
     ///     <see cref="Glow.Data.Repository.Mongo.Index" /> custom attributes
     /// </summary>
-    [Collection(Name = "TestCollection")]
+    [Collection(Name = "TestCollection", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
     [Index(Name= "TestIdx", Fields = new string[]{"StringProperty", "IntProperty"}, Unique = true)]
     [Index(Fields = new string[]{"FloatProperty"}, Unique = false)]
     public class AttributedEntity

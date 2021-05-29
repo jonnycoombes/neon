@@ -43,8 +43,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         public void CheckNonAttributedCollectionBind()
         {
             var collection = Fixtures.DbContext.Collection<NonAttributedEntity>();
-            var queryablecollection = Fixtures.DbContext.Queryable<NonAttributedEntity>();
-            Assert.True(false);
+            Assert.True(collection.CollectionNamespace.CollectionName == "nonAttributedEntity");
         }
 
         [Fact(DisplayName = "Can bind to a attributed collections")]
@@ -52,8 +51,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         public void CheckAttributedCollectionBind()
         {
             var collection = Fixtures.DbContext.Collection<AttributedEntity>();
-            var queryablecollection = Fixtures.DbContext.Queryable<AttributedEntity>();
-            Assert.True(false);
+            Assert.True(collection.CollectionNamespace.CollectionName == "TestCollection");
         }
     }
 }

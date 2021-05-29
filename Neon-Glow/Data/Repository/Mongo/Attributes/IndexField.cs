@@ -20,7 +20,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     /// <summary>
     ///     Attribute that allows refinement of field contributions to indexes including the field
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class IndexField : Attribute
     {
         /// <summary>

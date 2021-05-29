@@ -241,7 +241,7 @@ namespace JCS.Neon.Glow.Statics.Reflection
         /// <param name="name">The name of the <see cref="Attribute" /> to look for</param>
         /// <typeparam name="T">The type of the attribute to look for</typeparam>
         /// <returns>True or false</returns>
-        public static bool HasCustomAttribute<T>(AttributeTargets target, Type t, string name)
+        public static bool HasCustomAttribute<T>(AttributeTargets target, Type t, string? name= null)
             where T : Attribute
         {
             return GetCustomAttribute<T>(target, t, name).IsSome();
