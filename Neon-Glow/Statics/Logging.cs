@@ -33,11 +33,9 @@ namespace JCS.Neon.Glow.Statics
         /// <param name="memberName"></param>
         /// <param name="filePath"></param>
         public static void MethodCall(ILogger log, [CallerMemberName]
-            string memberName = "", [CallerFilePath]
-            string filePath = "")
+            string memberName = "")
         {
-            var fileName = Path.GetFileName(filePath);
-            LogAtLevel(log, $"[Invoke: {memberName},{fileName}]", LogEventLevel.Verbose);
+            LogAtLevel(log, $"[{memberName}]", LogEventLevel.Verbose);
         }
 
         /// <summary>
@@ -45,9 +43,9 @@ namespace JCS.Neon.Glow.Statics
         /// </summary>
         /// <param name="log">The target <see cref="ILogger" /></param>
         /// <param name="message">The message to log</param>
-        public static void Debug(ILogger log, string message)
+        public static void Debug(ILogger log, string message, [CallerMemberName] string memberName = "")
         {
-            LogAtLevel(log, message, LogEventLevel.Debug);
+            LogAtLevel(log, $"[{memberName}] {message}", LogEventLevel.Debug);
         }
 
         /// <summary>

@@ -47,7 +47,7 @@ namespace JCS.Neon.Glow.Data.Repository.EntityFramework
             where V : Entity<K>
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
+            Logging.Debug(_log, $"Creating new instance of IAsyncRepository for entity type {typeof(V)}");
             var fullName = typeof(V).FullName;
             if (string.IsNullOrEmpty(fullName))
             {

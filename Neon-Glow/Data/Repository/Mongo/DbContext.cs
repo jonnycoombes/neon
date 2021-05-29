@@ -251,7 +251,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnDatabaseBinding(BindingType bindingType, ref DatabaseSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"{bindingType} database binding event");
+            Logging.Debug(_log, $"{bindingType} database binding event");
             builder
                 .ReadConcern(Options.DatabaseReadConcern)
                 .WriteConcern(Options.DatabaseWriteConcern);
@@ -268,7 +268,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"{bindingType} collection binding event");
+            Logging.Debug(_log, $"{bindingType} collection binding event");
             builder.ReadConcern(Options.CollectionReadConcern)
                 .WriteConcern(Options.CollectionWriteConcern);
         }
@@ -284,10 +284,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             var runtimeType = typeof(T);
-            Logging.Verbose(_log, $"Creating collection for entity type of \"{runtimeType}\"");
+            Logging.Debug(_log, $"Creating collection for entity type of \"{runtimeType}\"");
             if (Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, runtimeType).IsSome(out var collectionAttribute))
             {
-                Logging.Verbose(_log, "Found a collection attribute, using this to set options");
+                Logging.Debug(_log, "Found a collection attribute, using this to set options");
                 optionsBuilder
                     .ValidationAction(collectionAttribute.ValidationAction)
                     .ValidationLevel(collectionAttribute.ValidationLevel)
@@ -354,32 +354,32 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             CancellationToken cancellationToken = default)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
+            Logging.Debug(_log, $"Binding collection for type \"{typeof(T)}\"");
 
             var collectionType = typeof(T);
             if (GetBoundCollection<T>().IsSome(out var boundCollection))
             {
-                Logging.Verbose(_log,
+                Logging.Debug(_log,
                     $"Collection for type \"{collectionType}\" already bound, returning existing instance");
                 return boundCollection;
             }
 
             // derive the name for the collection
-            Logging.Verbose(_log, $"No bound collection found for type \"{collectionType}\"");
+            Logging.Debug(_log, $"No bound collection found for type \"{collectionType}\"");
             var collectionName = DeriveCollectionName<T>(Options.CollectionNamingConvention);
-            Logging.Verbose(_log, $"Derived collection name is given as \"{collectionName}\"");
+            Logging.Debug(_log, $"Derived collection name is given as \"{collectionName}\"");
 
             // check to see if we need to create a new collection 
             if (!CollectionExists(collectionName))
             {
                 // create a new collection and bind to that
-                Logging.Verbose(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+                Logging.Debug(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
                 var optionsBuilder = new CreateCollectionOptionsBuilder();
                 OnCollectionCreating<T>(ref optionsBuilder, cancellationToken);
                 NewCollection<T>(collectionName, optionsBuilder.Build(), cancellationToken);
             }
 
-            Logging.Verbose(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+            Logging.Debug(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
             var settingsBuilder = new CollectionSettingsBuilder(settings);
             OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
             var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());

@@ -46,7 +46,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         public static X509Certificate2 ImportFromFile(string source, Func<string> pf, bool exportable = true)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"Attempting x509 certificate load from \"{source}\"");
+            Logging.Debug(_log, $"Attempting x509 certificate load from \"{source}\"");
             if (!File.Exists(source))
             {
                 Logging.Warning(_log, "Specified source for x509 certificate doesn't exist, or can't be accessed");

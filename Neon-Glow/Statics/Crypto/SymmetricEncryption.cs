@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
         private static SymmetricAlgorithm InitialiseCipher(SymmetricEncryptionOptions options, byte[]? key = null, byte[]? iv = null)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log,
+            Logging.Debug(_log,
                 $"Initialising {options.SymmetricAlgorithmOption.ToString()} with a suggested config of ({options.KeySize}, {options.Mode})");
             var algorithm = SymmetricAlgorithm.Create(options.SymmetricAlgorithmOption.ToString());
             if (algorithm == null)
@@ -146,7 +146,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             configureAction(builder);
             var options = builder.Build();
 
-            Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            Logging.Debug(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
 
             // check we have a private key if required
             if (options.SymmetricKeyWrappingOption == KeyWrappingOption.WrapWithPrivateKey && !certificate.HasPrivateKey)
@@ -209,7 +209,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             configureAction(builder);
             var options = builder.Build();
 
-            Logging.Verbose(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            Logging.Debug(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
             // check we have a private key if required
             if (options.KeyUnwrappingOption == KeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
             {
@@ -267,7 +267,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             Logging.MethodCall(_log);
             using var cryptor =
                 directionOption == TransformDirectionOption.Encrypt ? cipher.CreateEncryptor() : cipher.CreateDecryptor();
-            Logging.Verbose(_log, "Encrypting larger data, using stream transform");
+            Logging.Debug(_log, "Encrypting larger data, using stream transform");
             try
             {
                 switch (directionOption)
