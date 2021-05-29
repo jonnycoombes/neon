@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
+using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using Serilog;
 
@@ -164,6 +165,56 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        ///     Checks whether we already have a specific bound collection
+        /// </summary>
+        /// <typeparam name="T">The type of entities to be stored within the collection</typeparam>
+        /// <returns>True or false</returns>
+        public bool HaveBoundCollection<T>()
+        {
+            Logging.MethodCall(_log);
+            lock (_boundCollections)
+            {
+                return _boundCollections.ContainsKey(typeof(T));
+            }
+        }
+
+        /// <summary>
+        ///     Adds a bound collection to the cache of bound collections
+        /// </summary>
+        /// <param name="collection">The collection to add</param>
+        /// <typeparam name="T">The type of the entities stored within the collection</typeparam>
+        public void AddBoundCollection<T>(IMongoCollection<T> collection)
+        {
+            Logging.MethodCall(_log);
+            lock (_boundCollections)
+            {
+                if (!HaveBoundCollection<T>())
+                {
+                    _boundCollections[typeof(T)] = collection;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Retrieves a bound collection instance
+        /// </summary>
+        /// <typeparam name="T">The type of the entities stored within the collection</typeparam>
+        /// <returns></returns>
+        public Option<IMongoCollection<T>> GetBoundCollection<T>()
+        {
+            Logging.MethodCall(_log);
+            lock (_boundCollections)
+            {
+                if (HaveBoundCollection<T>())
+                {
+                    return Option<IMongoCollection<T>>.Some((IMongoCollection<T>) _boundCollections[typeof(T)]);
+                }
+
+                return Option<IMongoCollection<T>>.None;
+            }
+        }
+
+        /// <summary>
         ///     Checks whether we have a client, and if not builds one using the current <see cref="MongoClientSettings" /> object.
         /// </summary>
         /// <returns>An instance of <see cref="MongoClient" /></returns>
@@ -267,11 +318,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.Verbose(_log, $"Binding collection for type \"{typeof(T)}\"");
 
             var collectionType = typeof(T);
-            if (_boundCollections.ContainsKey(collectionType))
+            if (GetBoundCollection<T>().IsSome(out var boundCollection))
             {
                 Logging.Verbose(_log,
                     $"Collection for type \"{collectionType}\" already bound, returning existing instance");
-                return (IMongoCollection<T>) _boundCollections[collectionType];
+                return boundCollection;
             }
 
             // derive the name for the collection
@@ -282,14 +333,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             // check if the collection exists already
             if (CollectionExists(collectionName))
             {
-                Logging.Verbose(_log, $"Binding to existing collection \"{collectionName}\"");
+                Logging.Verbose(_log, $"Binding to existing collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
                 var settingsBuilder = new CollectionSettingsBuilder();
                 OnCollectionBinding<T>(BindingType.Existing, ref settingsBuilder);
-                return Database.GetCollection<T>(collectionName, settingsBuilder.Build());
+                var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
+                AddBoundCollection(collection);
+                return collection;
             }
 
             // create a new collection and bind to that
-            Logging.Verbose(_log, $"Creating a new collection for type \"{typeof(T).FullName}\"");
+            Logging.Verbose(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
             var optionsBuilder = new CreateCollectionOptionsBuilder();
             var indexDefinitions = new List<IndexKeysDefinition<T>>();
             OnCollectionCreating(ref optionsBuilder, ref indexDefinitions);
@@ -314,6 +367,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 return attribute.Name ?? namingConvention(t.Name);
             }
+
             return namingConvention(t.Name);
         }
     }
