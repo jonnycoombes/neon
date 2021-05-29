@@ -27,15 +27,16 @@ namespace JCS.Neon.Glow.Statics.Reflection
     public static class Attributes
     {
         /// <summary>
+        ///     The default <see cref="BindingFlags" /> to use whilst searching for fields and properties.  This combo ensures that we scan
+        ///     through public/private/protected static and instance
+        /// </summary>
+        private const BindingFlags DefaultFlags =
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+
+        /// <summary>
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(Attributes));
-
-        /// <summary>
-        /// The default <see cref="BindingFlags"/> to use whilst searching for fields and properties.  This combo ensures that we scan
-        /// through public/private/protected static and instance 
-        /// </summary>
-        private const BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         /// <summary>
         ///     General method that attempts to extract a single instance of an <see cref="Attribute" /> from a given type, based on the supplied
@@ -201,7 +202,7 @@ namespace JCS.Neon.Glow.Statics.Reflection
         {
             Logging.MethodCall(_log);
             var target = t.GetFields(DefaultFlags).First(f => f.Name.Equals
-            (name));
+                (name));
             if (target != null)
             {
                 return (T[]) Attribute.GetCustomAttributes(target, typeof(T));
@@ -257,6 +258,5 @@ namespace JCS.Neon.Glow.Statics.Reflection
         {
             return GetCustomAttribute<T>(AttributeTargets.Class, t).IsSome();
         }
-        
     }
 }
