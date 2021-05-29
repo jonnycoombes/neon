@@ -14,6 +14,7 @@
 using System;
 using JCS.Neon.Glow.Data.Repository.Mongo;
 using MongoDB.Driver.Core.Configuration;
+using Xunit.Abstractions;
 
 #endregion
 

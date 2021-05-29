@@ -51,7 +51,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     Static logger
         /// </summary>
-        private static readonly ILogger _log = Log.ForContext<DbContext>();
+        private static readonly ILogger _log = Log.ForContext(typeof(DbContext));
 
         /// <summary>
         ///     A cache of currently bound collections
@@ -316,7 +316,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="collectionName"></param>
         /// <param name="options"></param>

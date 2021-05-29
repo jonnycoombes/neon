@@ -59,11 +59,13 @@ namespace JCS.Neon.Glow.Statics.Crypto
                 if (exportable)
                 {
                     var cert = new X509Certificate2(source, pf(), X509KeyStorageFlags.Exportable);
+                    Logging.Debug(_log, $"Certificate imported with thumbprint \"{cert.Thumbprint}\"");
                     return cert;
                 }
                 else
                 {
                     var cert = new X509Certificate2(source, pf());
+                    Logging.Debug(_log, $"Certificate imported with thumbprint \"{cert.Thumbprint}\"");
                     return cert;
                 }
             }
@@ -138,6 +140,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             Logging.MethodCall(_log);
             try
             {
+                Logging.Debug(_log, $"Exporting certificate with thumbprint \"{certificate.Thumbprint}\"");
                 return certificate.Export(X509ContentType.Pkcs12, pf());
             }
             catch (Exception ex)

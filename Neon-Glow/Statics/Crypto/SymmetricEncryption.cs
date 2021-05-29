@@ -147,7 +147,8 @@ namespace JCS.Neon.Glow.Statics.Crypto
             var options = builder.Build();
 
             Logging.Debug(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
-
+            Logging.Debug(_log, $"Certificate being used for wrap has thumbprint \"{certificate.Thumbprint}\"");
+            
             // check we have a private key if required
             if (options.SymmetricKeyWrappingOption == KeyWrappingOption.WrapWithPrivateKey && !certificate.HasPrivateKey)
             {
@@ -210,6 +211,7 @@ namespace JCS.Neon.Glow.Statics.Crypto
             var options = builder.Build();
 
             Logging.Debug(_log, $"Attempting encryption and then wrapping key using \"{options.SymmetricKeyWrappingOption}\"");
+            Logging.Debug(_log, $"Certificate being used for unwrap has thumbprint \"{certificate.Thumbprint}\"");
             // check we have a private key if required
             if (options.KeyUnwrappingOption == KeyUnwrappingOption.UnwrapWithPrivateKey && !certificate.HasPrivateKey)
             {
