@@ -13,6 +13,7 @@
 
 using System.Text;
 using JCS.Neon.Glow.Types;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 #endregion
@@ -92,5 +93,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _settings.WriteEncoding = encoding;
             return this;
         }
+
+        /// <summary>
+        /// Sets whether an id should be assigned on insertion
+        /// </summary>
+        /// <param name="assignId"></param>
+        /// <returns></returns>
+        public CollectionSettingsBuilder SetIdOnInsert(bool assignId)
+        {
+            _settings.AssignIdOnInsert = assignId;
+            return this;
+        }
+
     }
 }
