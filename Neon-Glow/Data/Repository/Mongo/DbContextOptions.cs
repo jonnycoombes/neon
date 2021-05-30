@@ -207,6 +207,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public Func<string, string> CollectionNamingConvention { get; set; } = s => s.ToCamelCase();
 
         /// <summary>
+        ///     A function that can take an array of fieldnames for a given index, and then convert this into a name for the overall index
+        /// </summary>
+        [JsonIgnore]
+        public Func<string[], string> IndexNamingConvention { get; set; } = s => string.Join('_', s).ToCamelCase();
+
+        /// <summary>
         ///     Returns the internal list of client <see cref="X509Certificate" /> instances to be used when SSL is selected as the
         ///     channel type
         /// </summary>
@@ -290,7 +296,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public MongoClientSettings BuildClientSettings(Func<DbContextOptions, bool>? optionsValidationFunc = null)
         {
             Logging.MethodCall(_log);
-            Logging.Verbose(_log, $"Build a new client settings based on {this.ToString()}");
+            Logging.Verbose(_log, $"Build a new client settings based on {ToString()}");
             var clientSettings = new MongoClientSettings();
             optionsValidationFunc ??= DefaultOptionsValidationFunction;
             if (optionsValidationFunc(this))

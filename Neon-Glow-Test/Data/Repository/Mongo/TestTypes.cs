@@ -59,8 +59,8 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     <see cref="Glow.Data.Repository.Mongo.Index" /> custom attributes
     /// </summary>
     [Collection(Name = "TestCollection", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
-    [Index(Name= "TestIdx", Fields = new string[]{"StringProperty", "IntProperty"}, Unique = true)]
-    [Index(Fields = new string[]{"FloatProperty"}, Unique = false)]
+    [Index(new string[]{"StringProperty", "IntProperty"}, Name= "TestIdx", Unique = true)]
+    [Index(new string[]{"FloatProperty"}, Unique = false)]
     public class AttributedEntity
     {
         /// <summary>

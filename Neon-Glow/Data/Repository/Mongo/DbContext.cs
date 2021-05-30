@@ -18,6 +18,7 @@ using System.Threading;
 using JCS.Neon.Glow.Statics;
 using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Serilog;
 
@@ -316,25 +317,94 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        ///     Creates a new collection based on a given <paramref name="collectionName" /> and a set of
+        ///     <paramref name="options" />.  After vthe collection has been created, the stored entity type is scanned for
+        ///     <see cref="Index" /> attributes and any associated "pre-cooked" indexes are created against the collection
         /// </summary>
-        /// <param name="collectionName"></param>
-        /// <param name="options"></param>
-        /// <param name="cancellationToken"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <exception cref="DbContextException"></exception>
+        /// <param name="collectionName">The name of the collection to create</param>
+        /// <param name="options">A set of <see cref="CreateCollectionOptions{TDocument}" /></param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken" /></param>
+        /// <typeparam name="T">The type of entity to be stored within the collection</typeparam>
+        /// <exception cref="DbContextException">Thrown in the event of an underlying mongo exception</exception>
         private async void NewCollection<T>(string collectionName, CreateCollectionOptions options, CancellationToken cancellationToken)
         {
             Logging.MethodCall(_log);
             try
             {
+                var entityType = typeof(T);
                 await Database.CreateCollectionAsync(collectionName, options, cancellationToken);
                 var collection = Database.GetCollection<T>(collectionName);
+                Logging.Debug(_log, $"Created a new collection with name \"{collectionName}\"");
+                if (Attributes.GetCustomAttributes<Index>(AttributeTargets.Class, entityType).IsSome(out var indexAttributes))
+                {
+                    Logging.Debug(_log, $"Found index attributes on \"{typeof(T)}\"");
+                    foreach (var indexAttribute in indexAttributes)
+                    {
+                        if (indexAttribute.Fields.Length == 0)
+                        {
+                            Logging.Warning(_log, "An index attribute is given with zero-length fields - skipping");
+                        }
+                        else
+                        {
+                            var builder = new CreateIndexOptionsBuilder();
+                            builder.Name(indexAttribute.Name ?? Options.IndexNamingConvention(indexAttribute.Fields))
+                                .Unique(indexAttribute.Unique)
+                                .Sparse(indexAttribute.Sparse);
+                            var keysDefinition = DeriveIndexKeys<T>(indexAttribute, entityType).ToJson();
+                            var indexName = await collection.Indexes.CreateOneAsync(new CreateIndexModel<T>(keysDefinition, builder.Build()),
+                                cancellationToken: cancellationToken);
+                            Logging.Debug(_log, $"Created new index named \"{indexName}\" for type \"{entityType.Name}\"");
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
                 Logging.Error(_log, $"Mongo Exception: \"{ex.Message}\"");
                 throw Exceptions.LoggedException<DbContextException>(_log, "An exception was caught creating a new collection");
             }
+        }
+
+        /// <summary>
+        ///     Takes an instance of a custom <see cref="Index" /> attribute, and then uses this in combination with any
+        ///     <see cref="IndexField" />
+        ///     attributes defined on the same parent type to build a set of index keys for a new index
+        /// </summary>
+        /// <param name="indexAttribute">An instance of <see cref="Index" /> taken from <typeparamref name="T" /></param>
+        /// <param name="entityType">The type of the entity </param>
+        /// <param name="keyBuilder">A pre-instantiated instance of </param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>A new <see cref="IndexKeysDefinition{TDocument}" /> instance</returns>
+        private static IndexKeysDefinition<T> DeriveIndexKeys<T>(Index indexAttribute, Type entityType)
+        {
+            var keyBuilder = Builders<T>.IndexKeys;
+            var keyDefinitions = new List<IndexKeysDefinition<T>>();
+            foreach (var fieldName in indexAttribute.Fields)
+            {
+                if (Attributes.GetCustomAttribute<IndexField>(AttributeTargets.Property, entityType, fieldName).IsSome
+                    (out var fieldAttribute))
+                {
+                    if (fieldAttribute.IsText)
+                    {
+                        keyDefinitions.Add(keyBuilder.Text(fieldName));
+                    }
+
+                    if (fieldAttribute.Ascending)
+                    {
+                        keyDefinitions.Add(keyBuilder.Ascending(fieldName));
+                    }
+                    else
+                    {
+                        keyDefinitions.Add(keyBuilder.Descending(fieldName));
+                    }
+                }
+                else
+                {
+                    keyDefinitions.Add(keyBuilder.Ascending(fieldName));
+                }
+            }
+
+            return keyBuilder.Combine(keyDefinitions);
         }
 
         /// <summary>

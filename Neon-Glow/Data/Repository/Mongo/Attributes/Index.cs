@@ -31,7 +31,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     A list of the fields to be included within the index
         /// </summary>
-        public string[]? Fields { get; set; }
+        public string[] Fields { get; set; }
 
         /// <summary>
         ///     Whether or not the index is unique
@@ -42,5 +42,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     Whether or not the index should be sparse
         /// </summary>
         public bool Sparse { get; set; } = false;
+
+        public Index(string[] fields)
+        {
+            Fields = fields;
+        }
     }
 }
