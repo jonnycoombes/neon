@@ -210,7 +210,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     A function that can take an array of fieldnames for a given index, and then convert this into a name for the overall index
         /// </summary>
         [JsonIgnore]
-        public Func<string[], string> IndexNamingConvention { get; set; } = s => string.Join('_', s).ToCamelCase();
+        public Func<string[], string> IndexNamingConvention { get; set; } = s => string.Join('_', s.Prepend("Idx")).ToCamelCase();
 
         /// <summary>
         ///     Returns the internal list of client <see cref="X509Certificate" /> instances to be used when SSL is selected as the

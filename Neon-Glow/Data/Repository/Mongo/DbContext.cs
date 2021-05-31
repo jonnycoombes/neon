@@ -286,17 +286,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             var runtimeType = typeof(T);
             Logging.Debug(_log, $"Creating collection for entity type of \"{runtimeType}\"");
-            if (Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, runtimeType).IsSome(out var collectionAttribute))
-            {
-                Logging.Debug(_log, "Found a collection attribute, using this to set options");
-                optionsBuilder
-                    .ValidationAction(collectionAttribute.ValidationAction)
-                    .ValidationLevel(collectionAttribute.ValidationLevel)
-                    .Capped(collectionAttribute.Capped)
-                    .MaxDocuments(collectionAttribute.MaxDocuments)
-                    .MaxSize(collectionAttribute.MaxSize)
-                    .UsePowerOf2Sizes(collectionAttribute.PowerOf2Sizes);
-            }
+            
         }
 
         /// <summary>
@@ -310,7 +300,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             Assertions.Checked<DbContextException>(Options.Database != null,
                 "No database name has been specified");
-
             var builder = new DatabaseSettingsBuilder();
             OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, ref builder);
             return Client.GetDatabase(Options.Database, builder.Build());
@@ -335,28 +324,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 await Database.CreateCollectionAsync(collectionName, options, cancellationToken);
                 var collection = Database.GetCollection<T>(collectionName);
                 Logging.Debug(_log, $"Created a new collection with name \"{collectionName}\"");
-                if (Attributes.GetCustomAttributes<Index>(AttributeTargets.Class, entityType).IsSome(out var indexAttributes))
+                var indexModels = ModelHelpers.BuildIndexModelsFromAttributes<T>(Options.IndexNamingConvention);
+                foreach (var model in indexModels)
                 {
-                    Logging.Debug(_log, $"Found index attributes on \"{typeof(T)}\"");
-                    foreach (var indexAttribute in indexAttributes)
-                    {
-                        if (indexAttribute.Fields.Length == 0)
-                        {
-                            Logging.Warning(_log, "An index attribute is given with zero-length fields - skipping");
-                        }
-                        else
-                        {
-                            var builder = new CreateIndexOptionsBuilder();
-                            builder.Name(indexAttribute.Name ?? Options.IndexNamingConvention(indexAttribute.Fields))
-                                .Unique(indexAttribute.Unique)
-                                .Sparse(indexAttribute.Sparse);
-                            var keysDefinition = DeriveIndexKeys<T>(indexAttribute, entityType).ToJson();
-                            var indexName = await collection.Indexes.CreateOneAsync(new CreateIndexModel<T>(keysDefinition, builder.Build()),
-                                cancellationToken: cancellationToken);
-                            Logging.Debug(_log, $"Created new index named \"{indexName}\" for type \"{entityType.Name}\"");
-                        }
-                    }
+                    var indexName= await collection.Indexes.CreateOneAsync(model);
+                    Logging.Debug(_log, $"Created index \"{indexName}\"");
                 }
+                
             }
             catch (Exception ex)
             {
@@ -365,47 +339,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <summary>
-        ///     Takes an instance of a custom <see cref="Index" /> attribute, and then uses this in combination with any
-        ///     <see cref="IndexField" />
-        ///     attributes defined on the same parent type to build a set of index keys for a new index
-        /// </summary>
-        /// <param name="indexAttribute">An instance of <see cref="Index" /> taken from <typeparamref name="T" /></param>
-        /// <param name="entityType">The type of the entity </param>
-        /// <param name="keyBuilder">A pre-instantiated instance of </param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>A new <see cref="IndexKeysDefinition{TDocument}" /> instance</returns>
-        private static IndexKeysDefinition<T> DeriveIndexKeys<T>(Index indexAttribute, Type entityType)
-        {
-            var keyBuilder = Builders<T>.IndexKeys;
-            var keyDefinitions = new List<IndexKeysDefinition<T>>();
-            foreach (var fieldName in indexAttribute.Fields)
-            {
-                if (Attributes.GetCustomAttribute<IndexField>(AttributeTargets.Property, entityType, fieldName).IsSome
-                    (out var fieldAttribute))
-                {
-                    if (fieldAttribute.IsText)
-                    {
-                        keyDefinitions.Add(keyBuilder.Text(fieldName));
-                    }
-
-                    if (fieldAttribute.Ascending)
-                    {
-                        keyDefinitions.Add(keyBuilder.Ascending(fieldName));
-                    }
-                    else
-                    {
-                        keyDefinitions.Add(keyBuilder.Descending(fieldName));
-                    }
-                }
-                else
-                {
-                    keyDefinitions.Add(keyBuilder.Ascending(fieldName));
-                }
-            }
-
-            return keyBuilder.Combine(keyDefinitions);
-        }
+        
 
         /// <summary>
         ///     Checks whether we currently have a binding into a collection for objects of type <see cref="T" />, and if not
@@ -443,9 +377,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 // create a new collection and bind to that
                 Logging.Debug(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
-                var optionsBuilder = new CreateCollectionOptionsBuilder();
-                OnCollectionCreating<T>(ref optionsBuilder, cancellationToken);
-                NewCollection<T>(collectionName, optionsBuilder.Build(), cancellationToken);
+                var builder = ModelHelpers.CollectionOptionsBuilderFromAttributes<T>(); 
+                OnCollectionCreating<T>(ref builder, cancellationToken);
+                NewCollection<T>(collectionName, builder.Build(), cancellationToken);
             }
 
             Logging.Debug(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");

@@ -23,6 +23,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class Index : Attribute
     {
+        public Index(string[] fields)
+        {
+            Fields = fields;
+        }
+
         /// <summary>
         ///     The name for the index
         /// </summary>
@@ -43,9 +48,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </summary>
         public bool Sparse { get; set; } = false;
 
-        public Index(string[] fields)
-        {
-            Fields = fields;
-        }
+        /// <summary>
+        ///     Whether or not the index is build in the background
+        /// </summary>
+        public bool Background { get; set; } = false;
     }
 }
