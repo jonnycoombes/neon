@@ -327,7 +327,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 var indexModels = ModelHelpers.BuildIndexModelsFromAttributes<T>(Options.IndexNamingConvention);
                 foreach (var model in indexModels)
                 {
-                    var indexName= await collection.Indexes.CreateOneAsync(model);
+                    var indexName= await collection.Indexes.CreateOneAsync(model, cancellationToken: cancellationToken);
                     Logging.Debug(_log, $"Created index \"{indexName}\"");
                 }
                 
@@ -369,7 +369,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
             // derive the name for the collection
             Logging.Debug(_log, $"No bound collection found for type \"{collectionType}\"");
-            var collectionName = DeriveCollectionName<T>(Options.CollectionNamingConvention);
+            var collectionName = ModelHelpers.DeriveCollectionName<T>(Options.CollectionNamingConvention);
             Logging.Debug(_log, $"Derived collection name is given as \"{collectionName}\"");
 
             // check to see if we need to create a new collection 
@@ -388,27 +388,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
             AddBoundCollection(collection);
             return collection;
-        }
-
-        /// <summary>
-        ///     Given a specific collection type, function which determines the name of the collection.  The name is either based
-        ///     on an explicit value entered via attribution (using the <see cref="Attributes.Collection" />) custom attribute or
-        ///     via a currently configured naming convention function
-        /// </summary>
-        /// <param name="namingConvention">The function used to derive the collection name if no valid attribution if present</param>
-        /// <typeparam name="T">The type of the entities to be contained in the collection</typeparam>
-        /// <returns>A name for a given collection</returns>
-        private static string DeriveCollectionName<T>(Func<string, string> namingConvention)
-        {
-            Logging.MethodCall(_log);
-            var t = typeof(T);
-            var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
-            if (option.IsSome(out var attribute))
-            {
-                return attribute.Name ?? namingConvention(t.Name);
-            }
-
-            return namingConvention(t.Name);
         }
     }
 }
