@@ -59,6 +59,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             return models;
         }
 
+        /// <summary>
+        ///     Given a specific instance of <see cref="Index" /> attribute, will combine the fields property with any associated
+        ///     <see cref="Indexfield" />
+        ///     instances on the attributed class in order to derive an instance of <see cref="IndexKeysDefinition{TDocument}" />
+        ///     for the class
+        /// </summary>
+        /// <param name="indexAttribute">The instance of <see cref="Index" /> to base the key definitions on</param>
+        /// <typeparam name="T">The attributed class type</typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">This will be thrown if the index attribute has a dodgy fields definition</exception>
         public static IndexKeysDefinition<T>? BuildKeyDefinitionsFromAttributes<T>(Index indexAttribute)
         {
             Logging.MethodCall(_log);
@@ -125,27 +135,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
 
             return builder;
-        }
-
-        /// <summary>
-        ///     Given a specific collection type, function which determines the name of the collection.  The name is either based
-        ///     on an explicit value entered via attribution (using the <see cref="Attributes.Collection" />) custom attribute or
-        ///     via a currently configured naming convention function
-        /// </summary>
-        /// <param name="namingConvention">The function used to derive the collection name if no valid attribution if present</param>
-        /// <typeparam name="T">The type of the entities to be contained in the collection</typeparam>
-        /// <returns>A name for a given collection</returns>
-        public static string DeriveCollectionName<T>(Func<string, string> namingConvention)
-        {
-            Logging.MethodCall(_log);
-            var t = typeof(T);
-            var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
-            if (option.IsSome(out var attribute))
-            {
-                return attribute.Name ?? namingConvention(t.Name);
-            }
-
-            return namingConvention(t.Name);
         }
     }
 }
