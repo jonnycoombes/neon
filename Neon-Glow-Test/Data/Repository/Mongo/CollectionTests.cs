@@ -12,6 +12,7 @@
 #region
 
 using System.Collections.Generic;
+using System.Linq;
 using JCS.Neon.Glow.Statics.Crypto;
 using MongoDB.Driver;
 using Xunit;
@@ -106,6 +107,33 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             Assert.True(await cursor.AnyAsync());
 
             await collection.DeleteManyAsync(Builders<NonAttributedEntity>.Filter.Empty);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
+        }
+
+        [Fact(DisplayName = "Can store binary data")]
+        [Trait("Category", "Data:Mongo")]
+        public async void CheckBinaryCollectionOps()
+        {
+            var entities = new List<AttributedEntity>();
+            for (var i = 0; i < 1000; i++)
+            {
+                entities.Add(new AttributedEntity
+                {
+                    StringProperty = $"Entity {i}",
+                    IntProperty = i,
+                    FloatProperty = Rng.NonZeroNegativeInteger(500),
+                    ByteArrayProperty = Rng.BoundedSequence(256).ToArray()
+                });
+            }
+
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            await collection.InsertManyAsync(entities);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
+
+            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
+            Assert.True(await cursor.AnyAsync());
+
+            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
         }
     }
