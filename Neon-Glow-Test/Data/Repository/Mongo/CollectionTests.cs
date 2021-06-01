@@ -11,6 +11,9 @@
  */
 #region
 
+using System.Collections.Generic;
+using JCS.Neon.Glow.Statics.Crypto;
+using MongoDB.Driver;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -52,6 +55,58 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             var collection = Fixtures.DbContext.Collection<AttributedEntity>();
             Assert.True(collection.CollectionNamespace.CollectionName == "TestCollection");
+        }
+
+        [Fact(DisplayName = "Can perform basic collection operations on attributed entities")]
+        [Trait("Category", "Data:Mongo")]
+        public async void CheckAttributedCollectionBasicOps()
+        {
+            var entities = new List<AttributedEntity>();
+            for (var i = 0; i < 1000; i++)
+            {
+                entities.Add(new AttributedEntity
+                {
+                    StringProperty = $"Entity {i}",
+                    IntProperty = i,
+                    FloatProperty = i * Rng.NonZeroNegativeInteger(500)
+                });
+            }
+
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            await collection.InsertManyAsync(entities);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
+
+            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
+            Assert.True(await cursor.AnyAsync());
+
+            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
+        }
+
+        [Fact(DisplayName = "Can perform basic collection operations on non-attributed entities")]
+        [Trait("Category", "Data:Mongo")]
+        public async void CheckNonAttributedCollectionBasicOps()
+        {
+            var entities = new List<NonAttributedEntity>();
+            for (var i = 0; i < 1000; i++)
+            {
+                entities.Add(new NonAttributedEntity
+                {
+                    StringProperty = $"Entity {i}",
+                    IntProperty = i,
+                    FloatProperty = i * Rng.NonZeroNegativeInteger(500)
+                });
+            }
+
+            var collection = Fixtures.DbContext.Collection<NonAttributedEntity>();
+            await collection.InsertManyAsync(entities);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
+
+            var cursor = await collection.FindAsync(Builders<NonAttributedEntity>.Filter.Where(e => e.IntProperty == 5));
+            Assert.True(await cursor.AnyAsync());
+
+            await collection.DeleteManyAsync(Builders<NonAttributedEntity>.Filter.Empty);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
         }
     }
 }
