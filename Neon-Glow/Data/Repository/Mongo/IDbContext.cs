@@ -11,6 +11,7 @@
  */
 #region
 
+using System;
 using System.Linq;
 using System.Threading;
 using MongoDB.Driver;
@@ -60,10 +61,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An optional <see cref="MongoCollectionSettings" /> instance.  If not provided, the defaults will
         ///     be set by the context.
         /// </param>
-        /// <param name="token">An optional <see cref="CancellationToken"/></param>
-        /// <typeparam name="T">The type of the entities within the collection</typeparam>
+        /// <param name="token">An optional <see cref="CancellationToken" /></param>
+        /// <typeparam name="T">The type of the entities within the collection. Must have a parameterless constructor</typeparam>
         /// <returns>A <see cref="IMongoCollection{TDocument}" /> instance, bound to an undelrying collection.</returns>
-        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings= null, CancellationToken token=default);
+        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings = null, CancellationToken token = default)
+            where T : new();
 
         /// <summary>
         ///     Returns a <see cref="IQueryable{T}" /> interface for interacting with objects of type <see cref="T" />
@@ -72,9 +74,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     An optional <see cref="MongoCollectionSettings" /> instance.  If not provided, the defaults will
         ///     be set by the context.
         /// </param>
-        /// <param name="token">An optional <see cref="CancellationToken"/></param>
-        /// <typeparam name="T">The type of objects stored within the underlying collection</typeparam>
+        /// <param name="token">An optional <see cref="CancellationToken" /></param>
+        /// <typeparam name="T">The type of objects stored within the underlying collection. Must have a parameterless constructor</typeparam>
         /// <returns>A <see cref="IQueryable{T}" /> interface bound to an underlying collection.</returns>
-        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings= null, CancellationToken token=default);
+        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings = null, CancellationToken token = default) where T : new();
+
+        /// <summary>
+        /// Binds and then returns an instance of <see cref="IRepository{T}"/> for a given <see cref="RepositoryObject"/> derivative
+        /// </summary>
+        /// <param name="f">An optional <see cref="Action"/> which will be called to setup <see cref="RepositoryOptions"/> </param>
+        /// <typeparam name="T">The type of the entities to be managed by the repository</typeparam>
+        /// <returns>A bound instance of <see cref="IRepository{T}"/></returns>
+        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f) where T : RepositoryObject;
     }
 }

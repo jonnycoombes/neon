@@ -20,7 +20,7 @@ using Serilog;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.Mongo
+namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
 {
     public static class ModelHelpers
     {
@@ -41,7 +41,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             var entityType = typeof(T);
             var models = new List<CreateIndexModel<T>>();
-            if (Attributes.GetCustomAttributes<Index>(AttributeTargets.Class, entityType).IsSome(out var indexAttributes))
+            if (Statics.Reflection.Attributes.GetCustomAttributes<Index>(AttributeTargets.Class, entityType).IsSome(out var indexAttributes))
             {
                 foreach (var indexAttribute in indexAttributes)
                 {
@@ -84,7 +84,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
             foreach (var field in indexAttribute.Fields)
             {
-                if (Attributes.GetCustomAttribute<IndexField>(AttributeTargets.Property, entityType, field).IsSome(out var fieldAttribute))
+                if (Statics.Reflection.Attributes.GetCustomAttribute<IndexField>(AttributeTargets.Property, entityType, field).IsSome(out var fieldAttribute))
                 {
                     if (fieldAttribute.IsText)
                     {
@@ -92,13 +92,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     }
                     else
                     {
-                        if (fieldAttribute.Ascending)
+                        if (fieldAttribute.IsWildcard)
                         {
-                            definitions.Add(builder.Ascending(field));
+                            definitions.Add(builder.Wildcard(field));
                         }
                         else
                         {
-                            definitions.Add(builder.Descending(field));
+                            definitions.Add(fieldAttribute.Ascending ? builder.Ascending(field) : builder.Descending(field));
                         }
                     }
                 }
@@ -122,7 +122,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             var builder = new CreateCollectionOptionsBuilder();
-            if (Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, typeof(T)).IsSome(out var collectionAttribute))
+            if (Statics.Reflection.Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, typeof(T)).IsSome(out var collectionAttribute))
             {
                 Logging.Debug(_log, "Found a collection attribute, using this to set options");
                 builder
@@ -149,7 +149,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             var t = typeof(T);
-            var option = Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
+            var option = Statics.Reflection.Attributes.GetCustomAttribute<Collection>(AttributeTargets.Class, t);
             if (option.IsSome(out var attribute))
             {
                 return attribute.Name ?? namingConvention(t.Name);

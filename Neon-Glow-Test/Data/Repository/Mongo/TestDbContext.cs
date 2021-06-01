@@ -45,5 +45,6 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
         }
+
     }
 }

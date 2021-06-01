@@ -57,6 +57,18 @@ namespace JCS.Neon.Glow.Statics.Crypto
         }
 
         /// <summary>
+        /// Returns a random long value
+        /// </summary>
+        /// <returns>A long value (long.MinValue,long.MaxValue) </returns>
+        public static long RandomLong()
+        {
+            Logging.MethodCall(_log);
+            byte[] raw = new byte[8];
+            _rng.NextBytes(raw);
+            return -BitConverter.ToInt64(raw, 0);
+        }
+
+        /// <summary>
         ///     Generates a sequence of random integers within a given bounded range.
         /// </summary>
         /// <param name="count">The number of integers to generate</param>

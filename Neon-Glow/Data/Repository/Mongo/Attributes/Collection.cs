@@ -16,7 +16,7 @@ using MongoDB.Driver;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.Mongo
+namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
 {
     /// <summary>
     ///     An attribute which allows the collection associated with a given BSON model type to be specified

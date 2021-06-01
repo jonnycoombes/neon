@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public void CheckAttributedCollectionBind()
         {
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
             Assert.True(collection.CollectionNamespace.CollectionName == "TestCollection");
         }
 
@@ -62,10 +62,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public async void CheckAttributedCollectionBasicOps()
         {
-            var entities = new List<AttributedEntity>();
-            for (var i = 0; i < 1000; i++)
+            var entities = new List<RepositoryEntity>();
+            for (var i = 0; i < 10000; i++)
             {
-                entities.Add(new AttributedEntity
+                entities.Add(new RepositoryEntity
                 {
                     StringProperty = $"Entity {i}",
                     IntProperty = i,
@@ -73,14 +73,14 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
             await collection.InsertManyAsync(entities);
-            Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 10000);
 
-            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
+            var cursor = await collection.FindAsync(Builders<RepositoryEntity>.Filter.Where(e => e.IntProperty == 5));
             Assert.True(await cursor.AnyAsync());
 
-            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
+            await collection.DeleteManyAsync(Builders<RepositoryEntity>.Filter.Empty);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
         }
 
@@ -114,10 +114,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public async void CheckBinaryCollectionOps()
         {
-            var entities = new List<AttributedEntity>();
+            var entities = new List<RepositoryEntity>();
             for (var i = 0; i < 1000; i++)
             {
-                entities.Add(new AttributedEntity
+                entities.Add(new RepositoryEntity
                 {
                     StringProperty = $"Entity {i}",
                     IntProperty = i,
@@ -126,15 +126,46 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
 
-            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
+            var cursor = await collection.FindAsync(Builders<RepositoryEntity>.Filter.Where(e => e.IntProperty == 5));
             Assert.True(await cursor.AnyAsync());
 
-            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
+            await collection.DeleteManyAsync(Builders<RepositoryEntity>.Filter.Empty);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
+        }
+
+        [Fact(DisplayName = "Can perform operations on a polymorphic collection")]
+        [Trait("Category", "Data:Mongo")]
+        public async void CheckPolymorpicCollectionOps()
+        {
+            var classAEntities = new List<SubClassA>();
+            var classBEntities = new List<SubClassB>();
+            for (var i = 0; i < 1000; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    classAEntities.Add(new SubClassA(){ClassAProperty = $"Value {i}"});
+                }
+                else
+                {
+                    classBEntities.Add(new SubClassB(){ClassBProperty = $"Value {i}"});
+                }
+            }
+
+            var collection = Fixtures.DbContext.Collection<PolymorphicBase>();
+            await collection.InsertManyAsync(classAEntities);
+            await collection.InsertManyAsync(classBEntities);
+            Assert.True((await collection.EstimatedDocumentCountAsync()) == 1000);
+
+            var cursor = await collection.FindAsync("{'_t' : 'SubClassA'}");
+            Assert.True(await cursor.AnyAsync());
+            
+            await collection.DeleteManyAsync(Builders<PolymorphicBase>.Filter.Empty);
+            Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
+            
         }
     }
 }

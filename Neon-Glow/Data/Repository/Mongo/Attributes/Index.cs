@@ -15,7 +15,7 @@ using System;
 
 #endregion
 
-namespace JCS.Neon.Glow.Data.Repository.Mongo
+namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
 {
     /// <summary>
     ///     An attribute which allows for the specification of indexes to be created against a specific collection document type

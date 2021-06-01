@@ -15,8 +15,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using JCS.Neon.Glow.Data.Repository.Mongo.Attributes;
 using JCS.Neon.Glow.Statics;
+using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Serilog;
 
@@ -118,6 +121,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
         /// <inheritdoc cref="IDbContext.Collection{T}" />
         public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings, CancellationToken token)
+            where T : new()
         {
             Logging.MethodCall(_log);
             return BindCollection<T>(settings, token);
@@ -125,9 +129,20 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
         public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings, CancellationToken token)
+            where T : new()
         {
             Logging.MethodCall(_log);
             return BindCollection<T>(settings, token).AsQueryable();
+        }
+
+        /// <inheritdoc cref="IDbContext.BindRepository{T}" />
+        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f) where T : RepositoryObject
+        {
+            Logging.MethodCall(_log);
+            Logging.Debug(_log, $"Creating a new repository instance for type \"{typeof(T)}\"");
+            var builder = new RepositoryOptionsBuilder();
+            if (f != null) f(builder);
+            return new Repository<T>(this, builder.Build());
         }
 
         /// <inheritdoc cref="IDbContext.DatabaseExists" />
@@ -265,11 +280,18 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="builder">An instance of <see cref="CollectionSettingsBuilder" /> which can be used to modify collection settings</param>
         /// <typeparam name="T">The type of the collection being bound</typeparam>
         protected virtual void OnCollectionBinding<T>(BindingType bindingType, CollectionSettingsBuilder builder)
+            where T : new()
         {
             Logging.MethodCall(_log);
             Logging.Debug(_log, $"{bindingType} collection binding event");
             builder.ReadConcern(Options.CollectionReadConcern)
                 .WriteConcern(Options.CollectionWriteConcern);
+            if (TypeReflection.SupportsInterface<ISupportsClassmap<T>>(typeof(T)))
+            {
+                Logging.Debug(_log, $"ISupportsClassmap located, delegating class mapper setup for type \"{typeof(T).FullName}\"");
+                var mapper = (ISupportsClassmap<T>) new T();
+                BsonClassMap.RegisterClassMap<T>(cm => mapper.ConfigureClassmap(cm));
+            }
         }
 
         /// <summary>
@@ -280,6 +302,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <typeparam name="T">The type to be stored within the collection</typeparam>
         protected virtual void OnCollectionCreating<T>(ref CreateCollectionOptionsBuilder optionsBuilder,
             CancellationToken cancellationToken = default)
+            where T : new()
         {
             Logging.MethodCall(_log);
             var runtimeType = typeof(T);
@@ -313,7 +336,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     Creates a new collection based on a given <paramref name="collectionName" /> and a set of
         ///     <paramref name="options" />.  After vthe collection has been created, the stored entity type is scanned for
-        ///     <see cref="Index" /> attributes and any associated "pre-cooked" indexes are created against the collection
+        ///     <see cref="Mongo.Attributes.Index" /> attributes and any associated "pre-cooked" indexes are created against the collection
         /// </summary>
         /// <param name="collectionName">The name of the collection to create</param>
         /// <param name="options">A set of <see cref="CreateCollectionOptions{TDocument}" /></param>
@@ -321,11 +344,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <typeparam name="T">The type of entity to be stored within the collection</typeparam>
         /// <exception cref="DbContextException">Thrown in the event of an underlying mongo exception</exception>
         private async void NewCollection<T>(string collectionName, CreateCollectionOptions options, CancellationToken cancellationToken)
+            where T : new()
         {
             Logging.MethodCall(_log);
             try
             {
-                var entityType = typeof(T);
                 await Database.CreateCollectionAsync(collectionName, options, cancellationToken);
                 var collection = Database.GetCollection<T>(collectionName);
                 Logging.Debug(_log, $"Created a new collection with name \"{collectionName}\"");
@@ -357,7 +380,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// </typeparam>
         /// <returns>A bound instance of <see cref="IMongoCollection{TDocument}" /></returns>
         private IMongoCollection<T> BindCollection<T>(MongoCollectionSettings? settings,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default) where T : new()
         {
             Logging.MethodCall(_log);
             Logging.Debug(_log, $"Binding collection for type \"{typeof(T)}\"");
