@@ -12,6 +12,7 @@
 #region
 
 using System;
+using System.Linq;
 using System.Reflection;
 using JCS.Neon.Glow.Types;
 
@@ -161,6 +162,33 @@ namespace JCS.Neon.Glow.Statics.Reflection
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
         {
             return GetEvent(t, name, flags).IsSome();
+        }
+
+        /// <summary>
+        ///     Filter function for use with <see cref="TypeFilter" />
+        /// </summary>
+        /// <param name="t">The type to check</param>
+        /// <param name="criteria">The criteria object</param>
+        /// <returns>true if the given type name matches the string representation of the criteria object</returns>
+        public static bool TypeFilterByName(Type t, object? criteria)
+        {
+            if (criteria == null)
+            {
+                return false;
+            }
+
+            return t.Name == criteria.ToString();
+        }
+
+        /// <summary>
+        ///     Checks whether a given type supports a specific interface
+        /// </summary>
+        /// <param name="t">The type to check</param>
+        /// <typeparam name="T">The type of the interface to check for</typeparam>
+        /// <returns>A truthy value</returns>
+        public static bool SupportsInterface<T>(Type t)
+        {
+            return t.FindInterfaces(TypeFilterByName, typeof(T).Name).Any();
         }
     }
 }
