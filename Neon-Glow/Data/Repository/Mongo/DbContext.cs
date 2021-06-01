@@ -16,9 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using JCS.Neon.Glow.Statics;
-using JCS.Neon.Glow.Statics.Reflection;
 using JCS.Neon.Glow.Types;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Serilog;
 
@@ -286,7 +284,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             var runtimeType = typeof(T);
             Logging.Debug(_log, $"Creating collection for entity type of \"{runtimeType}\"");
-            
         }
 
         /// <summary>
@@ -297,12 +294,20 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <exception cref="DbContextException">Thrown if the connection to the database fails (i.e. times out)</exception>
         private IMongoDatabase BindDatabase()
         {
-            Logging.MethodCall(_log);
-            Assertions.Checked<DbContextException>(Options.Database != null,
-                "No database name has been specified");
-            var builder = new DatabaseSettingsBuilder();
-            OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, ref builder);
-            return Client.GetDatabase(Options.Database, builder.Build());
+            try
+            {
+                Logging.MethodCall(_log);
+                Assertions.Checked<DbContextException>(Options.Database != null,
+                    "No database name has been specified");
+                var builder = new DatabaseSettingsBuilder();
+                OnDatabaseBinding(!DatabaseExists(Options.Database!) ? BindingType.Create : BindingType.Existing, ref builder);
+                return Client.GetDatabase(Options.Database, builder.Build());
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(_log, $"Mongo Exception: \"{ex.Message}\"");
+                throw Exceptions.LoggedException<DbContextException>(_log, $"Unexpected exception during database bind \"{ex.Message}\"");
+            }
         }
 
         /// <summary>
@@ -327,10 +332,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 var indexModels = ModelHelpers.BuildIndexModelsFromAttributes<T>(Options.IndexNamingConvention);
                 foreach (var model in indexModels)
                 {
-                    var indexName= await collection.Indexes.CreateOneAsync(model, cancellationToken: cancellationToken);
+                    var indexName = await collection.Indexes.CreateOneAsync(model, cancellationToken: cancellationToken);
                     Logging.Debug(_log, $"Created index \"{indexName}\"");
                 }
-                
             }
             catch (Exception ex)
             {
@@ -339,7 +343,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        
 
         /// <summary>
         ///     Checks whether we currently have a binding into a collection for objects of type <see cref="T" />, and if not
@@ -359,35 +362,42 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             Logging.Debug(_log, $"Binding collection for type \"{typeof(T)}\"");
 
-            var collectionType = typeof(T);
-            if (GetBoundCollection<T>().IsSome(out var boundCollection))
+            try
             {
-                Logging.Debug(_log,
-                    $"Collection for type \"{collectionType}\" already bound, returning existing instance");
-                return boundCollection;
+                var collectionType = typeof(T);
+                if (GetBoundCollection<T>().IsSome(out var boundCollection))
+                {
+                    Logging.Debug(_log,
+                        $"Collection for type \"{collectionType}\" already bound, returning existing instance");
+                    return boundCollection;
+                }
+
+                // derive the name for the collection
+                Logging.Debug(_log, $"No bound collection found for type \"{collectionType}\"");
+                var collectionName = ModelHelpers.DeriveCollectionName<T>(Options.CollectionNamingConvention);
+                Logging.Debug(_log, $"Derived collection name is given as \"{collectionName}\"");
+
+                // check to see if we need to create a new collection 
+                if (!CollectionExists(collectionName))
+                {
+                    // create a new collection and bind to that
+                    Logging.Debug(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+                    var builder = ModelHelpers.CollectionOptionsBuilderFromAttributes<T>();
+                    OnCollectionCreating<T>(ref builder, cancellationToken);
+                    NewCollection<T>(collectionName, builder.Build(), cancellationToken);
+                }
+
+                Logging.Debug(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
+                var settingsBuilder = new CollectionSettingsBuilder(settings);
+                OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
+                var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
+                AddBoundCollection(collection);
+                return collection;
             }
-
-            // derive the name for the collection
-            Logging.Debug(_log, $"No bound collection found for type \"{collectionType}\"");
-            var collectionName = ModelHelpers.DeriveCollectionName<T>(Options.CollectionNamingConvention);
-            Logging.Debug(_log, $"Derived collection name is given as \"{collectionName}\"");
-
-            // check to see if we need to create a new collection 
-            if (!CollectionExists(collectionName))
+            catch (Exception ex)
             {
-                // create a new collection and bind to that
-                Logging.Debug(_log, $"Creating a new collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
-                var builder = ModelHelpers.CollectionOptionsBuilderFromAttributes<T>(); 
-                OnCollectionCreating<T>(ref builder, cancellationToken);
-                NewCollection<T>(collectionName, builder.Build(), cancellationToken);
+                throw Exceptions.LoggedException<DbContextException>(_log, $"Exception during collection bind \"{ex.Message}\"");
             }
-
-            Logging.Debug(_log, $"Binding to collection \"{collectionName}\" for type \"{collectionType.FullName}\"");
-            var settingsBuilder = new CollectionSettingsBuilder(settings);
-            OnCollectionBinding<T>(BindingType.Existing, settingsBuilder);
-            var collection = Database.GetCollection<T>(collectionName, settingsBuilder.Build());
-            AddBoundCollection(collection);
-            return collection;
         }
     }
 }
