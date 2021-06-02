@@ -74,24 +74,33 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _client = _collection.Database.Client;
         }
 
-        /// <inheritdoc cref="IRepository{T}.FindOneById" />
-        public async Task<Option<T>> FindOneById(ObjectId id)
+        /// <inheritdoc cref="IRepository{T}.ReadOneById" />
+        public async Task<Option<T>> ReadOne(ObjectId id)
         {
             Logging.MethodCall(_log);
             try
             {
                 var result = await _collection.FindAsync(Builders<T>.Filter.Eq(t => t.Id, id));
-                if (!await result.MoveNextAsync())
+                await result.MoveNextAsync();
+                if (result.Current.Any())
+                {
+                    return Option<T>.Some(result.Current.First());
+                }
+                else
                 {
                     return Option<T>.None;
                 }
-
-                return Option<T>.Some(result.Current.First());
             }
             catch (Exception ex)
             {
                 throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
             }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.MapOneById{V}"/>
+        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, V> fMap) where V : notnull
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc cref="IRepository{T}.CreateOne" />
@@ -110,8 +119,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
+        /// i<inheritdoc cref="IRepository{T}.DeleteOne(T)"/>
         public async Task DeleteOne(T value)
         {
+            Logging.MethodCall(_log);
             try
             {
                 await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
@@ -123,8 +134,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        public async Task DeleteOneById(ObjectId Id)
+        /// <inheritdoc cref="IRepository{T}.DeleteOne(MongoDB.Bson.ObjectId)"/>
+        public async Task DeleteOne(ObjectId Id)
         {
+            Logging.MethodCall(_log);
             try
             {
                 await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
@@ -133,6 +146,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
             }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.UpdateOne"/>
+        public async Task<T> UpdateOne(T value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

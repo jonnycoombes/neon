@@ -31,24 +31,27 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             Fixtures = fixtures;
         }
 
-        [Fact(DisplayName = "Can add and then retrieve items to a repository")]
+        [Fact(DisplayName = "Can add, retrieve and delete single items within a repository")]
         [Trait("Category", "Data:Mongo")]
-        public async void AddAndRetrieveTests()
+        public async void SingleRepositoryOpsTest()
         {
             var repository = Fixtures.DbContext.BindRepository<RepositoryEntity>(builder =>
             {
                 builder.WriteConcern(WriteConcern.Acknowledged);
             });
-            var added = new RepositoryEntity();
-            added= await repository.CreateOne(added);
-            var retrieved = await repository.FindOneById(added.Id);
+            var added= await repository.CreateOne(new RepositoryEntity());
+            var id = added.Id;
+            var retrieved = await repository.ReadOne(id);
             Assert.True(retrieved.IsSome());
             if (retrieved.IsSome(out var value))
             {
                 Assert.Equal(value.Id, added.Id);
             }
+            // no exceptions should be thrown here...
             await repository.DeleteOne(added);
-            await repository.DeleteOneById(added.Id);
+            await repository.DeleteOne(added.Id);
+            retrieved = await repository.ReadOne(id);
+            Assert.True(retrieved.IsNone);
         }
         
     }
