@@ -41,6 +41,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// The last modified timestamp
         /// </summary>
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
+
+        public RepositoryObject()
+        {
+            
+        }
         
     }
 }

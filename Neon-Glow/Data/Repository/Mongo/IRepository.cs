@@ -11,6 +11,7 @@
  */
 #region
 
+using System.Threading.Tasks;
 using JCS.Neon.Glow.Types;
 using MongoDB.Bson;
 
@@ -27,6 +28,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     public interface IRepository<T>
         where T : RepositoryObject
     {
-        public Option<T> FindOneById(ObjectId id);
+        public Task<Option<T>> FindOneById(ObjectId id);
+
+        public Task<T> CreateOne(T value);
+
+        public Task DeleteOne(T value);
+
+        public Task DeleteOneById(ObjectId Id);
     }
 }

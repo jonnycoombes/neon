@@ -34,7 +34,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     based on an existing setting
         /// </summary>
         /// <param name="existing"></param>
-        public CollectionSettingsBuilder(MongoCollectionSettings? existing)
+        public CollectionSettingsBuilder(MongoCollectionSettings? existing= null)
         {
             if (existing != null)
             {

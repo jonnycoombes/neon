@@ -23,6 +23,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     Test class which acts as the base class of an inheritance heirarchy
     /// </summary>
     [BsonKnownTypes(new [] {typeof(SubClassA), typeof(SubClassB)})]
+    [Collection(Name = "Polymorphic")]
     [Index(new []{"_t"})]
     public class PolymorphicBase
     {
@@ -33,7 +34,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// <summary>
     ///     Subclass for testing
     /// </summary>
-    [Collection(Name = "polymorphicBase")]
+    [Collection(Name = "Polymorphic")]
     public class SubClassA : PolymorphicBase
     {
         public string ClassAProperty { get; set; }
@@ -42,7 +43,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// <summary>
     ///     Subclass for testing
     /// </summary>
-    [Collection(Name = "polymorphicBase")]
+    [Collection(Name = "Polymorphic")]
     public class SubClassB : PolymorphicBase
     {
         public string ClassBProperty { get; set; }

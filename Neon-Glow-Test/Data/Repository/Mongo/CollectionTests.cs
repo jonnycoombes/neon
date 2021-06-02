@@ -54,18 +54,18 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public void CheckAttributedCollectionBind()
         {
-            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
-            Assert.True(collection.CollectionNamespace.CollectionName == "TestCollection");
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            Assert.True(collection.CollectionNamespace.CollectionName == "AttributedEntity");
         }
 
         [Fact(DisplayName = "Can perform basic collection operations on attributed entities")]
         [Trait("Category", "Data:Mongo")]
         public async void CheckAttributedCollectionBasicOps()
         {
-            var entities = new List<RepositoryEntity>();
+            var entities = new List<AttributedEntity>();
             for (var i = 0; i < 10000; i++)
             {
-                entities.Add(new RepositoryEntity
+                entities.Add(new AttributedEntity
                 {
                     StringProperty = $"Entity {i}",
                     IntProperty = i,
@@ -73,14 +73,14 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 10000);
 
-            var cursor = await collection.FindAsync(Builders<RepositoryEntity>.Filter.Where(e => e.IntProperty == 5));
+            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
             Assert.True(await cursor.AnyAsync());
 
-            await collection.DeleteManyAsync(Builders<RepositoryEntity>.Filter.Empty);
+            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
         }
 
@@ -114,10 +114,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public async void CheckBinaryCollectionOps()
         {
-            var entities = new List<RepositoryEntity>();
+            var entities = new List<AttributedEntity>();
             for (var i = 0; i < 1000; i++)
             {
-                entities.Add(new RepositoryEntity
+                entities.Add(new AttributedEntity
                 {
                     StringProperty = $"Entity {i}",
                     IntProperty = i,
@@ -126,14 +126,14 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<RepositoryEntity>();
+            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
 
-            var cursor = await collection.FindAsync(Builders<RepositoryEntity>.Filter.Where(e => e.IntProperty == 5));
+            var cursor = await collection.FindAsync(Builders<AttributedEntity>.Filter.Where(e => e.IntProperty == 5));
             Assert.True(await cursor.AnyAsync());
 
-            await collection.DeleteManyAsync(Builders<RepositoryEntity>.Filter.Empty);
+            await collection.DeleteManyAsync(Builders<AttributedEntity>.Filter.Empty);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 0);
         }
 

@@ -28,7 +28,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IBuilder{T}.Build"/>
         public RepositoryOptions Build()
         {
-            throw new System.NotImplementedException();
+            return _options;
         }
 
         /// <summary>

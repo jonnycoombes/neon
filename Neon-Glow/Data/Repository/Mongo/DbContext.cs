@@ -120,23 +120,25 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public IMongoDatabase Database => BindDatabase();
 
         /// <inheritdoc cref="IDbContext.Collection{T}" />
-        public IMongoCollection<T> Collection<T>(MongoCollectionSettings? settings, CancellationToken token)
+        public IMongoCollection<T> Collection<T>(Action<CollectionSettingsBuilder>? f = null)
             where T : new()
         {
             Logging.MethodCall(_log);
-            return BindCollection<T>(settings, token);
+            var builder = new CollectionSettingsBuilder();
+            return BindCollection<T>(builder.Build());
         }
 
         /// <inheritdoc cref="IDbContext.Queryable{T}" />
-        public IQueryable<T> Queryable<T>(MongoCollectionSettings? settings, CancellationToken token)
+        public IQueryable<T> Queryable<T>(Action<CollectionSettingsBuilder>? f = null)
             where T : new()
         {
             Logging.MethodCall(_log);
-            return BindCollection<T>(settings, token).AsQueryable();
+            var builder = new CollectionSettingsBuilder();
+            return BindCollection<T>(builder.Build()).AsQueryable();
         }
 
         /// <inheritdoc cref="IDbContext.BindRepository{T}" />
-        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f) where T : RepositoryObject
+        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f= null) where T : RepositoryObject, new()
         {
             Logging.MethodCall(_log);
             Logging.Debug(_log, $"Creating a new repository instance for type \"{typeof(T)}\"");

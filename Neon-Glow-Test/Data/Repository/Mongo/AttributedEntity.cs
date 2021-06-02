@@ -16,6 +16,7 @@ using JCS.Neon.Glow.Data.Repository.Mongo;
 using JCS.Neon.Glow.Data.Repository.Mongo.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 #endregion
@@ -26,13 +27,20 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     A test entity which has been attributed using <see cref="Collection" /> and
     ///     <see cref="Glow.Data.Repository.Mongo.Attributes.Index" /> custom attributes
     /// </summary>
-    [Collection(Name = "Repository", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
+    [Collection(Name = "AttributedEntity", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"StringProperty"}, Unique = false)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"IntProperty", "DateTimeProperty"}, Unique = false)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"FloatProperty"}, Unique = false)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"VersionToken.Value"})]
-    public class RepositoryEntity : RepositoryObject, ISupportsClassmap<RepositoryEntity>
+    public class AttributedEntity :  ISupportsClassmap<AttributedEntity>
     {
+
+        /// <summary>
+        /// The id
+        /// </summary>
+        [BsonId]
+        public ObjectId Id { get; set; }
+
         /// <summary>
         ///     Test string property
         /// </summary>
@@ -61,7 +69,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         /// </summary>
         public byte[] ByteArrayProperty { get; set; }
 
-        public void ConfigureClassmap(BsonClassMap<RepositoryEntity> cm)
+        public void ConfigureClassmap(BsonClassMap<AttributedEntity> cm)
         {
             cm.AutoMap();
         }
