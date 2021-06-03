@@ -12,7 +12,7 @@
 #region
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using JCS.Neon.Glow.Data.Repository.Mongo.Attributes;
@@ -58,7 +58,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     A cache of currently bound collections
         /// </summary>
-        private readonly Dictionary<Type, object> _boundCollections = new();
+        private readonly ConcurrentDictionary<Type, object> _boundCollections = new();
 
         /// <summary>
         ///     The underlying <see cref="MongoClient" />
@@ -138,12 +138,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <inheritdoc cref="IDbContext.BindRepository{T}" />
-        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f= null) where T : RepositoryObject, new()
+        public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f = null) where T : RepositoryObject, new()
         {
             Logging.MethodCall(_log);
             Logging.Debug(_log, $"Creating a new repository instance for type \"{typeof(T)}\"");
             var builder = new RepositoryOptionsBuilder();
-            if (f != null) f(builder);
+            if (f != null)
+            {
+                f(builder);
+            }
+
             return new Repository<T>(this, builder.Build());
         }
 
@@ -192,10 +196,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public bool HaveBoundCollection<T>()
         {
             Logging.MethodCall(_log);
-            lock (_boundCollections)
-            {
-                return _boundCollections.ContainsKey(typeof(T));
-            }
+            return _boundCollections.ContainsKey(typeof(T));
         }
 
         /// <summary>
@@ -206,12 +207,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public void AddBoundCollection<T>(IMongoCollection<T> collection)
         {
             Logging.MethodCall(_log);
-            lock (_boundCollections)
+            if (!HaveBoundCollection<T>())
             {
-                if (!HaveBoundCollection<T>())
-                {
-                    _boundCollections[typeof(T)] = collection;
-                }
+                _boundCollections[typeof(T)] = collection;
             }
         }
 
@@ -223,15 +221,12 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         public Option<IMongoCollection<T>> GetBoundCollection<T>()
         {
             Logging.MethodCall(_log);
-            lock (_boundCollections)
+            if (HaveBoundCollection<T>())
             {
-                if (HaveBoundCollection<T>())
-                {
-                    return Option<IMongoCollection<T>>.Some((IMongoCollection<T>) _boundCollections[typeof(T)]);
-                }
-
-                return Option<IMongoCollection<T>>.None;
+                return Option<IMongoCollection<T>>.Some((IMongoCollection<T>) _boundCollections[typeof(T)]);
             }
+
+            return Option<IMongoCollection<T>>.None;
         }
 
         /// <summary>
@@ -292,7 +287,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 Logging.Debug(_log, $"ISupportsClassmap located, delegating class mapper setup for type \"{typeof(T).FullName}\"");
                 var mapper = (ISupportsClassmap<T>) new T();
-                BsonClassMap.RegisterClassMap<T>(cm => mapper.ConfigureClassmap(cm));
+                if (!BsonClassMap.IsClassMapRegistered(typeof(T))){
+                    Logging.Debug(_log, $"No existing classmap registered for type \"{typeof(T).FullName}\"");
+                    BsonClassMap.RegisterClassMap<T>(cm => mapper.ConfigureClassmap(cm));
+                }
             }
         }
 
