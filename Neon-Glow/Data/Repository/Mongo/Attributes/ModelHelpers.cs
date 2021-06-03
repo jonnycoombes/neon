@@ -22,7 +22,7 @@ using Serilog;
 
 namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
 {
-    public static class ModelHelpers
+    internal static class ModelHelpers
     {
         /// <summary>
         ///     Static logger for this class
@@ -36,7 +36,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
         /// <param name="namingConvention">A function which can take a list of field names, and then create a name for an index</param>
         /// <typeparam name="T">The type to inspect</typeparam>
         /// <returns>A (potentially empty) list of <see cref="CreateIndexModel{TDocument}" /> instances</returns>
-        public static List<CreateIndexModel<T>> BuildIndexModelsFromAttributes<T>(Func<string[], string> namingConvention)
+        internal static List<CreateIndexModel<T>> BuildIndexModelsFromAttributes<T>(Func<string[], string> namingConvention)
         {
             Logging.MethodCall(_log);
             var entityType = typeof(T);
@@ -69,7 +69,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
         /// <typeparam name="T">The attributed class type</typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException">This will be thrown if the index attribute has a dodgy fields definition</exception>
-        public static IndexKeysDefinition<T>? BuildKeyDefinitionsFromAttributes<T>(Index indexAttribute)
+        internal static IndexKeysDefinition<T>? BuildKeyDefinitionsFromAttributes<T>(Index indexAttribute)
         {
             Logging.MethodCall(_log);
             var entityType = typeof(T);
@@ -118,7 +118,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
         /// </summary>
         /// <typeparam name="T">The type to inspect for attributes</typeparam>
         /// <returns>A new instance of <see cref="CreateCollectionOptionsBuilder" /></returns>
-        public static CreateCollectionOptionsBuilder CollectionOptionsBuilderFromAttributes<T>()
+        internal static CreateCollectionOptionsBuilder CollectionOptionsBuilderFromAttributes<T>()
         {
             Logging.MethodCall(_log);
             var builder = new CreateCollectionOptionsBuilder();
@@ -145,7 +145,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo.Attributes
         /// <param name="namingConvention">The function used to derive the collection name if no valid attribution if present</param>
         /// <typeparam name="T">The type of the entities to be contained in the collection</typeparam>
         /// <returns>A name for a given collection</returns>
-        public static string DeriveCollectionName<T>(Func<string, string> namingConvention)
+        internal static string DeriveCollectionName<T>(Func<string, string> namingConvention)
         {
             Logging.MethodCall(_log);
             var t = typeof(T);
