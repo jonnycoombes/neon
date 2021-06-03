@@ -25,28 +25,22 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// <summary>
     ///     Tests covering basic collection functionality such as binding, checking CRUD operations etc...
     /// </summary>
-    public class CollectionTests : TestBase, IClassFixture<Fixtures>
+    public class CollectionTests : TestBase
     {
         /// <summary>
         ///     Default constructor
         /// </summary>
         /// <param name="output"></param>
         /// <param name="fixtures"></param>
-        public CollectionTests(ITestOutputHelper output, Fixtures fixtures) : base(output)
+        public CollectionTests(ITestOutputHelper output) : base(output)
         {
-            Fixtures = fixtures;
         }
-
-        /// <summary>
-        ///     The fixtures to be used by this test
-        /// </summary>
-        protected Fixtures Fixtures { get; set; }
 
         [Fact(DisplayName = "Can bind to a non-attributed collections")]
         [Trait("Category", "Data:Mongo")]
         public void CheckNonAttributedCollectionBind()
         {
-            var collection = Fixtures.DbContext.Collection<NonAttributedEntity>();
+            var collection = new Fixtures().DbContext.Collection<NonAttributedEntity>();
             Assert.True(collection.CollectionNamespace.CollectionName == "nonAttributedEntity");
         }
 
@@ -54,7 +48,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         [Trait("Category", "Data:Mongo")]
         public void CheckAttributedCollectionBind()
         {
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = new Fixtures().DbContext.Collection<AttributedEntity>();
             Assert.True(collection.CollectionNamespace.CollectionName == "AttributedEntity");
         }
 
@@ -73,7 +67,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = new Fixtures().DbContext.Collection<AttributedEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() > 0);
 
@@ -99,7 +93,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<NonAttributedEntity>();
+            var collection = new Fixtures().DbContext.Collection<NonAttributedEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() == 1000);
 
@@ -126,7 +120,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 });
             }
 
-            var collection = Fixtures.DbContext.Collection<AttributedEntity>();
+            var collection = new Fixtures().DbContext.Collection<AttributedEntity>();
             await collection.InsertManyAsync(entities);
             Assert.True(await collection.EstimatedDocumentCountAsync() > 0);
 
@@ -155,10 +149,10 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
                 }
             }
 
-            var collection = Fixtures.DbContext.Collection<PolymorphicBase>();
+            var collection = new Fixtures().DbContext.Collection<PolymorphicBase>();
             await collection.InsertManyAsync(classAEntities);
             await collection.InsertManyAsync(classBEntities);
-            Assert.True((await collection.EstimatedDocumentCountAsync()) == 1000);
+            Assert.True((await collection.EstimatedDocumentCountAsync()) > 0);
 
             var cursor = await collection.FindAsync("{'_t' : 'SubClassA'}");
             Assert.True(await cursor.AnyAsync());

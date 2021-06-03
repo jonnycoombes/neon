@@ -19,23 +19,18 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     /// <summary>
     /// Tests for <see cref="IRepository{T}"/> functionality
     /// </summary>
-    public class RepositoryTests : TestBase, IClassFixture<Fixtures>
+    [Collection("Mongo:Sequential")]
+    public class RepositoryTests : TestBase
     {
-        /// <summary>
-        ///     The fixtures to be used by this test
-        /// </summary>
-        protected Fixtures Fixtures { get; set; }
-        
-        public RepositoryTests(ITestOutputHelper output,Fixtures fixtures) : base(output)
+        public RepositoryTests(ITestOutputHelper output) : base(output)
         {
-            Fixtures = fixtures;
         }
 
         [Fact(DisplayName = "Can add, retrieve and delete single items within a repository")]
         [Trait("Category", "Data:Mongo")]
         public async void SingleRepositoryOpsTest()
         {
-            var repository = Fixtures.DbContext.BindRepository<RepositoryEntity>(builder =>
+            var repository = new Fixtures().DbContext.BindRepository<RepositoryEntity>(builder =>
             {
                 builder.WriteConcern(WriteConcern.Acknowledged);
             });
