@@ -74,6 +74,32 @@ namespace JCS.Neon.Glow.Types.Extensions
         }
 
         /// <summary>
+        ///     Populates the array with a cryptographically generated sequence of random bytes
+        /// </summary>
+        /// <param name="dest">The source array</param>
+        /// <param name="provider">A pre-defined instance of <see cref="RNGCryptoServiceProvider"/></param>
+        /// <param name="nonZero">Whether or not non-zero bytes should be used in the randomisation</param>
+        /// <returns>The original array (this is an extension method)</returns>
+        public static byte[] Randomise(this byte[]? dest, RNGCryptoServiceProvider provider, bool nonZero = false)
+        {
+            if (dest == null || dest.Length == 0)
+            {
+                throw new ArgumentException("Zero-length or null array cannot be randomised");
+            }
+
+            if (nonZero)
+            {
+                provider.GetNonZeroBytes(dest);
+            }
+            else
+            {
+                provider.GetBytes(dest);
+            }
+
+            return dest;
+        }
+
+        /// <summary>
         ///     Returns the head of the array
         /// </summary>
         /// <param name="arr">The array</param>

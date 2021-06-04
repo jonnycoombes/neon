@@ -187,7 +187,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The default write concern to use for database binding operations
         /// </summary>
-        public WriteConcern DatabaseWriteConcern { get; set; } = WriteConcern.Unacknowledged;
+        public WriteConcern DatabaseWriteConcern { get; set; } = WriteConcern.Acknowledged;
 
         /// <summary>
         ///     The default read concern to use for collection binding operations
@@ -197,7 +197,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The default write concern to use for collection binding operations
         /// </summary>
-        public WriteConcern CollectionWriteConcern { get; set; } = WriteConcern.Unacknowledged;
+        public WriteConcern CollectionWriteConcern { get; set; } = WriteConcern.Acknowledged;
 
         /// <summary>
         ///     A function that can take a collection type name and then apply any naming conventions based on this.  This will be
@@ -341,6 +341,9 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     Logging.Warning(_log,
                         "Running with non-TLS connection through to Mongo.  Not recommended for production systems");
                 }
+
+                clientSettings.WriteConcern = DatabaseWriteConcern;
+                clientSettings.ReadConcern = DatabaseReadConcern;
             }
             else
             {

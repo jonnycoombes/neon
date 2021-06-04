@@ -42,6 +42,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private readonly IMongoCollection<T> _collection;
 
         /// <summary>
+        ///     The underlying <see cref="IMongoClient" />
+        /// </summary>
+        private IMongoClient _client;
+
+        /// <summary>
         ///     Internal reference to an <see cref="IDbContext" /> instance
         /// </summary>
         private IDbContext _context;
@@ -50,11 +55,6 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         ///     The options for this repository
         /// </summary>
         private RepositoryOptions _options;
-
-        /// <summary>
-        /// The underlying <see cref="IMongoClient"/>
-        /// </summary>
-        private IMongoClient _client;
 
         /// <summary>
         ///     Default constructor
@@ -86,10 +86,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 {
                     return Option<T>.Some(result.Current.First());
                 }
-                else
-                {
-                    return Option<T>.None;
-                }
+
+                return Option<T>.None;
             }
             catch (Exception ex)
             {
@@ -97,10 +95,20 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <inheritdoc cref="IRepository{T}.MapOneById{V}"/>
-        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, V> fMap) where V : notnull
+        public async Task<Option<T>> ReadOne(Action<FilterDefinitionBuilder<T>> f)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc cref="IRepository{T}.MapOneById{V}" />
+        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> fMap) where V : notnull
+        {
+            if ((await ReadOne(id)).IsSome(out var value))
+            {
+                return fMap(value);
+            }
+
+            return Option<V>.None;
         }
 
         /// <inheritdoc cref="IRepository{T}.CreateOne" />
@@ -119,7 +127,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// i<inheritdoc cref="IRepository{T}.DeleteOne(T)"/>
+        /// i
+        /// <inheritdoc cref="IRepository{T}.DeleteOne(T)" />
         public async Task DeleteOne(T value)
         {
             Logging.MethodCall(_log);
@@ -134,7 +143,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <inheritdoc cref="IRepository{T}.DeleteOne(MongoDB.Bson.ObjectId)"/>
+        /// <inheritdoc cref="IRepository{T}.DeleteOne(MongoDB.Bson.ObjectId)" />
         public async Task DeleteOne(ObjectId Id)
         {
             Logging.MethodCall(_log);
@@ -148,10 +157,34 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// <inheritdoc cref="IRepository{T}.UpdateOne"/>
+        /// <inheritdoc cref="IRepository{T}.UpdateOne" />
         public async Task<T> UpdateOne(T value)
         {
-            throw new NotImplementedException();
+            Logging.MethodCall(_log);
+            try
+            {
+                value.LastModified = DateTime.Now;
+                value.VersionToken.Increment();
+                return await _collection.FindOneAndReplaceAsync(IdFilter(value), value,
+                    new FindOneAndReplaceOptions<T>
+                    {
+                        ReturnDocument = ReturnDocument.After
+                    });
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <summary>
+        ///     Builds a filter matching on a given object (of type <typeparamref name="T" />) id
+        /// </summary>
+        /// <param name="value">An instance deriving from <see cref="RepositoryObject" /></param>
+        /// <returns>A new filter definition which matches on the object id</returns>
+        private static FilterDefinition<T> IdFilter(T value)
+        {
+            return Builders<T>.Filter.Eq(t => t.Id, value.Id);
         }
     }
 }

@@ -50,6 +50,8 @@ namespace JCS.Neon.Glow.Statics.Crypto
         ///     Static logger
         /// </summary>
         private static readonly ILogger _log = Log.ForContext(typeof(Passphrase));
+        
+        private static readonly RNGCryptoServiceProvider _provider = new RNGCryptoServiceProvider();
 
         /// <summary>
         ///     Generates a random passphrase using the supplied options
@@ -70,12 +72,11 @@ namespace JCS.Neon.Glow.Statics.Crypto
                     "The specified passphrase length doesn't meet minimum length requirements");
             }
 
-            using var rng = new RNGCryptoServiceProvider();
             var sb = new StringBuilder();
             var randoms = new byte[2];
             for (var i = 0; i < options.RequiredLength; i++)
             {
-                randoms = randoms.Randomise();
+                randoms = randoms.Randomise(_provider);
                 int charResidue;
                 switch (randoms[0] % 4)
                 {

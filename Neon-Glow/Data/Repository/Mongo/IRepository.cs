@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Types;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 #endregion
 
@@ -31,8 +32,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
     {
         
         public Task<Option<T>> ReadOne(ObjectId id);
+        
+        public Task<Option<T>> ReadOne(Action<FilterDefinitionBuilder<T>> f);
 
-        public Task<Option<V>> MapOne<V>(ObjectId id, Func<T, V> fMap) where V : notnull;
+        public Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> fMap) where V : notnull;
 
         public Task<T> CreateOne(T value);
 

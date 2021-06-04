@@ -125,6 +125,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             var builder = new CollectionSettingsBuilder();
+            if (f != null) f(builder);
             return BindCollection<T>(builder.Build());
         }
 

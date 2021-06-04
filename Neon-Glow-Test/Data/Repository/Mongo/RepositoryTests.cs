@@ -10,6 +10,7 @@
 
  */
 
+using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,15 +27,21 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
         }
 
-        [Fact(DisplayName = "Can add, retrieve and delete single items within a repository")]
+        [Fact(DisplayName = "Can perform basic single object CRUD operations within a repository")]
         [Trait("Category", "Data:Mongo")]
-        public async void SingleRepositoryOpsTest()
+        public async void RepositorySingleCRUDTest()
         {
             var repository = new Fixtures().DbContext.BindRepository<RepositoryEntity>(builder =>
             {
                 builder.WriteConcern(WriteConcern.Acknowledged);
             });
-            var added= await repository.CreateOne(new RepositoryEntity());
+            
+            var added= await repository.CreateOne(new RepositoryEntity()
+            {
+                IntProperty = 5,
+                StringProperty = "test"
+            });
+            
             var id = added.Id;
             var retrieved = await repository.ReadOne(id);
             Assert.True(retrieved.IsSome());
@@ -42,11 +49,20 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             {
                 Assert.Equal(value.Id, added.Id);
             }
+
+            var mapped = await repository.MapOne(id, e => Option<int>.Some(e.IntProperty));
+            Assert.True(mapped.IsSome());
+
+            added.IntProperty = 8;
+            var modified = await repository.UpdateOne(added);
+            Assert.True(modified.IntProperty == 8);
+            
             // no exceptions should be thrown here...
             await repository.DeleteOne(added);
             await repository.DeleteOne(added.Id);
             retrieved = await repository.ReadOne(id);
             Assert.True(retrieved.IsNone);
+            
         }
         
     }
