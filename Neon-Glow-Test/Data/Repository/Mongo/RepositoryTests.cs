@@ -10,6 +10,7 @@
 
  */
 
+using JCS.Neon.Glow.Data.Repository.Mongo;
 using JCS.Neon.Glow.Types;
 using MongoDB.Driver;
 using Xunit;
@@ -33,7 +34,9 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             var repository = new Fixtures().DbContext.BindRepository<RepositoryEntity>(builder =>
             {
-                builder.WriteConcern(WriteConcern.Acknowledged);
+                builder.WriteConcern(WriteConcern.Acknowledged)
+                    .DeletionBehaviour(RepositoryOptions.DeletionBehaviourOption.Soft)
+                    .ReadBehaviour(RepositoryOptions.ReadBehaviourOption.IgnoreDeleted);
             });
             
             var added= await repository.CreateOne(new RepositoryEntity()
@@ -57,11 +60,8 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             var modified = await repository.UpdateOne(added);
             Assert.True(modified.IntProperty == 8);
             
-            // no exceptions should be thrown here...
             await repository.DeleteOne(added);
-            await repository.DeleteOne(added.Id);
-            retrieved = await repository.ReadOne(id);
-            Assert.True(retrieved.IsNone);
+            Assert.True((await repository.ReadOne(added.Id)).IsNone);
             
         }
         

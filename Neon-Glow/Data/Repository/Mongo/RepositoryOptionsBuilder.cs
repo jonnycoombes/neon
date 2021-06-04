@@ -52,5 +52,27 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _options.WriteConcern = concern;
             return this;
         }
+
+        /// <summary>
+        /// Sets the read behaviour for the repository
+        /// </summary>
+        /// <param name="option">An value from <see cref="RepositoryOptions.ReadBehaviourOptions"/></param>
+        /// <returns></returns>
+        public RepositoryOptionsBuilder ReadBehaviour(RepositoryOptions.ReadBehaviourOption option)
+        {
+            _options.ReadBehaviour = option;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the deletion behaviour for the repository
+        /// </summary>
+        /// <param name="option">A value from the <see cref="RepositoryOptions.DeletionBehaviourOptions"/></param>
+        /// <returns></returns>
+        public RepositoryOptionsBuilder DeletionBehaviour(RepositoryOptions.DeletionBehaviourOption option)
+        {
+            _options.DeletionBehaviour = option;
+            return this;
+        }
     }
 }

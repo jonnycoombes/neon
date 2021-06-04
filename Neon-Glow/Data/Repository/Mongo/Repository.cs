@@ -54,7 +54,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <summary>
         ///     The options for this repository
         /// </summary>
-        private RepositoryOptions _options;
+        private readonly RepositoryOptions _options;
 
         /// <summary>
         ///     Default constructor
@@ -80,7 +80,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                var result = await _collection.FindAsync(Builders<T>.Filter.Eq(t => t.Id, id));
+                var result = await _collection.FindAsync(AdjustFilterForDeletions(IdFilter(id)));
                 await result.MoveNextAsync();
                 if (result.Current.Any())
                 {
@@ -95,17 +95,32 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        public async Task<Option<T>> ReadOne(Action<FilterDefinitionBuilder<T>> f)
+        public async Task<Option<T>> ReadOne(Func<FilterDefinition<T>> f)
         {
-            throw new NotImplementedException();
+            Logging.MethodCall(_log);
+            try
+            {
+                var result = await _collection.FindAsync(AdjustFilterForDeletions(f()));
+                await result.MoveNextAsync();
+                if (result.Current.Any())
+                {
+                    return Option<T>.Some(result.Current.First());
+                }
+
+                return Option<T>.None;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
         }
 
         /// <inheritdoc cref="IRepository{T}.MapOneById{V}" />
-        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> fMap) where V : notnull
+        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> f) where V : notnull
         {
             if ((await ReadOne(id)).IsSome(out var value))
             {
-                return fMap(value);
+                return f(value);
             }
 
             return Option<V>.None;
@@ -117,7 +132,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                value.CreatedAt = DateTime.Now;
+                value.CreatedAt = DateTime.UtcNow;
                 await _collection.InsertOneAsync(value);
                 return value;
             }
@@ -127,15 +142,24 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        /// i
         /// <inheritdoc cref="IRepository{T}.DeleteOne(T)" />
         public async Task DeleteOne(T value)
         {
             Logging.MethodCall(_log);
             try
             {
-                await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
-                value.Id = new ObjectId();
+                switch (_options.DeletionBehaviour)
+                {
+                    case RepositoryOptions.DeletionBehaviourOption.Hard:
+                        await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
+                        value.Id = new ObjectId();
+                        break;
+                    case RepositoryOptions.DeletionBehaviourOption.Soft:
+                        value.Deleted = true;
+                        value.DeletedAt = DateTime.UtcNow;
+                        await UpdateOne(value);
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -149,7 +173,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
+                switch (_options.DeletionBehaviour)
+                {
+                    case RepositoryOptions.DeletionBehaviourOption.Hard:
+                        await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
+                        break;
+                    case RepositoryOptions.DeletionBehaviourOption.Soft:
+                        var result = await ReadOne(() => IdFilter(Id));
+                        if (result.IsSome(out var value))
+                        {
+                            value.Deleted = true;
+                            value.DeletedAt = DateTime.UtcNow;
+                            await UpdateOne(value);
+                        }
+
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -163,7 +202,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                value.LastModified = DateTime.Now;
+                value.LastModified = DateTime.UtcNow;
                 value.VersionToken.Increment();
                 return await _collection.FindOneAndReplaceAsync(IdFilter(value), value,
                     new FindOneAndReplaceOptions<T>
@@ -178,6 +217,33 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
+        /// Takes a pre-defined <see cref="FilterDefinition{TDocument}"/> and then applies valid deletion clause to it
+        /// </summary>
+        /// <param name="filter">The pre-existing filter</param>
+        /// <returns></returns>
+        private FilterDefinition<T> AdjustFilterForDeletions(FilterDefinition<T> filter)
+        {
+            if (_options.ReadBehaviour == RepositoryOptions.ReadBehaviourOption.IgnoreDeleted)
+            {
+                return Builders<T>.Filter.And(new FilterDefinition<T>[] {filter, DeletionFilter()});
+            }
+            else
+            {
+                return filter;
+            } 
+        }
+
+        /// <summary>
+        /// Creates a filter definition for ignoring or including deleted items
+        /// </summary>
+        /// <param name="status">The deletion status</param>
+        /// <returns></returns>
+        private static FilterDefinition<T> DeletionFilter(bool status= false)
+        {
+            return Builders<T>.Filter.Eq(t => t.Deleted, status);
+        }
+        
+        /// <summary>
         ///     Builds a filter matching on a given object (of type <typeparamref name="T" />) id
         /// </summary>
         /// <param name="value">An instance deriving from <see cref="RepositoryObject" /></param>
@@ -185,6 +251,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private static FilterDefinition<T> IdFilter(T value)
         {
             return Builders<T>.Filter.Eq(t => t.Id, value.Id);
+        }
+
+        /// <summary>
+        ///     Builds an id filter given a <see cref="ObjectId" />
+        /// </summary>
+        /// <param name="id">The <see cref="ObjectId" /> to build the filter on</param>
+        /// <returns></returns>
+        private static FilterDefinition<T> IdFilter(ObjectId id)
+        {
+            return Builders<T>.Filter.Eq(t => t.Id, id);
         }
     }
 }

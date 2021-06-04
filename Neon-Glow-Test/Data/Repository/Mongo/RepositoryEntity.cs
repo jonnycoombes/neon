@@ -27,9 +27,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     <see cref="Glow.Data.Repository.Mongo.Attributes.Index" /> custom attributes
     /// </summary>
     [Collection(Name = "Repository", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
-    [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"StringProperty"}, Unique = false)]
-    [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"IntProperty", "DateTimeProperty"}, Unique = false)]
-    [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"FloatProperty"}, Unique = false)]
+    [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"Deleted"}, Unique = false)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"VersionToken.Value"})]
     public class RepositoryEntity : RepositoryObject, ISupportsClassmap<RepositoryEntity>
     {
