@@ -130,6 +130,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     return Option<T>.Some(documents.First());
                 }
 
+                if (documents.Count > 1)
+                {
+                    throw Exceptions.LoggedException<RepositoryException>(_log, $"Multiple repository items with same id \"{id}\"");
+                }
+
                 return Option<T>.None;
             }
             catch (Exception ex)
