@@ -288,20 +288,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                switch (_options.DeletionBehaviour)
+                long deleted;
+                if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
                 {
-                    case RepositoryOptions.DeletionBehaviourOption.Hard:
-                        var deleteResult = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
-                        value.Id = new ObjectId();
-                        return deleteResult.DeletedCount;
-                    case RepositoryOptions.DeletionBehaviourOption.Soft:
-                        value.Deleted = true;
-                        value.DeletedAt = DateTime.UtcNow;
-                        await UpdateOne(value);
-                        return 1;
+                    var result = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
+                    value.Id = new ObjectId();
+                    deleted = result.DeletedCount;
+                }
+                else
+                {
+                    value.Deleted = true;
+                    value.DeletedAt = DateTime.UtcNow;
+                    await UpdateOne(value);
+                    deleted = 1;
                 }
 
-                return 1;
+                return deleted;
             }
             catch (Exception ex)
             {
@@ -315,27 +317,25 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
-                switch (_options.DeletionBehaviour)
+                long deleted = 0;
+                if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
                 {
-                    case RepositoryOptions.DeletionBehaviourOption.Hard:
-                        var deleteResult = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
-                        return deleteResult.DeletedCount;
-                    case RepositoryOptions.DeletionBehaviourOption.Soft:
-                        var readResult = await ReadOne(() => IdFilter(Id));
-                        if (readResult.IsSome(out var value))
-                        {
-                            value.Deleted = true;
-                            value.DeletedAt = DateTime.UtcNow;
-                            await UpdateOne(value);
-                            return 1;
-                        }
-                        else
-                        {
-                            return 0;
-                        }
+                    var result = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
+                    deleted = result.DeletedCount;
+                }
+                else
+                {
+                    var result = await ReadOne(() => IdFilter(Id));
+                    if (result.IsSome(out var value))
+                    {
+                        value.Deleted = true;
+                        value.DeletedAt = DateTime.UtcNow;
+                        await UpdateOne(value);
+                        deleted = 1;
+                    }
                 }
 
-                return 1;
+                return deleted;
             }
             catch (Exception ex)
             {
@@ -349,6 +349,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
+                long deleted = 0;
                 if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
                 {
                     var models = new DeleteOneModel<T>[values.Length];
@@ -358,7 +359,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     }
 
                     var result = await _collection.BulkWriteAsync(models);
-                    return result.DeletedCount;
+                    deleted = result.DeletedCount;
                 }
                 else
                 {
@@ -371,8 +372,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     }
 
                     var result = await _collection.BulkWriteAsync(models);
-                    return result.ModifiedCount;
+                    deleted = result.ModifiedCount;
                 }
+
+                return deleted;
             }
             catch (Exception ex)
             {
@@ -386,20 +389,25 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             Logging.MethodCall(_log);
             try
             {
+                long deleted = 0;
                 if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
                 {
                     var result = await _collection.DeleteManyAsync(AdjustFilterForDeletions(filter()));
-                    return result.DeletedCount;
+                    deleted = result.DeletedCount;
                 }
-
-                var deletions = await ReadMany(filter);
-                foreach (var d in deletions)
+                else
                 {
-                    d.Deleted = true;
+                    var deletions = await ReadMany(filter);
+                    foreach (var d in deletions)
+                    {
+                        d.Deleted = true;
+                    }
+
+                    await UpdateMany(deletions);
+                    deleted = deletions.Length;
                 }
 
-                await UpdateMany(deletions);
-                return deletions.Length;
+                return deleted;
             }
             catch (Exception ex)
             {
@@ -464,12 +472,13 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             try
             {
                 var models = new ReplaceOneModel<T>[values.Length];
-                for(var i=0; i<values.Length; i++)
+                for (var i = 0; i < values.Length; i++)
                 {
                     values[i].LastModified = DateTime.UtcNow;
                     values[i].VersionToken.Increment();
                     models[i] = new ReplaceOneModel<T>(IdFilter(values[i].Id), values[i]);
                 }
+
                 var result = await _collection.BulkWriteAsync(models);
                 return values;
             }
