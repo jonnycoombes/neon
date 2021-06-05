@@ -38,23 +38,37 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <param name="id">The <see cref="ObjectId"/> of the object</param>
         /// <returns>An <see cref="Option{T}"/></returns>
         public Task<Option<T>> ReadOne(ObjectId id);
-
+        
         /// <summary>
         /// Reads one item from the repository, based on a filter
         /// </summary>
-        /// <param name="f">Lambda which returns a filter definition</param>
+        /// <param name="filter">Lambda which returns a filter definition</param>
         /// <returns>An <see cref="Option"/> containing (or not) the first object matching the filter</returns>
-        public Task<Option<T>> ReadOne(Func<FilterDefinition<T>> f);
+        public Task<Option<T>> ReadOne(Func<FilterDefinition<T>> filter);
+
+        /// <summary>
+        /// Reads many items from the repository, based on an array of object ids
+        /// </summary>
+        /// <param name="ids">An array of <see cref="ObjectId"/></param>
+        /// <returns>A (possibly empty) array of objects type <typeparamref name="T"/></returns>
+        public Task<T[]> ReadMany(ObjectId[] ids);
+        
+        /// <summary>
+        /// Reads many items from the repository, based on a filter
+        /// </summary>
+        /// <param name="filter">A filter producing lambda</param>
+        /// <returns>A (possibly empty) array of objects type <typeparamref name="T"/></returns>
+        public Task<T[]> ReadMany(Func<FilterDefinition<T>> filter);
 
         /// <summary>
         /// Retrieves a single item from the repository and then applies a mapping function to the result.  This is basically
         /// a projection operation
         /// </summary>
         /// <param name="id">The <see cref="ObjectId"/> of the object to retrieve</param>
-        /// <param name="f">A function that will map between type <typeparamref name="T"/> and <typeparamref name="V"/></param>
+        /// <param name="map">A function that will map between type <typeparamref name="T"/> and <typeparamref name="V"/></param>
         /// <typeparam name="V">The mapped type</typeparam>
         /// <returns>An <see cref="Option{T}"/></returns>
-        public Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> f) where V : notnull;
+        public Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> map) where V : notnull;
 
         /// <summary>
         /// Creates a single new item within the repository

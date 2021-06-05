@@ -12,10 +12,13 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using JCS.Neon.Glow.Data.Repository.Mongo;
 using JCS.Neon.Glow.Data.Repository.Mongo.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 using MongoDB.Driver;
 
 #endregion
@@ -27,6 +30,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
     ///     <see cref="Glow.Data.Repository.Mongo.Attributes.Index" /> custom attributes
     /// </summary>
     [Collection(Name = "Repository", Capped = false, ValidationAction = DocumentValidationAction.Warn)]
+    [BsonKnownTypes(new []{typeof(PolymorphicEntity)})]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"Deleted"}, Unique = false)]
     [Glow.Data.Repository.Mongo.Attributes.Index(new[] {"VersionToken.Value"})]
     public class RepositoryEntity : RepositoryObject, ISupportsClassmap<RepositoryEntity>
@@ -63,5 +67,17 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
         {
             cm.AutoMap();
         }
+    }
+
+    [Collection(Name = "Repository")]
+    public class PolymorphicEntity : RepositoryEntity
+    {
+        public string SubclassStringProperty { get; set; }
+
+        [BsonDictionaryOptions(DictionaryRepresentation.Document)]
+        public Dictionary<string, string> TestPropertyBag { get; set; } = new Dictionary<string, string>()
+        {
+            {"test", "test"}
+        };
     }
 }

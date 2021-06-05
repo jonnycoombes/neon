@@ -80,5 +80,16 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <typeparam name="T">The type of the entities to be managed by the repository</typeparam>
         /// <returns>A bound instance of <see cref="IRepository{T}"/></returns>
         public IRepository<T> BindRepository<T>(Action<RepositoryOptionsBuilder>? f= null) where T : RepositoryObject, new();
+
+        /// <summary>
+        /// Binds a <see cref="IRepository{T}"/> instance based on a base type <typeparamref name="T"/> and a subtype <typeparamref name="V"/>
+        /// </summary>
+        /// <param name="f">An optional <see cref="Action"/> which will be called to setup <see cref="RepositoryOptions"/></param>
+        /// <typeparam name="T">The base type for the repository</typeparam>
+        /// <typeparam name="V">The subtype for the repository.  All queries will be pre-filtered based on this type</typeparam>
+        /// <returns>A bound instance of <see cref="IRepository{T}"/></returns>
+        public IRepository<V> BindRepository<T, V>(Action<RepositoryOptionsBuilder>? f = null)
+            where T : RepositoryObject, new()
+            where V : T, new();
     }
 }

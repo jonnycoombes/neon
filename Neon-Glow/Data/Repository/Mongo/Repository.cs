@@ -42,6 +42,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private readonly IMongoCollection<T> _collection;
 
         /// <summary>
+        ///     The options for this repository
+        /// </summary>
+        private readonly RepositoryOptions _options;
+
+        /// <summary>
         ///     The underlying <see cref="IMongoClient" />
         /// </summary>
         private IMongoClient _client;
@@ -52,14 +57,10 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         private IDbContext _context;
 
         /// <summary>
-        ///     The options for this repository
-        /// </summary>
-        private readonly RepositoryOptions _options;
-
-        /// <summary>
         ///     Default constructor
         /// </summary>
         /// <param name="context">A valid instance of <see cref="IDbContext" /></param>
+        /// <param name="options">The options for the repository</param>
         public Repository(DbContext context, RepositoryOptions options)
         {
             Logging.MethodCall(_log);
@@ -74,17 +75,32 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _client = _collection.Database.Client;
         }
 
+        /// <summary>
+        ///     Constructor which takes a pre-bound collection
+        /// </summary>
+        /// <param name="context">The supporting <see cref="IDbContext" /></param>
+        /// <param name="collection">A pre-bound <see cref="IMongoCollection{TDocument}" /></param>
+        /// <param name="options">The options for the repository</param>
+        public Repository(DbContext context, IMongoCollection<T> collection, RepositoryOptions options)
+        {
+            Logging.MethodCall(_log);
+            _context = context;
+            _options = options;
+            _collection = collection;
+            _client = _collection.Database.Client;
+        }
+
         /// <inheritdoc cref="IRepository{T}.ReadOneById" />
         public async Task<Option<T>> ReadOne(ObjectId id)
         {
             Logging.MethodCall(_log);
             try
             {
-                var result = await _collection.FindAsync(AdjustFilterForDeletions(IdFilter(id)));
-                await result.MoveNextAsync();
-                if (result.Current.Any())
+                using var cursor = await _collection.FindAsync(AdjustFilterForDeletions(IdFilter(id)));
+                var documents = await cursor.ToListAsync();
+                if (documents.Count == 1)
                 {
-                    return Option<T>.Some(result.Current.First());
+                    return Option<T>.Some(documents.First());
                 }
 
                 return Option<T>.None;
@@ -95,19 +111,49 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
-        public async Task<Option<T>> ReadOne(Func<FilterDefinition<T>> f)
+        public async Task<Option<T>> ReadOne(Func<FilterDefinition<T>> filter)
         {
             Logging.MethodCall(_log);
             try
             {
-                var result = await _collection.FindAsync(AdjustFilterForDeletions(f()));
-                await result.MoveNextAsync();
-                if (result.Current.Any())
+                using var cursor = await _collection.FindAsync(AdjustFilterForDeletions(filter()));
+                var documents = await cursor.ToListAsync();
+                if (documents.Count == 1)
                 {
-                    return Option<T>.Some(result.Current.First());
+                    return Option<T>.Some(documents.First());
                 }
 
                 return Option<T>.None;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.ReadMany(MongoDB.Bson.ObjectId[])" />
+        public async Task<T[]> ReadMany(ObjectId[] ids)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                using var cursor = await _collection.FindAsync(AdjustFilterForDeletions(Builders<T>.Filter.In(t => t.Id, ids)));
+                return (await cursor.ToListAsync()).ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.ReadMany(System.Func{MongoDB.Driver.FilterDefinition{T}})" />
+        public async Task<T[]> ReadMany(Func<FilterDefinition<T>> filter)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                using var cursor = await _collection.FindAsync(AdjustFilterForDeletions(filter()));
+                return (await cursor.ToListAsync()).ToArray();
             }
             catch (Exception ex)
             {
@@ -116,11 +162,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <inheritdoc cref="IRepository{T}.MapOneById{V}" />
-        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> f) where V : notnull
+        public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> map) where V : notnull
         {
             if ((await ReadOne(id)).IsSome(out var value))
             {
-                return f(value);
+                return map(value);
             }
 
             return Option<V>.None;
@@ -217,7 +263,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <summary>
-        /// Takes a pre-defined <see cref="FilterDefinition{TDocument}"/> and then applies valid deletion clause to it
+        ///     Takes a pre-defined <see cref="FilterDefinition{TDocument}" /> and then applies valid deletion clause to it
         /// </summary>
         /// <param name="filter">The pre-existing filter</param>
         /// <returns></returns>
@@ -225,24 +271,22 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             if (_options.ReadBehaviour == RepositoryOptions.ReadBehaviourOption.IgnoreDeleted)
             {
-                return Builders<T>.Filter.And(new FilterDefinition<T>[] {filter, DeletionFilter()});
+                return Builders<T>.Filter.And(filter, DeletionFilter());
             }
-            else
-            {
-                return filter;
-            } 
+
+            return filter;
         }
 
         /// <summary>
-        /// Creates a filter definition for ignoring or including deleted items
+        ///     Creates a filter definition for ignoring or including deleted items
         /// </summary>
         /// <param name="status">The deletion status</param>
         /// <returns></returns>
-        private static FilterDefinition<T> DeletionFilter(bool status= false)
+        private static FilterDefinition<T> DeletionFilter(bool status = false)
         {
             return Builders<T>.Filter.Eq(t => t.Deleted, status);
         }
-        
+
         /// <summary>
         ///     Builds a filter matching on a given object (of type <typeparamref name="T" />) id
         /// </summary>

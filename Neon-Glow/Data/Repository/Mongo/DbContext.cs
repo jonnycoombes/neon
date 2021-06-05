@@ -125,7 +125,11 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         {
             Logging.MethodCall(_log);
             var builder = new CollectionSettingsBuilder();
-            if (f != null) f(builder);
+            if (f != null)
+            {
+                f(builder);
+            }
+
             return BindCollection<T>(builder.Build());
         }
 
@@ -150,6 +154,26 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
 
             return new Repository<T>(this, builder.Build());
+        }
+
+        /// <inheritdoc cref="IDbContext.BindRepository{T,V}"/> 
+        public IRepository<V> BindRepository<T, V>(Action<RepositoryOptionsBuilder>? f = null) where T : RepositoryObject, new() where V 
+        : T, new()
+        {
+            Logging.MethodCall(_log);
+            Logging.Debug(_log, $"Creating a new subtyped repository instance for type \"{typeof(V)}\"");
+            var builder = new RepositoryOptionsBuilder();
+            if (f != null)
+            {
+                f(builder);
+            }
+
+            var options = builder.Build();
+            return new Repository<V>(this, Collection<T>(builder =>
+            {
+                builder.ReadConcern(options.ReadConcern);
+                builder.WriteConcern(options.WriteConcern);
+            }).OfType<V>(), builder.Build());
         }
 
         /// <inheritdoc cref="IDbContext.DatabaseExists" />
@@ -288,7 +312,8 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             {
                 Logging.Debug(_log, $"ISupportsClassmap located, delegating class mapper setup for type \"{typeof(T).FullName}\"");
                 var mapper = (ISupportsClassmap<T>) new T();
-                if (!BsonClassMap.IsClassMapRegistered(typeof(T))){
+                if (!BsonClassMap.IsClassMapRegistered(typeof(T)))
+                {
                     Logging.Debug(_log, $"No existing classmap registered for type \"{typeof(T).FullName}\"");
                     BsonClassMap.RegisterClassMap<T>(cm => mapper.ConfigureClassmap(cm));
                 }
