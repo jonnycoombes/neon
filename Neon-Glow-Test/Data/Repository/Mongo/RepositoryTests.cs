@@ -149,6 +149,7 @@ namespace JCS.Neon.Glow.Test.Data.Repository.Mongo
             }
 
             var updated = await repository.UpdateMany(created);
+            Assert.True(updated[0].Equals(created[0]));
 
             // DELETE
             var deletedCount = await repository.DeleteMany(updated);
