@@ -59,11 +59,11 @@ namespace JCS.Neon.Glow.Statics.Crypto
         /// <param name="configureAction">The <see cref="PassphraseGenerationOptions" /></param>
         /// <returns>A randomly generated password, optionally base 64 encoded</returns>
         /// <exception cref="PassphraseException">Thrown if the supplied options are invalid</exception>
-        public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder> configureAction)
+        public static string GenerateRandomPassphrase(Action<PassphraseGenerationOptionsBuilder>? configureAction= null)
         {
             Logging.MethodCall(_log);
             var builder = new PassphraseGenerationOptionsBuilder();
-            configureAction(builder);
+            if (configureAction is not null) configureAction(builder);
             var options = builder.Build();
 
             if (options.RequiredLength < PassphraseGenerationOptions.MinimumPasswordLength)

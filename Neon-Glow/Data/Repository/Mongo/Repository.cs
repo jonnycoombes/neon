@@ -12,6 +12,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JCS.Neon.Glow.Statics;
@@ -90,6 +91,32 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             _client = _collection.Database.Client;
         }
 
+        /// <inheritdoc cref="IRepository{T}.Count" />
+        public async Task<long> Count()
+        {
+            try
+            {
+                return await _collection.CountDocumentsAsync(AdjustFilterForDeletions(Builders<T>.Filter.Empty));
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.Count(System.Func{MongoDB.Driver.FilterDefinition{T}})" />
+        public async Task<long> Count(Func<FilterDefinition<T>> filter)
+        {
+            try
+            {
+                return await _collection.CountDocumentsAsync(AdjustFilterForDeletions(filter()));
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
         /// <inheritdoc cref="IRepository{T}.ReadOneById" />
         public async Task<Option<T>> ReadOne(ObjectId id)
         {
@@ -164,12 +191,33 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         /// <inheritdoc cref="IRepository{T}.MapOneById{V}" />
         public async Task<Option<V>> MapOne<V>(ObjectId id, Func<T, Option<V>> map) where V : notnull
         {
+            Logging.MethodCall(_log);
             if ((await ReadOne(id)).IsSome(out var value))
             {
                 return map(value);
             }
 
             return Option<V>.None;
+        }
+
+        /// <inheritdoc cref="IRepository{T}.MapMany{V}" />
+        public async Task<Option<V>[]> MapMany<V>(Func<FilterDefinition<T>> filter, Func<T, Option<V>> map) where V : notnull
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var results = new List<Option<V>>();
+                foreach (var x in await ReadMany(filter))
+                {
+                    results.Add(map(x));
+                }
+
+                return results.ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
         }
 
         /// <inheritdoc cref="IRepository{T}.CreateOne" />
@@ -188,8 +236,54 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
             }
         }
 
+        /// <inheritdoc cref="IRepository{T}.CreateMany" />
+        public async Task<T[]> CreateMany(T[] values)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var models = new InsertOneModel<T>[values.Length];
+                for (var i = 0; i < values.Length; i++)
+                {
+                    values[i].CreatedAt = DateTime.UtcNow;
+                    models[i] = new InsertOneModel<T>(values[i]);
+                }
+
+                await _collection.BulkWriteAsync(models, new BulkWriteOptions());
+                return values;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.CreateMany(long,System.Func{int,System.Threading.Tasks.Task{T}})" />
+        public async Task<T[]> CreateMany(long count, Func<int, T> generator)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var models = new InsertOneModel<T>[count];
+                var created = new T[count];
+                for (var i = 0; i < count; i++)
+                {
+                    created[i] = generator(i);
+                    created[i].CreatedAt = DateTime.UtcNow;
+                    models[i] = new InsertOneModel<T>(created[i]);
+                }
+
+                await _collection.BulkWriteAsync(models, new BulkWriteOptions());
+                return created;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
         /// <inheritdoc cref="IRepository{T}.DeleteOne(T)" />
-        public async Task DeleteOne(T value)
+        public async Task<long> DeleteOne(T value)
         {
             Logging.MethodCall(_log);
             try
@@ -197,15 +291,17 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 switch (_options.DeletionBehaviour)
                 {
                     case RepositoryOptions.DeletionBehaviourOption.Hard:
-                        await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
+                        var deleteResult = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, value.Id));
                         value.Id = new ObjectId();
-                        break;
+                        return deleteResult.DeletedCount;
                     case RepositoryOptions.DeletionBehaviourOption.Soft:
                         value.Deleted = true;
                         value.DeletedAt = DateTime.UtcNow;
                         await UpdateOne(value);
-                        break;
+                        return 1;
                 }
+
+                return 1;
             }
             catch (Exception ex)
             {
@@ -214,7 +310,7 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
         }
 
         /// <inheritdoc cref="IRepository{T}.DeleteOne(MongoDB.Bson.ObjectId)" />
-        public async Task DeleteOne(ObjectId Id)
+        public async Task<long> DeleteOne(ObjectId Id)
         {
             Logging.MethodCall(_log);
             try
@@ -222,19 +318,118 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                 switch (_options.DeletionBehaviour)
                 {
                     case RepositoryOptions.DeletionBehaviourOption.Hard:
-                        await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
-                        break;
+                        var deleteResult = await _collection.DeleteOneAsync(Builders<T>.Filter.Eq(t => t.Id, Id));
+                        return deleteResult.DeletedCount;
                     case RepositoryOptions.DeletionBehaviourOption.Soft:
-                        var result = await ReadOne(() => IdFilter(Id));
-                        if (result.IsSome(out var value))
+                        var readResult = await ReadOne(() => IdFilter(Id));
+                        if (readResult.IsSome(out var value))
                         {
                             value.Deleted = true;
                             value.DeletedAt = DateTime.UtcNow;
                             await UpdateOne(value);
+                            return 1;
                         }
-
-                        break;
+                        else
+                        {
+                            return 0;
+                        }
                 }
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.DeleteMany(T[])" />
+        public async Task<long> DeleteMany(T[] values)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
+                {
+                    var models = new DeleteOneModel<T>[values.Length];
+                    for (var i = 0; i < values.Length; i++)
+                    {
+                        models[i] = new DeleteOneModel<T>(IdFilter(values[i].Id));
+                    }
+
+                    var result = await _collection.BulkWriteAsync(models);
+                    return result.DeletedCount;
+                }
+                else
+                {
+                    var models = new ReplaceOneModel<T>[values.Length];
+                    for (var i = 0; i < values.Length; i++)
+                    {
+                        values[i].Deleted = true;
+                        values[i].DeletedAt = DateTime.UtcNow;
+                        models[i] = new ReplaceOneModel<T>(IdFilter(values[i].Id), values[i]);
+                    }
+
+                    var result = await _collection.BulkWriteAsync(models);
+                    return result.ModifiedCount;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.DeleteMany(System.Func{MongoDB.Driver.FilterDefinition{T}})" />
+        public async Task<long> DeleteMany(Func<FilterDefinition<T>> filter)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                if (_options.DeletionBehaviour == RepositoryOptions.DeletionBehaviourOption.Hard)
+                {
+                    var result = await _collection.DeleteManyAsync(AdjustFilterForDeletions(filter()));
+                    return result.DeletedCount;
+                }
+
+                var deletions = await ReadMany(filter);
+                foreach (var d in deletions)
+                {
+                    d.Deleted = true;
+                }
+
+                await UpdateMany(deletions);
+                return deletions.Length;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.Purge" />
+        public async Task<long> Purge()
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var result = await _collection.DeleteManyAsync(DeletionFilter(true));
+                return result.DeletedCount;
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.Purge(System.Func{MongoDB.Driver.FilterDefinition{T}})" />
+        public async Task<long> Purge(Func<FilterDefinition<T>> filter)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var result = await _collection.DeleteManyAsync(Builders<T>.Filter.And(DeletionFilter(true), filter()));
+                return result.DeletedCount;
             }
             catch (Exception ex)
             {
@@ -255,6 +450,28 @@ namespace JCS.Neon.Glow.Data.Repository.Mongo
                     {
                         ReturnDocument = ReturnDocument.After
                     });
+            }
+            catch (Exception ex)
+            {
+                throw Exceptions.LoggedException<RepositoryException>(_log, $"Repository exception: \"{ex.Message}\"", ex);
+            }
+        }
+
+        /// <inheritdoc cref="IRepository{T}.UpdateMany" />
+        public async Task<T[]> UpdateMany(T[] values)
+        {
+            Logging.MethodCall(_log);
+            try
+            {
+                var models = new ReplaceOneModel<T>[values.Length];
+                for(var i=0; i<values.Length; i++)
+                {
+                    values[i].LastModified = DateTime.UtcNow;
+                    values[i].VersionToken.Increment();
+                    models[i] = new ReplaceOneModel<T>(IdFilter(values[i].Id), values[i]);
+                }
+                var result = await _collection.BulkWriteAsync(models);
+                return values;
             }
             catch (Exception ex)
             {
